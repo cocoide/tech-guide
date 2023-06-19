@@ -11,7 +11,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
     const { data: session } = useSession()
     type DoBookmark = { collection_id: number, article_id: number }
     async function handleDoBookmark(articleId: number) {
-        return await api.pos<DoBookmark>("/account/bookmark", { article_id: articleId, collection_id: 4 }, session?.idToken)
+        return await api.pos<DoBookmark>("/account/bookmark", { article_id: articleId, collection_id: 4 }, session?.token)
     }
 
     return (
