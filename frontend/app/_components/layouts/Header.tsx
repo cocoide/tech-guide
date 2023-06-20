@@ -1,7 +1,7 @@
 'use client'
 
-import { UserCircleIcon } from '@heroicons/react/24/outline'
-import { useSession } from 'next-auth/react'
+import { UserCircleIcon, UserMinusIcon } from '@heroicons/react/24/outline'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 
 export function Header() {
@@ -16,6 +16,12 @@ export function Header() {
                 p-1 rounded-full font-medium
                 flex flex-row items-center text-sm"
                 ><UserCircleIcon className='h-5 w-5' />ログイン</Link>
+            }
+            {status != "loading" && session?.user &&
+                <button className="text-cyan-300 ring-1 bg-white ring-gray-200 
+                p-1 rounded-full font-medium
+                flex flex-row items-center text-sm"
+                    onClick={() => signOut()}><UserMinusIcon className='h-5 w-5' />ログアウト</button>
             }
         </div>
     )
