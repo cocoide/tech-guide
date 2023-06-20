@@ -1,5 +1,6 @@
 import '../styles/globals.css'
 import { Header } from './_components/layouts/Header'
+import PostDialog from './_components/layouts/PostDialog'
 import BottomNavigation from './_components/layouts/mobile/BottomNavigation'
 import Providers from './_providers'
 
@@ -18,7 +19,7 @@ export default function RootLayout({
       <body >
         <Providers>
           <div className='flex flex-col'>
-            <div className="sticky top-0 z-40">
+            <div className="sticky top-0 z-30">
               <Header />
             </div>
             {children}
@@ -26,6 +27,7 @@ export default function RootLayout({
               <BottomNavigation />
             </div>
           </div>
+          <PostDialog />
         </Providers>
       </body>
     </html>
