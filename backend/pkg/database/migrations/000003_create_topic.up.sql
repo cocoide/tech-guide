@@ -10,14 +10,14 @@ CREATE TABLE IF NOT EXISTS articles_to_topics(
   weight INT NOT NULL DEFAULT 3,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE (article_id, topic_id),
-  FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
-  FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE
+  KEY articles_idx (article_id),
+  KEY topics_idx (topic_id)
 );
 
 CREATE TABLE IF NOT EXISTS follow_topics(
   topic_id INT NOT NULL,
   account_id INT NOT NULL,
   UNIQUE (account_id, topic_id),
-  FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE,
-  FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
+  KEY topics_idx (topic_id),
+  KEY accounts_idx (account_id)
 )

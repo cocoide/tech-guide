@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS collections(
   account_id INT NOT NULL,
   UNIQUE (name, account_id),
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
+  KEY accounts_idx (account_id)
 );
 
 CREATE TABLE IF NOT EXISTS bookmarks(
@@ -14,6 +14,6 @@ CREATE TABLE IF NOT EXISTS bookmarks(
   collection_id INT NOT NULL,
   UNIQUE (article_id, collection_id),
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
-  FOREIGN KEY (collection_id) REFERENCES collections(id) ON DELETE CASCADE
+  KEY articles_idx (article_id),
+  KEY collections_idx (collection_id)
 )
