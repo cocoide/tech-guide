@@ -39,7 +39,7 @@ const handler = NextAuth({
     },
     jwt: async ({ token, user }) => {
       if (user) {
-        token.idToken = user.token
+        token.token = user.token
         token.uid= user.uid
       }
       return token
