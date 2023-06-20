@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/cocoide/tech-guide/conf"
 	"github.com/cocoide/tech-guide/pkg/database"
 	"github.com/cocoide/tech-guide/pkg/gateway"
@@ -15,8 +17,9 @@ func main() {
 	e := echo.New()
 	conf.NewEnv()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:3000", "http://localhost:8080"},
-		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		AllowOrigins:     []string{os.Getenv("BACKEDN_URL"), os.Getenv("FRONTNED_URL")},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowCredentials: true,
 	}))
 	db := database.NewDatabase()
 	cr := repo.NewCollectionRepo(db)
