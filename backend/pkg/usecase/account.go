@@ -47,11 +47,11 @@ func (au *accountUseCase) SignUp(email, password string) error {
 	if err != nil {
 		return err
 	}
-	account := &model.Account{
+	account := model.Account{
 		Email:    email,
 		Password: hashed,
 	}
-	if err := au.ur.Create(account); err != nil {
+	if err := au.ur.Create(&account); err != nil {
 		return err
 
 	}
