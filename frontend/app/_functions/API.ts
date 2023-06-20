@@ -1,4 +1,3 @@
-import { BASE_API_URL } from '@/libs/constants'
 
 interface ApiService {
   get<T>(DIR_URL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>>
@@ -101,5 +100,5 @@ function buildApiURL(DIR_URL: string, params?: Params): string {
       .map((key) => params[key].map((value: any) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&'))
       .join('&')
     : '';
-  return BASE_API_URL + DIR_URL + QueryParam
+  return "https://tech-guide.fly.dev" + DIR_URL + QueryParam
 }
