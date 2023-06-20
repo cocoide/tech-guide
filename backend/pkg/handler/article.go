@@ -1,9 +1,28 @@
 package handler
 
 import (
+	"context"
+
 	"github.com/cocoide/tech-guide/pkg/model"
+	"github.com/cocoide/tech-guide/pkg/util"
 	"github.com/labstack/echo"
 )
+
+func (h *Handler) GetOGP(c echo.Context) error {
+	ctx := context.Background()
+	var limiter = util.NewRateLimiter(5, 10)
+	if err := limiter.Limit(ctx, func() error {
+		URL := c.QueryParam("url")
+		ogp, err := h.og.GetOGPByURL(URL)
+		if err != nil {
+			return c.JSON(400, err.Error())
+		}
+		return c.JSON(200, ogp)
+	}); err != nil {
+		return c.JSON(401, err.Error())
+	}
+	return nil
+}
 
 func (h *Handler) GetArticles(c echo.Context) error {
 	articles, err := h.ar.GetLatestArticleByLimit(50)
@@ -26,15 +45,9 @@ func (h *Handler) CreateArticle(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	image := ""
-	if len(ogp.Image) > 700 {
-		image = ""
-	} else {
-		image = ogp.Image
-	}
 	article := &model.Article{
 		Title:        ogp.Title,
-		ThumbnailURL: image,
+		ThumbnailURL: ogp.Thumbnail,
 		OriginalURL:  URL,
 	}
 	if err := h.ar.Create(article); err != nil {

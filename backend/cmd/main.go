@@ -36,6 +36,7 @@ func main() {
 	e.POST("/login", h.Login)
 	e.POST("/signup", h.SignUp)
 
+	e.GET("/ogp", h.GetOGP)
 	e.GET("/article", h.GetArticles)
 	e.GET("/token", h.GenerateToken)
 	e.POST("/article", h.CreateArticle)

@@ -19,7 +19,8 @@ func NewOGPGateway() OGPGateway {
 
 type OGP struct {
 	Title       string `json:"title"`
-	Image       string `json:"image_url"`
+	Thumbnail   string `json:"thumbnail"`
+	Sitename    string `json:"sitename"`
 	Description string `json:"description"`
 }
 
@@ -42,16 +43,30 @@ func (g *OGPGateway) GetOGPByURL(url string) (*OGP, error) {
 	if err := ogp.ProcessHTML(strings.NewReader(string(body))); err != nil {
 		return nil, err
 	}
-	var imageUrl string
-	if ogp.Images != nil && len(ogp.Images) > 0 {
-		imageUrl = ogp.Images[0].URL
-	} else {
-		imageUrl = ""
+	var thumbnail string
+	for _, image := range ogp.Images {
+		if isImageValid(image.URL) && len(image.URL) < 1000 {
+			thumbnail = image.URL
+			break
+		}
 	}
 	result := &OGP{
 		Title:       ogp.Title,
-		Image:       imageUrl,
+		Thumbnail:   thumbnail,
+		Sitename:    ogp.SiteName,
 		Description: ogp.Description,
 	}
 	return result, nil
+}
+
+func isImageValid(imagePath string) bool {
+	resp, err := http.Get(imagePath)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == http.StatusOK {
+		return true
+	}
+	return false
 }
