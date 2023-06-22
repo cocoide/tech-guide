@@ -13,14 +13,14 @@ interface Props {
     closeFunc?: () => void
 }
 export default function CustomDialog({ content, button, openAtom, layout, openFunc, closeFunc }: Props) {
-    const [isOpen, setisOpen] = useAtom(openAtom)
+    const [isOpen, setIsOpen] = useAtom(openAtom)
     function handleClose() {
         closeFunc
-        setisOpen(false)
+        setIsOpen(false)
     }
     function handleOpen() {
         openFunc
-        setisOpen(true)
+        setIsOpen(true)
     }
     return (
         <>

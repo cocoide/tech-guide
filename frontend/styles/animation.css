@@ -9,3 +9,14 @@
     animation-duration: 0.2s;
     animation-timing-function: ease-out;
 }
+
+@keyframes upTinyY {
+    0% { transform: translateY(30%); }
+    100% { transform: translateY(0%); }
+}
+
+.animate-slideTinyUp {
+    animation-name: upTinyY;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;
+}

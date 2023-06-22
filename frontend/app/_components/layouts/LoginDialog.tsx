@@ -3,12 +3,10 @@ import { loginDialogAtom } from '@/stores/dialog'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 
-import { useSetAtom } from 'jotai'
 import { toast } from 'react-hot-toast'
 import CustomDialog from '../elements/CustomDialog'
 
 const LoginDialog = () => {
-    const setLoginDialog = useSetAtom(loginDialogAtom)
     async function signInWithGoogle() {
         toast.loading("ログイン中...");
         try {
@@ -18,9 +16,6 @@ const LoginDialog = () => {
         } catch (error) {
             toast.error("エラーが発生")
         }
-        setLoginDialog(false)
-        toast.dismiss();
-        toast.success("ログイン完了");
     }
     return (
         <CustomDialog
