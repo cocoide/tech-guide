@@ -29,7 +29,9 @@ const LoginDialog = () => {
             content={
                 <div className='flex flex-col justify-items-stretch space-y-5'>
                     <div className="text-gray-400 w-[300px] bg-cyan-50 p-3 rounded-xl">
-                        『ログイン』すると、ブックマーク、投稿機能が使えるようになります。
+                        『Tech Guide』にログインすると
+                        <p></p>
+                        投稿機能、保存機能、おすすめ機能などがご利用可能になります。
                     </div>
                     <button className='ring-1 ring-gray-200 rounded-md p-2 text-gray-700 flex flex-row items-center justify-center space-x-2' type="button"
                         onClick={signInWithGoogle}>
