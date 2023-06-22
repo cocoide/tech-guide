@@ -1,5 +1,5 @@
 // https://remaster.com/blog/next-auth-jwt-session
-import { authAPI } from '@/app/(authentication)/_function/auth';
+import { authAPI } from '@/app/_functions/auth';
 import { cookies } from '@/libs/next-auth';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
@@ -8,9 +8,6 @@ const handler = NextAuth({
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60,
-  },
-  pages: {
-    signIn: "/login"
   },
   cookies: cookies,
   secret: process.env.NEXTAUTH_SECRET,

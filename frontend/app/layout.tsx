@@ -1,5 +1,6 @@
 import '../styles/globals.css'
 import { Header } from './_components/layouts/Header'
+import LoginDialog from './_components/layouts/LoginDialog'
 import PostDialog from './_components/layouts/PostDialog'
 import BottomNavigation from './_components/layouts/mobile/BottomNavigation'
 import Providers from './_providers'
@@ -27,6 +28,7 @@ export default function RootLayout({
               <BottomNavigation />
             </div>
           </div>
+          <LoginDialog />
           <PostDialog />
         </Providers>
       </body>

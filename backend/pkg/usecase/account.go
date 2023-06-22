@@ -40,13 +40,6 @@ func (au *accountUseCase) SignUp(account *model.Account) (*model.Account, error)
 	if isEmailUsed {
 		return nil, errors.New("email is already used")
 	}
-	if len(account.Password) > 0 {
-		hashed, err := util.HashPassword(account.Password)
-		if err != nil {
-			return nil, err
-		}
-		account.Password = hashed
-	}
 	account, err = au.ur.Create(account)
 	if err != nil {
 		return nil, err

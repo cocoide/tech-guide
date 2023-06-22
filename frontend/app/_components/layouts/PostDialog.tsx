@@ -63,6 +63,7 @@ const PostDialog = () => {
         <CustomDialog
             closeFunc={() => setUrl("")}
             openAtom={postDialogAtom}
+            layout='rounded-xl sm:mx-[15%] sm:my-20 md:mx-[20%] lg:mx-[30%] md:my-[100px] mt-[150px]'
             content={
                 <div className="h-full w-full py-10 px-12 flex flex-col justify-between">
                     <div className="flex flex-col space-y-5 text-gray-600">
