@@ -8,7 +8,7 @@ import (
 )
 
 type AccountRepo interface {
-	Create(account *model.Account) error
+	Create(account *model.Account) (*model.Account, error)
 	CheckExistByEmail(email string) (bool, error)
 	GetByEmail(email string) (*model.Account, error)
 	GetAccountProfile(id int) (*model.Account, error)
@@ -33,8 +33,11 @@ func (ar *accountRepo) GetAccountProfile(id int) (*model.Account, error) {
 	return &account, nil
 }
 
-func (ar *accountRepo) Create(account *model.Account) error {
-	return ar.db.Create(account).Error
+func (ar *accountRepo) Create(account *model.Account) (*model.Account, error) {
+	if err := ar.db.Create(account).Error; err != nil {
+		return nil, err
+	}
+	return account, nil
 }
 
 func (ar *accountRepo) CheckExistByEmail(email string) (bool, error) {

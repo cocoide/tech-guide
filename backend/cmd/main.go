@@ -38,6 +38,7 @@ func main() {
 
 	e.POST("/login", h.Login)
 	e.POST("/signup", h.SignUp)
+	e.GET("/email", h.CheckEmail)
 
 	e.GET("/ogp", h.GetOGP)
 	e.GET("/article", h.GetArticles)

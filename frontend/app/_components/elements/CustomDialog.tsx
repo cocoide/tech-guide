@@ -7,13 +7,17 @@ interface Props {
     content: ReactNode
     button?: ReactNode
     openAtom: PrimitiveAtom<boolean>
+    openFunc?: () => void
+    closeFunc?: () => void
 }
-export default function CustomDialog({ content, button, openAtom }: Props) {
+export default function CustomDialog({ content, button, openAtom, openFunc, closeFunc }: Props) {
     const [isOpen, setisOpen] = useAtom(openAtom)
     function handleClose() {
+        closeFunc
         setisOpen(false)
     }
     function handleOpen() {
+        openFunc
         setisOpen(true)
     }
     return (

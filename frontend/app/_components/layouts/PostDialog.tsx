@@ -60,7 +60,8 @@ const PostDialog = () => {
         setOGP(null)
     }
     return (
-        <CustomDialog key={"post-dialog"}
+        <CustomDialog
+            closeFunc={() => setUrl("")}
             openAtom={postDialogAtom}
             content={
                 <div className="h-full w-full py-10 px-12 flex flex-col justify-between">

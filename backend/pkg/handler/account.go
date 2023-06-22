@@ -3,33 +3,24 @@ package handler
 import (
 	"strconv"
 
+	"github.com/cocoide/tech-guide/pkg/model"
 	"github.com/cocoide/tech-guide/pkg/util"
 	"github.com/labstack/echo"
 )
 
 func (h *Handler) Login(c echo.Context) error {
 	type REQ struct {
-		Email    string
-		Password string
+		Email string
 	}
 	req := new(REQ)
 	if err := c.Bind(req); err != nil {
 		return c.JSON(403, err.Error())
 	}
-	if len(req.Password) < 5 {
-		return c.JSON(403, "")
-	}
-	account, token, err := h.uu.Login(req.Email, req.Password)
+	account, token, err := h.uu.Login(req.Email)
 	if err != nil {
 		c.JSON(403, "email or password is incorrect")
 	}
-	type RES struct {
-		UID   int    `json:"uid"`
-		Name  string `json:"name"`
-		Image string `json:"image"`
-		Token string `json:"token"`
-	}
-	res := &RES{
+	res := &LoginRES{
 		UID:   account.ID,
 		Name:  account.DisplayName,
 		Image: account.AvatarURL,
@@ -38,19 +29,45 @@ func (h *Handler) Login(c echo.Context) error {
 	return c.JSON(200, res)
 }
 
+type LoginRES struct {
+	UID   int    `json:"uid"`
+	Name  string `json:"name"`
+	Image string `json:"image"`
+	Token string `json:"token"`
+}
+
 func (h *Handler) SignUp(c echo.Context) error {
 	type REQ struct {
-		Email    string
-		Password string
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		Name     string `json:"name"`
+		Image    string `json:"image"`
 	}
 	req := new(REQ)
 	if err := c.Bind(req); err != nil {
 		return c.JSON(400, err.Error())
 	}
-	if err := h.uu.SignUp(req.Email, req.Password); err != nil {
+	account := &model.Account{
+		Email:       req.Email,
+		Password:    req.Password,
+		DisplayName: req.Name,
+		AvatarURL:   req.Image,
+	}
+	account, err := h.uu.SignUp(account)
+	if err != nil {
 		return c.JSON(403, err.Error())
 	}
-	return c.JSON(200, "signup successful")
+	token, err := util.GenerateToken(account.ID)
+	if err != nil {
+		return c.JSON(403, err.Error())
+	}
+	res := &LoginRES{
+		UID:   account.ID,
+		Name:  account.DisplayName,
+		Image: account.AvatarURL,
+		Token: token,
+	}
+	return c.JSON(200, res)
 }
 
 func (h *Handler) GenerateToken(c echo.Context) error {
@@ -71,4 +88,19 @@ func (h *Handler) GetAccountProfile(c echo.Context) error {
 	}
 	account.Password = ""
 	return c.JSON(200, account)
+}
+
+func (h *Handler) CheckEmail(c echo.Context) error {
+	email := c.QueryParam("email")
+	if len(email) < 1 {
+		return c.JSON(400, "email is not set for search query")
+	}
+	isExist, err := h.ur.CheckExistByEmail(email)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	if isExist {
+		return c.JSON(400, true)
+	}
+	return c.JSON(200, false)
 }

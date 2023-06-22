@@ -9,8 +9,8 @@ import (
 )
 
 type AccountUseCase interface {
-	Login(email, password string) (*model.Account, string, error)
-	SignUp(email, password string) error
+	Login(email string) (*model.Account, string, error)
+	SignUp(account *model.Account) (*model.Account, error)
 }
 type accountUseCase struct {
 	ur repo.AccountRepo
@@ -20,12 +20,9 @@ func NewAccountUseCase(ur repo.AccountRepo) AccountUseCase {
 	return &accountUseCase{ur: ur}
 }
 
-func (au *accountUseCase) Login(email, password string) (*model.Account, string, error) {
+func (au *accountUseCase) Login(email string) (*model.Account, string, error) {
 	account, err := au.ur.GetByEmail(email)
 	if err != nil {
-		return nil, "", err
-	}
-	if err := util.CheckPassword(account.Password, password); err != nil {
 		return nil, "", err
 	}
 	token, err := util.GenerateToken(account.ID)
@@ -35,25 +32,24 @@ func (au *accountUseCase) Login(email, password string) (*model.Account, string,
 	return account, token, nil
 }
 
-func (au *accountUseCase) SignUp(email, password string) error {
-	isEmailUsed, err := au.ur.CheckExistByEmail(email)
+func (au *accountUseCase) SignUp(account *model.Account) (*model.Account, error) {
+	isEmailUsed, err := au.ur.CheckExistByEmail(account.Email)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if isEmailUsed {
-		return errors.New("email is already used")
+		return nil, errors.New("email is already used")
 	}
-	hashed, err := util.HashPassword(password)
+	if len(account.Password) > 0 {
+		hashed, err := util.HashPassword(account.Password)
+		if err != nil {
+			return nil, err
+		}
+		account.Password = hashed
+	}
+	account, err = au.ur.Create(account)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	account := model.Account{
-		Email:    email,
-		Password: hashed,
-	}
-	if err := au.ur.Create(&account); err != nil {
-		return err
-
-	}
-	return nil
+	return account, nil
 }
