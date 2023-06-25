@@ -4,15 +4,15 @@ import { PrimitiveAtom, useAtom } from 'jotai'
 import { ReactNode } from 'react'
 import '../../../styles/animation.css'
 
-interface Props {
+interface Props<T> {
     content: ReactNode
     button?: ReactNode
-    openAtom: PrimitiveAtom<boolean>
+    openAtom: PrimitiveAtom<boolean | T>
     layout?: string
     openFunc?: () => void
     closeFunc?: () => void
 }
-export default function CustomDialog({ content, button, openAtom, layout, openFunc, closeFunc }: Props) {
+export default function CustomDialog<T>({ content, button, openAtom, layout, openFunc, closeFunc }: Props<T>) {
     const [isOpen, setIsOpen] = useAtom(openAtom)
     function handleClose() {
         closeFunc

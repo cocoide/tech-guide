@@ -16,7 +16,7 @@ type Collection struct {
 	AccountID   int    `json:"account_id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	// 0: Public, 2: Follower, 3: Private
+	// 0: Public, 1: Private
 	Visibility int       `json:"visibility"`
 	Articles   []Article `json:"articles" gorm:"many2many:bookmarks"`
 }

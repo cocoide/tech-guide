@@ -2,16 +2,33 @@
 
 import { api } from '@/app/_functions/API'
 import { Article } from '@/app/_models'
+import { collectionDialogAtom } from '@/stores/dialog'
 import { ArrowTopRightOnSquareIcon, FolderPlusIcon } from '@heroicons/react/24/outline'
+import { useAtom } from 'jotai'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
 
 const ArticleCard = ({ article }: { article: Article }) => {
     const { data: session } = useSession()
+    const [_, setOpenCollectionDialog] = useAtom(collectionDialogAtom)
     type DoBookmark = { collection_id: number, article_id: number }
     async function handleDoBookmark(articleId: number) {
         return await api.pos<DoBookmark>("/account/bookmark", { article_id: articleId, collection_id: 4 }, session?.token)
+    }
+    async function doBookmark() {
+        const { ok, error, status } = await handleDoBookmark(article.id)
+        if (!ok) {
+            console.log(error)
+            console.log(status)
+            if (status == 409) {
+                toast.error("すでにブックマークされてあります")
+            } else {
+                toast.error("エラーが発生")
+            }
+        } else {
+            toast.success("ブックマーク完了")
+        }
     }
 
     return (
@@ -32,21 +49,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
                 </div>
                 <div className='flex flex-row justify-between'>
                     <div className='flex flex-row space-x-3'>
-                        <button onClick={
-                            async () => {
-                                const { ok, error, status } = await handleDoBookmark(article.id)
-                                if (!ok) {
-                                    console.log(error)
-                                    console.log(status)
-                                    if (status == 409) {
-                                        toast.error("すでにブックマークされてあります")
-                                    } else {
-                                        toast.error("エラーが発生")
-                                    }
-                                } else {
-                                    toast.success("ブックマーク完了")
-                                }
-                            }}>
+                        <button onClick={() => setOpenCollectionDialog(article.id)}>
                             <FolderPlusIcon className='text-gray-500 h-5 w-5' />
                         </button>
                     </div>

@@ -9,6 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
+func (h *Handler) GetCollectionForBookmark(c echo.Context) error {
+	accountId := int(c.Get("account_id").(float64))
+	if accountId == 0 {
+		return c.JSON(403, "unauthorized for viewing bookmark")
+	}
+	collections, err := h.cr.GetCollectionsByAccountID(accountId)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, collections)
+}
+
 func (h *Handler) GetCollections(c echo.Context) error {
 	accountId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

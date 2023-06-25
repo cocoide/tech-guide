@@ -36,6 +36,7 @@ func main() {
 	e.GET("account/profile/:id", h.GetAccountProfile)
 	e.GET("account/collection/:id", h.GetCollections)
 
+	private.GET("/collection", h.GetCollectionForBookmark)
 	e.POST("/login", h.Login)
 	e.POST("/signup", h.SignUp)
 	e.GET("/email", h.CheckEmail)
