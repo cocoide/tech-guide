@@ -31,11 +31,11 @@ func main() {
 
 	private := e.Group("/account", h.AuthMiddleware)
 	private.GET("/private/profile/:id", h.GetAccountProfile)
-	private.POST("/collection", h.CreateCollection)
-	private.POST("/bookmark", h.DoBookmark)
 	e.GET("account/profile/:id", h.GetAccountProfile)
 	e.GET("account/collection/:id", h.GetCollections)
 
+	private.POST("/bookmark", h.DoBookmark)
+	private.POST("/collection", h.CreateCollection)
 	private.GET("/collection", h.GetCollectionForBookmark)
 	e.POST("/login", h.Login)
 	e.POST("/signup", h.SignUp)
