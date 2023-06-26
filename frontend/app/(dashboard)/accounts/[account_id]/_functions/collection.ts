@@ -8,7 +8,7 @@ export const collectionAPI={
         return res
     },
     async getCollectionForBookmark(token?: string) {
-        return  await api.get<Collection[]>(`/article`, 'no-store', token)
+        return  await api.get<Collection[]>(`/account/collection`, 'no-store', token)
     },
     async makeCollectionWithBookmark(collection: NewCollectionRequest, articleId: number, token?: string) {
         return  await api.pos(`/account/collection`,collection, token, {"articleId": articleId} )
