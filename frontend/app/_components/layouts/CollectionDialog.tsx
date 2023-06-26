@@ -7,14 +7,20 @@ import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import { PlusCircleIcon } from '@heroicons/react/24/solid'
 import { useAtom } from 'jotai'
 import { useSession } from 'next-auth/react'
-import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useForm } from "react-hook-form"
 import { toast } from 'react-hot-toast'
 import CustomDialog from '../elements/CustomDialog'
 
+export type NewCollectionRequest = {
+    title: string,
+    description: string,
+    visibility: number,
+    article_id: number,
+}
+
 const CollectionDialog = () => {
     const [dialogAtom, setDialogAtom] = useAtom(collectionDialogAtom)
-    const queryParam = useSearchParams()
     const [isNewCollection, setIsNewCollection] = useState(false)
     const [collections, setCollections] = useState<Collection[] | undefined>()
     const { data: session } = useSession()
@@ -43,6 +49,20 @@ const CollectionDialog = () => {
         toast.success("保存完了")
         setDialogAtom(false)
     }
+    const { register, handleSubmit, formState: { errors }, setValue }
+        = useForm<NewCollectionRequest>();
+
+    async function handleNewCollectionSubmit(data: NewCollectionRequest) {
+        if (typeof dialogAtom == "number") {
+            toast.loading("作成中...")
+            const { ok } = await collectionAPI.makeCollectionWithBookmark(data, dialogAtom)
+            if (!ok) {
+                return toast.error("エラーが発生")
+            }
+            toast.dismiss()
+            toast.success("作成完了")
+        }
+    }
 
     return (
         <CustomDialog
@@ -59,6 +79,18 @@ const CollectionDialog = () => {
                                 </button>
                                 <div className="text-center">コレクションを作成</div>
                             </div>
+                            <form onSubmit={handleSubmit(handleNewCollectionSubmit)} className='flex flex-col p-5 space-y-5 h-full text-slate-500'>
+                                <div className="w-full">
+                                    <div className="">コレクション名</div>
+                                    <input {...register("title", { required: true })} className='p-1 ring-1 ring-slate-200 rounded-md w-full' />
+                                </div>
+                                <div className="w-full">
+                                    <div className="">詳細</div>
+                                    <input {...register("description")} className='p-1 ring-1 ring-slate-200 rounded-md w-full' />
+                                </div>
+                                <p className='h-full'></p>
+                                <button type="submit" className='ring-1 ring-cyan-300 rounded-xl p-[3px] text-cyan-300'>作成完了</button>
+                            </form>
                         </>
                         :
                         <>
