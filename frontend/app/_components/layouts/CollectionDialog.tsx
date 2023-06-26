@@ -13,7 +13,7 @@ import { toast } from 'react-hot-toast'
 import CustomDialog from '../elements/CustomDialog'
 
 export type NewCollectionRequest = {
-    title: string,
+    name: string,
     description: string,
     visibility: number,
     article_id: number,
@@ -49,7 +49,7 @@ const CollectionDialog = () => {
         toast.success("保存完了")
         setDialogAtom(false)
     }
-    const { register, handleSubmit, formState: { errors }, setValue }
+    const { register, handleSubmit }
         = useForm<NewCollectionRequest>();
 
     async function handleNewCollectionSubmit(data: NewCollectionRequest) {
@@ -82,7 +82,7 @@ const CollectionDialog = () => {
                             <form onSubmit={handleSubmit(handleNewCollectionSubmit)} className='flex flex-col p-5 space-y-5 h-full text-slate-500'>
                                 <div className="w-full">
                                     <div className="">コレクション名</div>
-                                    <input {...register("title", { required: true })} className='p-1 ring-1 ring-slate-200 rounded-md w-full' />
+                                    <input {...register("name", { required: true })} className='p-1 ring-1 ring-slate-200 rounded-md w-full' />
                                 </div>
                                 <div className="w-full">
                                     <div className="">詳細</div>
