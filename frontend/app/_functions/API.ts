@@ -1,12 +1,12 @@
 
 interface ApiService {
-  get<T>(DIR_URL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>>
-  del(DIR_URL: string, params?: Params): Promise<ApiResponse<void>>
-  pos<U>(DIR_URL: string, body: any, token?: string,params?: Params): Promise<ApiResponse<U>>
-  put<U>(DIR_URL: string, body: U, params?: Params): Promise<ApiResponse<void>>
+  get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>>
+  del(dirURL: string, params?: Params): Promise<ApiResponse<void>>
+  pos<U>(dirURL: string, body: any, token?: string,params?: Params): Promise<ApiResponse<U>>
+  put<U>(dirURL: string, body: U, params?: Params): Promise<ApiResponse<void>>
 }
 
-type ApiResponse<T> = {
+export type ApiResponse<T> = {
   data?: T
   error?: ApiErrorResponse
   status?: number
@@ -14,8 +14,9 @@ type ApiResponse<T> = {
 }
 type ApiErrorResponse = string | { message: string }
 
+type ParamValue = string | number | boolean | string[] | number[]
 type Params = {
-  [key: string]: any
+  [key: string]: ParamValue
 }
 type Cache = 'no-store' | 'force-cache' | 'reload'| number // SSR | SSG | SSG (from when reload) | ※default SSG
 // 公式ドキュメント: https://nextjs.org/docs/app/building-your-application/data-fetching/caching
@@ -24,7 +25,7 @@ const headers: HeadersInit = {
   "Content-Type": 'application/json',
 }
 export const api: ApiService = {
-  async get<T>(DIR_URL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>> {
+  async get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>> {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
@@ -37,9 +38,9 @@ export const api: ApiService = {
     }else if (typeof cache === 'number'){
       options.next={...options.next, revalidate: cache}
     }
-    return handleApiRequest(DIR_URL, options, params)
+    return handleApiRequest(dirURL, options, params)
   },
-  async pos<U>(DIR_URL: string, body: any, token?: string, params?: Params): Promise<ApiResponse<U>> {
+  async pos<U>(dirURL: string, body: any, token?: string, params?: Params): Promise<ApiResponse<U>> {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
@@ -49,56 +50,55 @@ export const api: ApiService = {
       headers: headers,
       body: JSON.stringify(body)
     }
-    return handleApiRequest(DIR_URL, options, params)
+    return handleApiRequest(dirURL, options, params)
   },
-  async del(DIR_URL: string, params?: Params): Promise<ApiResponse<void>> {
+  async del(dirURL: string, params?: Params): Promise<ApiResponse<void>> {
     const options: RequestInit = {
       method: 'DELETE',
       headers: headers,
     }
-    return handleApiRequest(DIR_URL, options, params)
+    return handleApiRequest(dirURL, options, params)
   },
-  async put<U>(DIR_URL: string, body: U, params?: Params): Promise<ApiResponse<void>> {
+  async put<U>(dirURL: string, body: U, params?: Params): Promise<ApiResponse<void>> {
     const options: RequestInit = {
       method: 'PUT',
       headers: headers,
       body: JSON.stringify(body)
     }
-    return handleApiRequest(DIR_URL, options, params)
+    return handleApiRequest(dirURL, options, params)
   },
 }
 
-async function handleApiRequest<T>(DIR_URL: string, options: RequestInit, params?: Params): Promise<ApiResponse<T>> {
-  const API_URL = buildApiURL(DIR_URL, params)
-  const res = await fetch(API_URL, options);
+async function handleApiRequest<T>(dirURL: string, options: RequestInit, params?: Params): Promise<ApiResponse<T>> {
+  const apiURL = buildApiURL(dirURL, params)
+  const res = await fetch(apiURL, options);
   try {
-    if (!res.ok) {
-      return {
-        error: await res.json(),
-        status: res.status,
-        ok: false,
-      };
-    } else {
-      return {
-        data: await res.json(),
-        status: res.status,
-        ok: true,
-      };
-    }
+    return {
+      data: res.ok ? await res.json() : undefined,
+      error: res.ok ? undefined : await res.json(),
+      status: res.status,
+      ok: res.ok,
+    };
   } catch (error) {
     return {
-      error: `unexpected error occured: ${error}`,
+      error: await res.json() + `: ${error}`,
       status: 500,
       ok: false,
     };
   }
 }
 
-function buildApiURL(DIR_URL: string, params?: Params): string {
-  const QueryParam = params
+function buildApiURL(dirURL: string, params?: Params): string {
+  const queryParam = params
     ? '?' + Object.keys(params)
-      .map((key) => params[key].map((value: any) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&'))
+      .map((key) => {
+        const paramValue = params[key];
+        if (Array.isArray(paramValue)) {
+          return paramValue.map((element) => `${encodeURIComponent(key)}=${encodeURIComponent(element)}`).join('&');
+        }
+        return `${encodeURIComponent(key)}=${encodeURIComponent(paramValue)}`;
+      })
       .join('&')
     : '';
-  return process.env.NEXT_PUBLIC_API_BASE_URL + DIR_URL + QueryParam
+  return process.env.NEXT_PUBLIC_API_BASE_URL + dirURL + queryParam
 }
