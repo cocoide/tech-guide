@@ -54,5 +54,6 @@ func main() {
 	e.GET("/article/related/:id", h.GetRelatedArticles)
 	e.GET("/token", h.GenerateToken)
 	e.POST("/article", h.CreateArticle)
+	e.POST("/topic", h.CreateTopics)
 	e.Logger.Fatal(e.Start(":8080"))
 }

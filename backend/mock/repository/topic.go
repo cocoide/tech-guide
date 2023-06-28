@@ -34,6 +34,20 @@ func (m *MockTopicRepo) EXPECT() *MockTopicRepoMockRecorder {
 	return m.recorder
 }
 
+// CreateTopics mocks base method.
+func (m *MockTopicRepo) CreateTopics(topics []model.Topic) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateTopics", topics)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateTopics indicates an expected call of CreateTopics.
+func (mr *MockTopicRepoMockRecorder) CreateTopics(topics interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTopics", reflect.TypeOf((*MockTopicRepo)(nil).CreateTopics), topics)
+}
+
 // GetAllTopics mocks base method.
 func (m *MockTopicRepo) GetAllTopics() ([]model.Topic, error) {
 	m.ctrl.T.Helper()
@@ -50,10 +64,10 @@ func (mr *MockTopicRepoMockRecorder) GetAllTopics() *gomock.Call {
 }
 
 // GetTopicToArticleArrayByArticleID mocks base method.
-func (m *MockTopicRepo) GetTopicToArticleArrayByArticleID(articleID int) ([]model.ArticlesToTopics, error) {
+func (m *MockTopicRepo) GetTopicToArticleArrayByArticleID(articleID int) ([]model.TopicsToArticles, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetTopicToArticleArrayByArticleID", articleID)
-	ret0, _ := ret[0].([]model.ArticlesToTopics)
+	ret0, _ := ret[0].([]model.TopicsToArticles)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS topics(
   name VARCHAR(50) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS articles_to_topics(
+CREATE TABLE IF NOT EXISTS topics_to_articles(
   article_id INT NOT NULL,
   topic_id INT NOT NULL,
   weight INT NOT NULL DEFAULT 3,

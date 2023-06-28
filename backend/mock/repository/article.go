@@ -50,7 +50,7 @@ func (mr *MockArticleRepoMockRecorder) Create(article interface{}) *gomock.Call 
 }
 
 // CreateTopicToArticle mocks base method.
-func (m *MockArticleRepo) CreateTopicToArticle(topicToArticles []model.ArticlesToTopics) error {
+func (m *MockArticleRepo) CreateTopicToArticle(topicToArticles []model.TopicsToArticles) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateTopicToArticle", topicToArticles)
 	ret0, _ := ret[0].(error)
@@ -63,11 +63,26 @@ func (mr *MockArticleRepoMockRecorder) CreateTopicToArticle(topicToArticles inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTopicToArticle", reflect.TypeOf((*MockArticleRepo)(nil).CreateTopicToArticle), topicToArticles)
 }
 
+// GetArticleByID mocks base method.
+func (m *MockArticleRepo) GetArticleByID(articleID int) (*model.Article, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetArticleByID", articleID)
+	ret0, _ := ret[0].(*model.Article)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetArticleByID indicates an expected call of GetArticleByID.
+func (mr *MockArticleRepoMockRecorder) GetArticleByID(articleID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArticleByID", reflect.TypeOf((*MockArticleRepo)(nil).GetArticleByID), articleID)
+}
+
 // GetArticlesByTopicIDs mocks base method.
-func (m *MockArticleRepo) GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([]model.ArticlesToTopics, error) {
+func (m *MockArticleRepo) GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([]model.TopicsToArticles, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetArticlesByTopicIDs", topicIDs, omitArticleId)
-	ret0, _ := ret[0].([]model.ArticlesToTopics)
+	ret0, _ := ret[0].([]model.TopicsToArticles)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -94,10 +109,10 @@ func (mr *MockArticleRepoMockRecorder) GetLatestArticleByLimit(limit interface{}
 }
 
 // GetTagsAndWeightsByArticleID mocks base method.
-func (m *MockArticleRepo) GetTagsAndWeightsByArticleID(articleID int) ([]model.ArticlesToTopics, error) {
+func (m *MockArticleRepo) GetTagsAndWeightsByArticleID(articleID int) ([]model.TopicsToArticles, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetTagsAndWeightsByArticleID", articleID)
-	ret0, _ := ret[0].([]model.ArticlesToTopics)
+	ret0, _ := ret[0].([]model.TopicsToArticles)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

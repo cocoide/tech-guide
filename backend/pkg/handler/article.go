@@ -69,7 +69,16 @@ func (h *Handler) GetRelatedArticles(c echo.Context) error {
 	}
 	return c.JSON(200, result)
 }
-
+func (h *Handler) CreateTopics(c echo.Context) error {
+	topics := []model.Topic{}
+	if err := c.Bind(&topics); err != nil {
+		return c.JSON(400, err.Error())
+	}
+	if err := h.tr.CreateTopics(topics); err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, "topics created")
+}
 func (h *Handler) CreateArticle(c echo.Context) error {
 	type REQ struct {
 		OriginalURL string `json:"original_url"`
@@ -99,10 +108,10 @@ func (h *Handler) CreateArticle(c echo.Context) error {
 			return
 		}
 		topicWeights := dto.GetTopWeightedTopics(wholeTopicWeights, 3)
-		var topicToArticles []model.ArticlesToTopics
+		var topicToArticles []model.TopicsToArticles
 		for _, v := range topicWeights {
 			topicToArticles = append(topicToArticles,
-				model.ArticlesToTopics{ArticleID: article.ID, TopicID: v.ID, Weight: v.Weight})
+				model.TopicsToArticles{ArticleID: article.ID, TopicID: v.ID, Weight: v.Weight})
 		}
 		if err := h.ar.CreateTopicToArticle(topicToArticles); err != nil {
 			topicAssignErrCh <- err

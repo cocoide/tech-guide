@@ -15,7 +15,7 @@ import (
 
 type TopicAnalysisService interface {
 	ExtractTopicsWithWeightFromArticleTitle(title string) ([]dto.TopicWeight, error)
-	GetRelatedArticlesByOriginTopicToArticleArray(origin []model.ArticlesToTopics, excludeID int) ([]model.Article, error)
+	GetRelatedArticlesByOriginTopicToArticleArray(origin []model.TopicsToArticles, excludeID int) ([]model.Article, error)
 }
 
 type topicAnalysisService struct {
@@ -28,7 +28,7 @@ func NewTopicAnalysisService(og gateway.OpenAIGateway, tr repo.TopicRepo, ar rep
 	return &topicAnalysisService{og: og, tr: tr, ar: ar}
 }
 
-func (ts *topicAnalysisService) GetRelatedArticlesByOriginTopicToArticleArray(origin []model.ArticlesToTopics, excludeID int) ([]model.Article, error) {
+func (ts *topicAnalysisService) GetRelatedArticlesByOriginTopicToArticleArray(origin []model.TopicsToArticles, excludeID int) ([]model.Article, error) {
 	originArticleID := origin[0].ArticleID
 
 	originTopicWeights := make(map[int]int)

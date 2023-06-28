@@ -6,8 +6,9 @@ import (
 )
 
 type TopicRepo interface {
+	CreateTopics(topics []model.Topic) error
 	GetAllTopics() ([]model.Topic, error)
-	GetTopicToArticleArrayByArticleID(articleID int) ([]model.ArticlesToTopics, error)
+	GetTopicToArticleArrayByArticleID(articleID int) ([]model.TopicsToArticles, error)
 }
 
 type topicRepo struct {
@@ -17,7 +18,9 @@ type topicRepo struct {
 func NewTopicRepo(db *gorm.DB) TopicRepo {
 	return &topicRepo{db: db}
 }
-
+func (tr *topicRepo) CreateTopics(topics []model.Topic) error {
+	return tr.db.Create(topics).Error
+}
 func (tr *topicRepo) GetAllTopics() ([]model.Topic, error) {
 	var topics []model.Topic
 	result := tr.db.
@@ -28,14 +31,14 @@ func (tr *topicRepo) GetAllTopics() ([]model.Topic, error) {
 	return topics, nil
 }
 
-func (r *topicRepo) GetTopicToArticleArrayByArticleID(articleID int) ([]model.ArticlesToTopics, error) {
-	var articlesToTopicsArray []model.ArticlesToTopics
+func (r *topicRepo) GetTopicToArticleArrayByArticleID(articleID int) ([]model.TopicsToArticles, error) {
+	var TopicsToArticlesArray []model.TopicsToArticles
 	if err := r.db.
 		Select("article_id, topic_id, weight").
 		Where("article_id = ?", articleID).
 		Order("weight DESC").
-		Find(&articlesToTopicsArray).Error; err != nil {
+		Find(&TopicsToArticlesArray).Error; err != nil {
 		return nil, err
 	}
-	return articlesToTopicsArray, nil
+	return TopicsToArticlesArray, nil
 }

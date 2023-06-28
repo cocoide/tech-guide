@@ -7,13 +7,13 @@ import (
 
 type ArticleRepo interface {
 	Create(article *model.Article) (int, error)
-	CreateTopicToArticle(topicToArticles []model.ArticlesToTopics) error
+	CreateTopicToArticle(topicToArticles []model.TopicsToArticles) error
 	GetLatestArticleByLimit(limit int) ([]*model.Article, error)
 	GetArticleByID(articleID int) (*model.Article, error)
 	GetTopicsByID(articleId int) ([]model.Topic, error)
-	GetTagsAndWeightsByArticleID(articleID int) ([]model.ArticlesToTopics, error)
+	GetTagsAndWeightsByArticleID(articleID int) ([]model.TopicsToArticles, error)
 	// Limit by 50 counts
-	GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([]model.ArticlesToTopics, error)
+	GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([]model.TopicsToArticles, error)
 }
 
 type articleRepo struct {
@@ -34,7 +34,7 @@ func (r *articleRepo) GetArticleByID(articleID int) (*model.Article, error) {
 	}
 	return &article, nil
 }
-func (r *articleRepo) CreateTopicToArticle(topicToArticles []model.ArticlesToTopics) error {
+func (r *articleRepo) CreateTopicToArticle(topicToArticles []model.TopicsToArticles) error {
 	return r.db.Create(&topicToArticles).Error
 }
 
@@ -68,27 +68,27 @@ func (r *articleRepo) GetTopicsByID(articleId int) ([]model.Topic, error) {
 	return topics, nil
 }
 
-func (r *articleRepo) GetTagsAndWeightsByArticleID(articleID int) ([]model.ArticlesToTopics, error) {
-	var articlesToTopics []model.ArticlesToTopics
+func (r *articleRepo) GetTagsAndWeightsByArticleID(articleID int) ([]model.TopicsToArticles, error) {
+	var TopicsToArticles []model.TopicsToArticles
 	if err := r.db.
 		Preload("Topic").
 		Where("article_id IN (?)", articleID).
-		Find(&articlesToTopics).Error; err != nil {
+		Find(&TopicsToArticles).Error; err != nil {
 		return nil, err
 	}
-	return articlesToTopics, nil
+	return TopicsToArticles, nil
 }
 
-func (r *articleRepo) GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([]model.ArticlesToTopics, error) {
-	var articlesToTopicsArray []model.ArticlesToTopics
+func (r *articleRepo) GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([]model.TopicsToArticles, error) {
+	var TopicsToArticlesArray []model.TopicsToArticles
 	if err := r.db.
 		Preload("Article").
 		Where("topic_id IN (?)", topicIDs).
 		Not("article_id = ?", omitArticleId).
 		Order("weight DESC").
 		Limit(50).
-		Find(&articlesToTopicsArray).Error; err != nil {
+		Find(&TopicsToArticlesArray).Error; err != nil {
 		return nil, err
 	}
-	return articlesToTopicsArray, nil
+	return TopicsToArticlesArray, nil
 }
