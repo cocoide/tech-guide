@@ -12,7 +12,7 @@ export default async function ArticlePage({ params }: ArticleParams) {
                 <ArticleDetail article={articleDetail} />
             }
             {relatedArticles && relatedArticles.length > 0 &&
-                <RelatedArticles articles={relatedArticles} />
+                <RelatedArticles articles={relatedArticles} origin={String(articleDetail?.id)} />
             }
         </div>
     )

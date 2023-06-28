@@ -48,6 +48,10 @@ func (h *Handler) GetArticleDetail(c echo.Context) error {
 }
 
 func (h *Handler) GetRelatedArticles(c echo.Context) error {
+	excludeArticleID := 0
+	if c.QueryParam("exclude") != "" {
+		excludeArticleID, _ = strconv.Atoi(c.QueryParam("exclude"))
+	}
 	originArticleID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(400, err.Error())
@@ -58,7 +62,7 @@ func (h *Handler) GetRelatedArticles(c echo.Context) error {
 	}
 	var result []model.Article
 	if len(originTopicToArticleArray) > 0 {
-		result, err = h.ts.GetRelatedArticlesByOriginTopicToArticleArray(originTopicToArticleArray)
+		result, err = h.ts.GetRelatedArticlesByOriginTopicToArticleArray(originTopicToArticleArray, excludeArticleID)
 		if err != nil {
 			return c.JSON(400, err.Error())
 		}

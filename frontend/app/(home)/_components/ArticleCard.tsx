@@ -6,12 +6,18 @@ import { ArrowTopRightOnSquareIcon, FolderPlusIcon } from '@heroicons/react/24/o
 import { useAtom } from 'jotai'
 import Link from 'next/link'
 
-const ArticleCard = ({ article }: { article: Article }) => {
+
+interface Props {
+    article: Article
+    origin?: string
+}
+const ArticleCard = ({ article, origin }: Props) => {
     const [_, setOpenCollectionDialog] = useAtom(collectionDialogAtom)
+    const queryParam = origin ? `?exclude=${origin}` : ''
     return (
         <div className='p-3'>
             <div className='flex flex-col space-y-3'>
-                <Link href={`/articles/${article.id}`} className='flex flex-row justify-between'>
+                <Link href={`/articles/${article.id}${queryParam}`} className='flex flex-row justify-between'>
                     <div className="flex flex-col">
                         <div>{article.title}</div>
                     </div>
