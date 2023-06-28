@@ -61,14 +61,6 @@ func (h *Handler) SignUp(c echo.Context) error {
 	if err != nil {
 		return c.JSON(403, err.Error())
 	}
-	collection := &model.Collection{
-		AccountID:  account.ID,
-		Name:       "あとで読む",
-		Visibility: 0,
-	}
-	if err := h.cr.CreateCollection(collection); err != nil {
-		return c.JSON(403, err.Error())
-	}
 	res := &LoginRES{
 		UID:   account.ID,
 		Name:  account.DisplayName,

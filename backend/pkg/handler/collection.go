@@ -50,10 +50,14 @@ func (h *Handler) CreateCollection(c echo.Context) error {
 		Description: req.Description,
 		Visibility:  req.Visibility,
 	}
+	articleId, err := strconv.Atoi(c.QueryParam("articleId"))
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
 	if err := collection.ValidateCollection(); err != nil {
 		return c.JSON(400, err.Error())
 	}
-	if err := h.cr.CreateCollection(&collection); err != nil {
+	if err := h.cr.CreateCollectionWithBookmark(&collection, articleId); err != nil {
 		return c.JSON(400, err.Error())
 	}
 	return c.JSON(200, collection)
