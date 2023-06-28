@@ -2,7 +2,7 @@ package handler
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"sort"
 	"strconv"
 
@@ -104,18 +104,27 @@ func (h *Handler) CreateArticle(c echo.Context) error {
 	if _, err := h.ar.Create(article); err != nil {
 		return c.JSON(400, err.Error())
 	}
-	topicWeights, err := h.ts.ExtractTopicsWithWeightFromArticleTitle(article.Title)
-	if err != nil {
-		return c.JSON(400, err.Error())
-	}
-	var topicToArticles []model.ArticlesToTopics
-	for _, v := range topicWeights {
-		topicToArticles = append(topicToArticles,
-			model.ArticlesToTopics{ArticleID: article.ID, TopicID: v.ID, Weight: v.Weight})
-	}
-	fmt.Print(topicWeights)
-	if err := h.ar.CreateTopicToArticle(topicToArticles); err != nil {
-		return c.JSON(400, err.Error())
-	}
+	topicAssignErrCh := make(chan error)
+	go func() {
+		topicWeights, err := h.ts.ExtractTopicsWithWeightFromArticleTitle(article.Title)
+		if err != nil {
+			topicAssignErrCh <- err
+			return
+		}
+		var topicToArticles []model.ArticlesToTopics
+		for _, v := range topicWeights {
+			topicToArticles = append(topicToArticles,
+				model.ArticlesToTopics{ArticleID: article.ID, TopicID: v.ID, Weight: v.Weight})
+		}
+		if err := h.ar.CreateTopicToArticle(topicToArticles); err != nil {
+			topicAssignErrCh <- err
+			return
+		}
+	}()
+	go func() {
+		for err := range topicAssignErrCh {
+			log.Print(err)
+		}
+	}()
 	return c.JSON(200, article)
 }
