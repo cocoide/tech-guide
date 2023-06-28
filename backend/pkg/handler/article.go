@@ -35,6 +35,18 @@ func (h *Handler) GetArticles(c echo.Context) error {
 	return c.JSON(200, articles)
 }
 
+func (h *Handler) GetArticleDetail(c echo.Context) error {
+	articleID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	articles, err := h.ar.GetArticleByID(articleID)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, articles)
+}
+
 func (h *Handler) GetRelatedArticles(c echo.Context) error {
 	originArticleID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

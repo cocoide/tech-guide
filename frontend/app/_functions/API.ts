@@ -44,7 +44,6 @@ export const api: ApiService = {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
-    console.log(body)
     const options: RequestInit = {
       method: "POST",
       headers: headers,
@@ -71,6 +70,7 @@ export const api: ApiService = {
 
 async function handleApiRequest<T>(dirURL: string, options: RequestInit, params?: Params): Promise<ApiResponse<T>> {
   const apiURL = buildApiURL(dirURL, params)
+  console.log(apiURL)
   const res = await fetch(apiURL, options);
   try {
     return {

@@ -9,6 +9,7 @@ type ArticleRepo interface {
 	Create(article *model.Article) (int, error)
 	CreateTopicToArticle(topicToArticles []model.ArticlesToTopics) error
 	GetLatestArticleByLimit(limit int) ([]*model.Article, error)
+	GetArticleByID(articleID int) (*model.Article, error)
 	GetTopicsByID(articleId int) ([]model.Topic, error)
 	GetTagsAndWeightsByArticleID(articleID int) ([]model.ArticlesToTopics, error)
 	// Limit by 50 counts
@@ -23,6 +24,16 @@ func NewArticleRepo(db *gorm.DB) ArticleRepo {
 	return &articleRepo{db: db}
 }
 
+func (r *articleRepo) GetArticleByID(articleID int) (*model.Article, error) {
+	var article model.Article
+	err := r.db.
+		Where("id = ?", articleID).
+		First(&article).Error
+	if err != nil {
+		return nil, err
+	}
+	return &article, nil
+}
 func (r *articleRepo) CreateTopicToArticle(topicToArticles []model.ArticlesToTopics) error {
 	return r.db.Create(&topicToArticles).Error
 }

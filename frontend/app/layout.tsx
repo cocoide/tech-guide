@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import CollectionDialog from './_components/layouts/CollectionDialog'
 import { Header } from './_components/layouts/Header'
 import LoginDialog from './_components/layouts/LoginDialog'
 import PostDialog from './_components/layouts/PostDialog'
@@ -24,6 +25,7 @@ export default function RootLayout({
             </div>
             {children}
           </div>
+          <CollectionDialog />
           <LoginDialog />
           <PostDialog />
         </Providers>

@@ -9,5 +9,11 @@ export const articleAPI={
     },
     async createArticle(article:MakeArticle){
        return await api.pos("/article",article)
-    }
+    },
+    async GetRelatedArticles(article_id: string){
+        return await api.get<Article[]>(`/article/related/${article_id}`)
+    },
+    async GetArticleDetail(article_id: string){
+        return await api.get<Article>(`/article/${article_id}`)
+    },
 }

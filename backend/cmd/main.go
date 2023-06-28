@@ -50,6 +50,7 @@ func main() {
 
 	e.GET("/ogp", h.GetOGP)
 	e.GET("/article", h.GetArticles)
+	e.GET("/article/:id", h.GetArticleDetail)
 	e.GET("/article/related/:id", h.GetRelatedArticles)
 	e.GET("/token", h.GenerateToken)
 	e.POST("/article", h.CreateArticle)
