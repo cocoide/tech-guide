@@ -12,7 +12,7 @@ type ArticleRepo interface {
 	GetTopicsByID(articleId int) ([]model.Topic, error)
 	GetTagsAndWeightsByArticleID(articleID int) ([]model.ArticlesToTopics, error)
 	// Limit by 50 counts
-	GetArticlesByTopicIDs(topicIDs []int, excludeArticleId int) ([]model.ArticlesToTopics, error)
+	GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([]model.ArticlesToTopics, error)
 }
 
 type articleRepo struct {
@@ -68,12 +68,12 @@ func (r *articleRepo) GetTagsAndWeightsByArticleID(articleID int) ([]model.Artic
 	return articlesToTopics, nil
 }
 
-func (r *articleRepo) GetArticlesByTopicIDs(topicIDs []int, excludeArticleId int) ([]model.ArticlesToTopics, error) {
+func (r *articleRepo) GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([]model.ArticlesToTopics, error) {
 	var articlesToTopicsArray []model.ArticlesToTopics
 	if err := r.db.
 		Preload("Article").
 		Where("topic_id IN (?)", topicIDs).
-		Not("article_id = ?", excludeArticleId).
+		Not("article_id = ?", omitArticleId).
 		Order("weight DESC").
 		Limit(50).
 		Find(&articlesToTopicsArray).Error; err != nil {

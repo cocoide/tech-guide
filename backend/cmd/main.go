@@ -33,8 +33,8 @@ func main() {
 	og := gateway.NewOGPGateway()
 	ag := gateway.NewOpenAIGateway(ctx)
 	uu := usecase.NewAccountUseCase(ur)
-	ts := service.NewTopicAnalysisService(ag, tr)
-	h := handler.NewHandler(ur, ar, cr, og, uu, ts)
+	ts := service.NewTopicAnalysisService(ag, tr, ar)
+	h := handler.NewHandler(ur, ar, cr, og, uu, ts, tr)
 
 	private := e.Group("/account", h.AuthMiddleware)
 	private.GET("/private/profile/:id", h.GetAccountProfile)

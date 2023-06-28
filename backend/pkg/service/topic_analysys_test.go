@@ -17,6 +17,7 @@ func Test_ExtractTopicIDFromArticleTitle(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	tr := repoMock.NewMockTopicRepo(ctrl)
+	ar := repoMock.NewMockArticleRepo(ctrl)
 	topics := []model.Topic{
 		{ID: 1, Name: "個人開発"},
 		{ID: 2, Name: "Marketing"},
@@ -34,7 +35,7 @@ func Test_ExtractTopicIDFromArticleTitle(t *testing.T) {
 
 	ctx := context.Background()
 	og := gateway.NewOpenAIGateway(ctx)
-	ts := service.NewTopicAnalysisService(og, tr)
+	ts := service.NewTopicAnalysisService(og, tr, ar)
 	topicWeights, err := ts.ExtractTopicsWithWeightFromArticleTitle("Tailwind CSSはCSS設計に何をもたらすか")
 	if err != nil {
 		t.Error(err)
