@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 
 	"github.com/cocoide/tech-guide/conf"
@@ -8,6 +9,7 @@ import (
 	"github.com/cocoide/tech-guide/pkg/gateway"
 	"github.com/cocoide/tech-guide/pkg/handler"
 	repo "github.com/cocoide/tech-guide/pkg/repository"
+	"github.com/cocoide/tech-guide/pkg/service"
 	"github.com/cocoide/tech-guide/pkg/usecase"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -22,12 +24,17 @@ func main() {
 		AllowCredentials: true,
 	}))
 	db := database.NewDatabase()
+	ctx := context.Background()
 	cr := repo.NewCollectionRepo(db)
 	ar := repo.NewArticleRepo(db)
 	ur := repo.NewAccountRepo(db)
+	tr := repo.NewTopicRepo(db)
+
 	og := gateway.NewOGPGateway()
+	ag := gateway.NewOpenAIGateway(ctx)
 	uu := usecase.NewAccountUseCase(ur)
-	h := handler.NewHandler(ur, ar, cr, og, uu)
+	ts := service.NewTopicAnalysisService(ag, tr)
+	h := handler.NewHandler(ur, ar, cr, og, uu, ts)
 
 	private := e.Group("/account", h.AuthMiddleware)
 	private.GET("/private/profile/:id", h.GetAccountProfile)
@@ -43,6 +50,7 @@ func main() {
 
 	e.GET("/ogp", h.GetOGP)
 	e.GET("/article", h.GetArticles)
+	e.GET("/article/related/:id", h.GetRelatedArticles)
 	e.GET("/token", h.GenerateToken)
 	e.POST("/article", h.CreateArticle)
 	e.Logger.Fatal(e.Start(":8080"))

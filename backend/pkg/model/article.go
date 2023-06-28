@@ -13,8 +13,10 @@ type Article struct {
 }
 
 type ArticlesToTopics struct {
-	ArticleID int `json:"article_id"`
-	TopicID   int `json:"topic_id"`
+	ArticleID int     `json:"article_id"`
+	Article   Article `json:"article" gorm:"foreignKey:ArticleID"`
+	TopicID   int     `json:"topic_id"`
+	Topic     Topic   `json:"topic" gorm:"foreignKey:TopicID"`
 	// 1 ~ 5 (3: default)
 	Weight    int       `json:"weight"`
 	CreatedAt time.Time `json:"created_at"`

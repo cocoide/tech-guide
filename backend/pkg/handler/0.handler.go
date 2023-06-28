@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/cocoide/tech-guide/pkg/gateway"
 	repo "github.com/cocoide/tech-guide/pkg/repository"
+	"github.com/cocoide/tech-guide/pkg/service"
 	"github.com/cocoide/tech-guide/pkg/usecase"
 )
 
@@ -12,8 +13,9 @@ type Handler struct {
 	cr repo.CollectionRepo
 	og gateway.OGPGateway
 	uu usecase.AccountUseCase
+	ts service.TopicAnalysisService
 }
 
-func NewHandler(ur repo.AccountRepo, ar repo.ArticleRepo, cr repo.CollectionRepo, og gateway.OGPGateway, uu usecase.AccountUseCase) *Handler {
-	return &Handler{ur: ur, ar: ar, cr: cr, og: og, uu: uu}
+func NewHandler(ur repo.AccountRepo, ar repo.ArticleRepo, cr repo.CollectionRepo, og gateway.OGPGateway, uu usecase.AccountUseCase, ts service.TopicAnalysisService) *Handler {
+	return &Handler{ur: ur, ar: ar, cr: cr, og: og, uu: uu, ts: ts}
 }
