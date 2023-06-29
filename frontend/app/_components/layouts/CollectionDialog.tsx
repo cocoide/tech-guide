@@ -68,7 +68,7 @@ const CollectionDialog = () => {
         <CustomDialog
             openAtom={collectionDialogAtom}
             closeFunc={() => setIsNewCollection(false)}
-            layout='my-[120px] bg-white z-50 mx-[5%] sm:mx-[15%] md:mx-[20%] lg:mx-[25%] rounded-xl'
+            layout='mt-[120px] sm:mb-[120px]  bg-white z-50 sm:mx-[15%] md:mx-[20%] lg:mx-[25%] rounded-xl'
             content={
                 <div className='flex flex-col h-full p-10 space-y-5 w-full text-slate-700'>
                     {isNewCollection ?
@@ -109,7 +109,8 @@ const CollectionDialog = () => {
                             </button>
                     )))}
                     </div>
-                            <button onClick={() => setIsNewCollection(true)} className="flex flex-row items-center space-x-2 ring-1 ring-slate-200 rounded-full mx-auto p-[3px]">
+                            <button onClick={() => setIsNewCollection(true)} className="flex flex-row items-center space-x-2 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-md justify-center
+                             w-full p-[3px]">
                                 <PlusCircleIcon className='h-7 w-7 text-cyan-300' /><div>新しいコレクションを作成</div></button>
                         </>
                     }
