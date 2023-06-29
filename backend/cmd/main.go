@@ -46,6 +46,7 @@ func main() {
 	private.GET("/collection", h.GetCollectionForBookmark)
 	e.POST("/login", h.Login)
 	e.POST("/signup", h.SignUp)
+	e.POST("/refresh", h.RefreshToken)
 	e.GET("/email", h.CheckEmail)
 
 	e.GET("/ogp", h.GetOGP)

@@ -20,31 +20,42 @@ const handler = NextAuth({
   ],
   callbacks: {
     session: async ({ session, token }) => {
-      session.token = token.token
+      if (Date.now() < token.token_expires * 1000) {
+        session.token = token.token
+      } else {
+        const { data } = await authAPI.RefreshToken(token.token)
+        if (!data?.token && !data?.token_expires) {
+          throw new Error("failed to refresh token")
+        }
+        session.token = data.token
+        session.token_expires = data.token_expires
+      }
       session.user.uid = token.uid
       return session
     },
     jwt: async ({ token, user }) => {
-        if (user) {
+      if (user) {
         const isRegisterd = await authAPI.IsEmailUsed(user.email!)
-        if (isRegisterd===false){
-          const { data, ok } = await authAPI.SignUp({ "email": user.email!, "image":user.image!, "name": user.name! })
-          if(!ok){
+        if (isRegisterd === false) {
+          const { data, ok } = await authAPI.SignUp({ "email": user.email!, "image": user.image!, "name": user.name! })
+          if (!ok || !data?.token || !data.token_expires) {
             throw new Error("failed to signup")
           }
-          token.token = data?.token!
-          token.uid = data?.uid!
+          token.token = data.token!
+          token.token_expires = data.token_expires
+          token.uid = data.uid!
           return token
-      }
-      const res = await authAPI.Login({ "email": user.email!})
-      if (res===null){
-        throw new Error("failed to login")
-      }else{
-        token.token = res?.token
-        token.uid = res.uid
-        user.name = res.name
-        user.image=res.image
-      }
+        }
+        const { ok, data } = await authAPI.Login({ "email": user.email! })
+        if (!ok || !data?.token || !data.token_expires) {
+          throw new Error("failed to login")
+        } else {
+          token.token = data?.token
+          token.token_expires = data.token_expires
+          token.uid = data.uid
+          user.name = data.name
+          user.image = data.image
+        }
       }
       return token
     },

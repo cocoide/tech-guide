@@ -1,5 +1,4 @@
 import { api } from '@/app/_functions/API'
-import { User } from 'next-auth'
 
 export type SignupRequest={
     email:string,
@@ -11,13 +10,19 @@ export type LoginRequest={
 }
 type LoginResponse={
     token:string,
+    token_expires: number
     uid: number,
     image: string,
     name: string,
 }
+
+type RefreshTokenResponse={
+    token:string,
+    token_expires: number
+}
 export const authAPI ={
     async SignUp(req: SignupRequest){
-        return await api.pos<User>("/signup",req)
+        return await api.pos<LoginResponse>("/signup",req)
     },
     async IsEmailUsed(email: string): Promise<boolean|undefined>{
         const { data: isRegisterd, ok } = await api.get<boolean>(`/email?email=${email}`,"no-store")
@@ -26,11 +31,10 @@ export const authAPI ={
         }
         return isRegisterd
     },
-    async Login(req: LoginRequest): Promise<LoginResponse|null>{
-        const { data } =await api.pos<LoginResponse>("/login",req)
-        if(!data){
-            return null
-        }
-        return data
+    async Login(req: LoginRequest){
+      return await api.pos<LoginResponse>("/login",req)
+    },
+    async RefreshToken(refresh_token: string){
+        return await api.pos<RefreshTokenResponse>("/refresh",refresh_token)
     }
 }

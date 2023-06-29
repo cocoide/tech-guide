@@ -12,12 +12,14 @@ declare module "next-auth" {
       image: string
     },
     token: string
+    token_expires: number
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
     token: string
+    token_expires: number
     uid: number
   }
 }
