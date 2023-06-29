@@ -7,7 +7,7 @@ export default async function ArticlePage({ params }: ArticleParams) {
     const { data: relatedArticles } = await articleAPI.GetRelatedArticles(article_id);
     const { data: articleDetail } = await articleAPI.GetArticleDetail(article_id);
     return (
-        <div className="flex flex-col p-5 space-y-5">
+        <div className="flex flex-col md:p-5 space-y-5">
             {articleDetail &&
                 <ArticleDetail article={articleDetail} />
             }
