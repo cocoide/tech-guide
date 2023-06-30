@@ -1,5 +1,5 @@
 "use client"
-import YouTubeEmbed from '@/app/(home)/_components/YoutubeEmbed';
+import YouTubeEmbed from '@/app/(timeline)/_components/YoutubeEmbed';
 import { Article } from '@/app/_models';
 import { collectionDialogAtom } from '@/stores/dialog';
 import { useAtom } from 'jotai';
