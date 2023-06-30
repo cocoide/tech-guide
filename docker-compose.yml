@@ -10,6 +10,7 @@ services:
       - "80:8080"
     depends_on:
       - db
+      - redis
     command: ./main
     
   dev:
@@ -22,6 +23,7 @@ services:
       - "8080:8080"
     depends_on:
       - db
+      - redis
     volumes:
       - ./backend:/app
 
@@ -44,6 +46,15 @@ services:
       - type: volume
         source: tech-guide-volume
         target: /var/lib/mysql
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+    - type: volume
+      source: tech-guide-volume
+      target: /data
 volumes:
   tech-guide-volume:
     name: tech-guide-mysql

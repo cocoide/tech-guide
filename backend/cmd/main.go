@@ -23,9 +23,11 @@ func main() {
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowCredentials: true,
 	}))
-	db := database.NewDatabase()
+
 	ctx := context.Background()
-	cr := repo.NewCollectionRepo(db)
+	db := database.NewDatabase()
+
+	or := repo.NewCollectionRepo(db)
 	ar := repo.NewArticleRepo(db)
 	ur := repo.NewAccountRepo(db)
 	tr := repo.NewTopicRepo(db)
@@ -34,7 +36,7 @@ func main() {
 	ag := gateway.NewOpenAIGateway(ctx)
 	uu := usecase.NewAccountUseCase(ur)
 	ts := service.NewTopicAnalysisService(ag, tr, ar)
-	h := handler.NewHandler(ur, ar, cr, og, uu, ts, tr)
+	h := handler.NewHandler(ur, ar, or, og, uu, ts, tr)
 
 	private := e.Group("/account", h.AuthMiddleware)
 	private.GET("/private/profile/:id", h.GetAccountProfile)
@@ -49,6 +51,7 @@ func main() {
 	e.POST("/refresh", h.RefreshToken)
 	e.GET("/email", h.CheckEmail)
 
+	e.GET("/rss", h.GetRSS)
 	e.GET("/ogp", h.GetOGP)
 	e.GET("/article", h.GetArticles)
 	e.GET("/article/:id", h.GetArticleDetail)
@@ -56,5 +59,7 @@ func main() {
 	e.GET("/token", h.GenerateToken)
 	e.POST("/article", h.CreateArticle)
 	e.POST("/topic", h.CreateTopics)
+	e.GET("/topic", h.GetTopics)
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
