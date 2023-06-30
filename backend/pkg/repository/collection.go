@@ -6,6 +6,7 @@ import (
 )
 
 type CollectionRepo interface {
+	CreateCollection(collection *model.Collection) error
 	CreateCollectionWithBookmark(collectino *model.Collection, articleId int) error
 	CreateBookmark(bookmark *model.Bookmark) error
 	GetCollectionAuthorID(collectionId int) (int, error)
@@ -20,7 +21,9 @@ func NewCollectionRepo(db *gorm.DB) CollectionRepo {
 	return &collectionRepo{db: db}
 }
 func (cr *collectionRepo) DeleteBookmark() {}
-
+func (cr *collectionRepo) CreateCollection(collection *model.Collection) error {
+	return cr.db.Create(collection).Error
+}
 func (cr *collectionRepo) CreateCollectionWithBookmark(collection *model.Collection, articleId int) error {
 	tx := cr.db.Begin()
 	if err := tx.Create(collection).Error; err != nil {

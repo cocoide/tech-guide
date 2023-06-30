@@ -45,7 +45,7 @@ func (g *OGPGateway) GetOGPByURL(url string) (*OGP, error) {
 	}
 	var thumbnail string
 	for _, image := range ogp.Images {
-		if isImageValid(image.URL) && len(image.URL) < 1000 {
+		if isImageValid(image.URL) {
 			thumbnail = image.URL
 			break
 		}

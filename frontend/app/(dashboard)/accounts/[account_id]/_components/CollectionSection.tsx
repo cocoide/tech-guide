@@ -3,7 +3,7 @@ import { Collection } from '@/app/_models'
 const CollectionSection = ({ collections }: { collections: Collection[] }) => {
     return (
         <div className="">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 place-items-center">
+            <div className="gap-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 place-items-center">
                 {collections?.map(c => (
                     <div key={c.id} className="flex flex-col space-y-3 w-[200px]">
                         {c.articles[0]?.thumbnail_url ?
