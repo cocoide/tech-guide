@@ -1,9 +1,11 @@
 package database
 
 import (
+	"context"
 	"log"
 	"os"
 
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -28,4 +30,27 @@ func NewDatabase() *gorm.DB {
 		log.Printf("%s database connected 📦", env)
 	}
 	return db
+}
+
+func NewRedisCilent(ctx context.Context) *redis.Client {
+	env := os.Getenv("APP_ENV")
+	client := &redis.Client{}
+	switch env {
+	case "pro":
+		REDIS_URL := os.Getenv("REDIS_URL")
+		option, _ := redis.ParseURL(REDIS_URL)
+		client = redis.NewClient(option)
+	case "dev":
+		client = redis.NewClient(&redis.Options{
+			Addr:     "redis:6379",
+			Password: "",
+			DB:       0,
+		})
+	}
+	_, err := client.Ping(ctx).Result()
+	if err != nil {
+		log.Fatalf("failed to connect to %s redis: %v", env, err)
+	}
+	log.Printf("%s redis client connected", env)
+	return client
 }

@@ -6,6 +6,7 @@ package mock_repository
 
 import (
 	reflect "reflect"
+	time "time"
 
 	model "github.com/cocoide/tech-guide/pkg/model"
 	gomock "github.com/golang/mock/gomock"
@@ -61,6 +62,21 @@ func (m *MockTopicRepo) GetAllTopics() ([]model.Topic, error) {
 func (mr *MockTopicRepoMockRecorder) GetAllTopics() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllTopics", reflect.TypeOf((*MockTopicRepo)(nil).GetAllTopics))
+}
+
+// GetRecentPopularArticleIDs mocks base method.
+func (m *MockTopicRepo) GetRecentPopularArticleIDs(duration time.Duration, limit int) ([]int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRecentPopularArticleIDs", duration, limit)
+	ret0, _ := ret[0].([]int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRecentPopularArticleIDs indicates an expected call of GetRecentPopularArticleIDs.
+func (mr *MockTopicRepoMockRecorder) GetRecentPopularArticleIDs(duration, limit interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRecentPopularArticleIDs", reflect.TypeOf((*MockTopicRepo)(nil).GetRecentPopularArticleIDs), duration, limit)
 }
 
 // GetTopicToArticleArrayByArticleID mocks base method.

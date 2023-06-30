@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/cocoide/tech-guide/pkg/model"
 	"gorm.io/gorm"
 )
@@ -9,6 +11,7 @@ type TopicRepo interface {
 	CreateTopics(topics []model.Topic) error
 	GetAllTopics() ([]model.Topic, error)
 	GetTopicToArticleArrayByArticleID(articleID int) ([]model.TopicsToArticles, error)
+	GetRecentPopularArticleIDs(duration time.Duration, limit int) ([]int, error)
 }
 
 type topicRepo struct {
@@ -41,4 +44,20 @@ func (r *topicRepo) GetTopicToArticleArrayByArticleID(articleID int) ([]model.To
 		return nil, err
 	}
 	return TopicsToArticlesArray, nil
+}
+
+func (r *topicRepo) GetRecentPopularArticleIDs(duration time.Duration, limit int) ([]int, error) {
+	var articleIDs []int
+	err := r.db.Model(&model.TopicsToArticles{}).
+		Select("article_id").
+		Where("created_at > ?", time.Now().Add(-duration)).
+		Group("article_id").
+		Order("COUNT(*) DESC").
+		Limit(limit).
+		Pluck("article_id", &articleIDs).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return articleIDs, nil
 }
