@@ -12,7 +12,7 @@ export default async function TopicsSettingPage() {
     });
     return (
         <div className="flex flex-col space-y-3 justify-center w-full">
-            {follow_topics ?
+            {follow_topics && follow_topics.length ?
                 <FollowTopicsSection follow_topics={follow_topics} />
                 :
                 <div className="text-slate-500">フォロー中のトピックがありません</div>
