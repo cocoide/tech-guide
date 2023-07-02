@@ -66,6 +66,7 @@ func main() {
 	e.POST("/article", h.CreateArticle)
 	e.POST("/topic", h.CreateTopics)
 	e.GET("/topic", h.GetTopics)
+	e.GET("/collection/:id", h.GetCollectionData)
 
 	private.GET("/topic/follow", h.GetFollowingTopics)
 	private.PUT("/topic/follow/:id", h.DoFollowTopic)

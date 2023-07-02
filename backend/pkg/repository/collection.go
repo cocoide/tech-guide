@@ -11,6 +11,7 @@ type CollectionRepo interface {
 	CreateBookmark(bookmark *model.Bookmark) error
 	GetCollectionAuthorID(collectionId int) (int, error)
 	GetCollectionsByAccountID(accountId int) ([]*model.Collection, error)
+	GetCollectionByID(id int) (*model.Collection, error)
 }
 
 type collectionRepo struct {
@@ -20,7 +21,18 @@ type collectionRepo struct {
 func NewCollectionRepo(db *gorm.DB) CollectionRepo {
 	return &collectionRepo{db: db}
 }
-func (cr *collectionRepo) DeleteBookmark() {}
+
+func (cr *collectionRepo) GetCollectionByID(id int) (*model.Collection, error) {
+	var collection model.Collection
+	err := cr.db.
+		Preload("Articles").
+		Where("id = ?", id).
+		First(&collection).Error
+	if err != nil {
+		return nil, err
+	}
+	return &collection, nil
+}
 func (cr *collectionRepo) CreateCollection(collection *model.Collection) error {
 	return cr.db.Create(collection).Error
 }

@@ -9,6 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
+func (h *Handler) GetCollectionData(c echo.Context) error {
+	collectionId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	collection, err := h.cr.GetCollectionByID(collectionId)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, collection)
+}
+
 func (h *Handler) GetCollectionForBookmark(c echo.Context) error {
 	accountId := int(c.Get("account_id").(float64))
 	if accountId == 0 {
