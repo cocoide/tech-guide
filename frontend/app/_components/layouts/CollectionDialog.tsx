@@ -82,11 +82,11 @@ const CollectionDialog = () => {
                             <form onSubmit={handleSubmit(handleNewCollectionSubmit)} className='flex flex-col p-5 space-y-5 h-full text-slate-500'>
                                 <div className="w-full">
                                     <div className="">コレクション名</div>
-                                    <input {...register("name", { required: true })} className='p-1 ring-1 ring-slate-200 rounded-md w-full' />
+                                    <input {...register("name", { required: true })} className='p-1 appearance-none outline outline-slate-200 rounded-md w-full' />
                                 </div>
                                 <div className="w-full">
                                     <div className="">詳細</div>
-                                    <input {...register("description")} className='p-1 ring-1 ring-slate-200 rounded-md w-full' />
+                                    <input {...register("description")} className='p-1 appearance-none outline outline-slate-200 rounded-md w-full' />
                                 </div>
                                 <p className='h-full'></p>
                                 <button type="submit" className='ring-1 ring-cyan-300 rounded-xl p-[3px] text-cyan-300'>作成完了</button>

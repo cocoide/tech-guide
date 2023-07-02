@@ -1,9 +1,9 @@
 
 interface ApiService {
   get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>>
-  del(dirURL: string, params?: Params): Promise<ApiResponse<void>>
+  del(dirURL: string,  token?: string, params?: Params): Promise<ApiResponse<void>>
   pos<U>(dirURL: string, body: any, token?: string,params?: Params): Promise<ApiResponse<U>>
-  put<U>(dirURL: string, body: U, params?: Params): Promise<ApiResponse<void>>
+  put<U>(dirURL: string, body: U,  token?: string, params?: Params): Promise<ApiResponse<void>>
 }
 
 export type ApiResponse<T> = {
@@ -51,14 +51,20 @@ export const api: ApiService = {
     }
     return handleApiRequest(dirURL, options, params)
   },
-  async del(dirURL: string, params?: Params): Promise<ApiResponse<void>> {
+  async del(dirURL: string,  token?: string,  params?: Params): Promise<ApiResponse<void>> {
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
     const options: RequestInit = {
       method: 'DELETE',
       headers: headers,
     }
     return handleApiRequest(dirURL, options, params)
   },
-  async put<U>(dirURL: string, body: U, params?: Params): Promise<ApiResponse<void>> {
+  async put<U>(dirURL: string, body: U,  token?: string, params?: Params): Promise<ApiResponse<void>> {
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
     const options: RequestInit = {
       method: 'PUT',
       headers: headers,

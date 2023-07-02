@@ -8,6 +8,9 @@ import (
 )
 
 type TopicRepo interface {
+	DoFollowTopic(accountID, topicID int) error
+	UnfollowTopic(accountID, topicID int) error
+	GetFollowingTopics(accountId int) ([]model.Topic, error)
 	CreateTopics(topics []model.Topic) error
 	GetAllTopics() ([]model.Topic, error)
 	GetTopicToArticleArrayByArticleID(articleID int) ([]model.TopicsToArticles, error)
@@ -21,6 +24,30 @@ type topicRepo struct {
 func NewTopicRepo(db *gorm.DB) TopicRepo {
 	return &topicRepo{db: db}
 }
+
+func (tr *topicRepo) DoFollowTopic(accountID, topicID int) error {
+	followTopic := model.FollowTopic{
+		AccountID: accountID,
+		TopicID:   topicID,
+	}
+	return tr.db.Create(&followTopic).Error
+}
+
+func (tr *topicRepo) UnfollowTopic(accountID, topicID int) error {
+	return tr.db.Where("account_id = ? AND topic_id = ?", accountID, topicID).
+		Delete(&model.FollowTopic{}).Error
+}
+
+func (tr *topicRepo) GetFollowingTopics(accountId int) ([]model.Topic, error) {
+	account := &model.Account{}
+	err := tr.db.Preload("FollowTopics").
+		First(account, accountId).Error
+	if err != nil {
+		return nil, err
+	}
+	return account.FollowTopics, nil
+}
+
 func (tr *topicRepo) CreateTopics(topics []model.Topic) error {
 	return tr.db.Create(topics).Error
 }

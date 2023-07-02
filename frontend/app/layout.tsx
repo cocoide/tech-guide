@@ -1,3 +1,5 @@
+import CircleLoader from '@/ui/CircleLoader'
+import { Suspense } from 'react'
 import '../styles/globals.css'
 import CollectionDialog from './_components/layouts/CollectionDialog'
 import { Header } from './_components/layouts/Header'
@@ -23,7 +25,9 @@ export default function RootLayout({
             <div className="sticky top-0 z-30">
               <Header />
             </div>
+            <Suspense fallback={<CircleLoader />}>
             {children}
+            </Suspense>
           </div>
           <CollectionDialog />
           <LoginDialog />

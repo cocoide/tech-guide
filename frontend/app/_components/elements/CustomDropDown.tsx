@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState } from 'react'
 import '../../../styles/animation.css'
@@ -13,7 +14,7 @@ interface Props {
 }
 export type Menue = {
     icon?: ReactNode
-    href?: string
+    href: string
     label: string
 }
 
@@ -41,10 +42,10 @@ export default function CustomDropDown({ header, button, menues, footer }: Props
                 ">
                     {header}
                         {menues.map(menue => (
-                            <div key={menue.label} className="flex flex-row items-center p-1 space-x-2">
+                            <Link href={menue.href} key={menue.label} className="flex flex-row items-center p-1 space-x-2">
                                 <div>{menue.icon}</div>
                                 <div> {menue.label}</div>
-                            </div>
+                            </Link>
                         ))}
                     {footer}
                     </div>

@@ -1,4 +1,6 @@
 import { api } from '@/app/_functions/API'
+import { authOptions } from '@/libs/next-auth'
+import { getServerSession } from 'next-auth'
 
 export type SignupRequest={
     email:string,
@@ -36,5 +38,17 @@ export const authAPI ={
     },
     async RefreshToken(refresh_token: string){
         return await api.pos<RefreshTokenResponse>("/refresh",refresh_token)
+    },
+    async GetAuthSession(){
+        const session = await getServerSession(authOptions)
+        return {
+            token: session?.token,
+            token_expires: session?.token_expires,
+            user: {
+                uid: session?.user?.uid,
+                name: session?.user?.name,
+                image: session?.user?.image,
+            }
+        }
     }
 }

@@ -11,6 +11,14 @@ import (
 	"github.com/labstack/echo"
 )
 
+func (h *Handler) GetRSS(c echo.Context) error {
+	result, err := util.FetchAndParseRSSData[dto.RSSFeed](c.QueryParam("url"))
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, result)
+}
+
 func (h *Handler) GetOGP(c echo.Context) error {
 	ctx := context.Background()
 	var limiter = util.NewRateLimiter(5, 10)
@@ -69,16 +77,7 @@ func (h *Handler) GetRelatedArticles(c echo.Context) error {
 	}
 	return c.JSON(200, result)
 }
-func (h *Handler) CreateTopics(c echo.Context) error {
-	topics := []model.Topic{}
-	if err := c.Bind(&topics); err != nil {
-		return c.JSON(400, err.Error())
-	}
-	if err := h.tr.CreateTopics(topics); err != nil {
-		return c.JSON(400, err.Error())
-	}
-	return c.JSON(200, "topics created")
-}
+
 func (h *Handler) CreateArticle(c echo.Context) error {
 	type REQ struct {
 		OriginalURL string `json:"original_url"`
@@ -92,9 +91,13 @@ func (h *Handler) CreateArticle(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
+	thumbnailURL := ""
+	if len(ogp.Thumbnail) < 500 {
+		thumbnailURL = ogp.Thumbnail
+	}
 	article := &model.Article{
 		Title:        ogp.Title,
-		ThumbnailURL: ogp.Thumbnail,
+		ThumbnailURL: thumbnailURL,
 		OriginalURL:  URL,
 	}
 	if _, err := h.ar.Create(article); err != nil {

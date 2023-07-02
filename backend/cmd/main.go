@@ -61,5 +61,9 @@ func main() {
 	e.POST("/topic", h.CreateTopics)
 	e.GET("/topic", h.GetTopics)
 
+	private.GET("/topic/follow", h.GetFollowingTopics)
+	private.PUT("/topic/follow/:id", h.DoFollowTopic)
+	private.DELETE("/topic/follow/:id", h.UnFollowTopic)
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
