@@ -12,9 +12,9 @@ interface Props {
 }
 const UserDropDown = ({ name, img, uid }: Props) => {
     const menues: Menue[] = [
-        { href: ``, icon: <PlusCircleIcon className='h-5 w-5 text-slate-400' />, label: "投稿する" },
-        { href: "", icon: <DocumentDuplicateIcon className='h-5 w-5 text-slate-400' />, label: "保存リスト" },
-        { href: 'settings/topics', icon: <Cog8ToothIcon className='h-5 w-5 text-slate-400' />, label: "トピック設定" },
+        { href: '/', icon: <PlusCircleIcon className='h-5 w-5 text-slate-400' />, label: "投稿する" },
+        { href: '/', icon: <DocumentDuplicateIcon className='h-5 w-5 text-slate-400' />, label: "保存リスト" },
+        { href: '/settings/topics', icon: <Cog8ToothIcon className='h-5 w-5 text-slate-400' />, label: "トピック設定" },
     ]
     return (
         <CustomDropDown
