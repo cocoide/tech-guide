@@ -29,6 +29,7 @@ func (r *articleRepo) GetArticlesByIDs(articleIDs []int) ([]model.Article, error
 	var articles []model.Article
 	err := r.db.
 		Where("id IN (?)", articleIDs).
+		Preload("Topics").
 		Find(&articles).Error
 	if err != nil {
 		return nil, err

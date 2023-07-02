@@ -16,4 +16,7 @@ export const articleAPI={
     async GetArticleDetail(article_id: string){
         return await api.get<Article>(`/article/${article_id}`)
     },
+    async GetRecommendArticles(token: string){
+        return await api.get<Article[]>('/account/article/recommend', 'no-store', token)
+    }
 }
