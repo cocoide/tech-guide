@@ -78,6 +78,21 @@ func (mr *MockArticleRepoMockRecorder) GetArticleByID(articleID interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArticleByID", reflect.TypeOf((*MockArticleRepo)(nil).GetArticleByID), articleID)
 }
 
+// GetArticlesByIDs mocks base method.
+func (m *MockArticleRepo) GetArticlesByIDs(articleIDs []int) ([]model.Article, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetArticlesByIDs", articleIDs)
+	ret0, _ := ret[0].([]model.Article)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetArticlesByIDs indicates an expected call of GetArticlesByIDs.
+func (mr *MockArticleRepoMockRecorder) GetArticlesByIDs(articleIDs interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArticlesByIDs", reflect.TypeOf((*MockArticleRepo)(nil).GetArticlesByIDs), articleIDs)
+}
+
 // GetArticlesByTopicIDs mocks base method.
 func (m *MockArticleRepo) GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([]model.TopicsToArticles, error) {
 	m.ctrl.T.Helper()

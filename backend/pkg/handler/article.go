@@ -2,14 +2,46 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"strconv"
+	"time"
 
+	"github.com/cocoide/tech-guide/key"
 	"github.com/cocoide/tech-guide/pkg/model"
 	"github.com/cocoide/tech-guide/pkg/model/dto"
 	"github.com/cocoide/tech-guide/pkg/util"
 	"github.com/labstack/echo"
 )
+
+func (h *Handler) GetRecommendArticles(c echo.Context) error {
+	accountId := int(c.Get("account_id").(float64))
+	strArticleIDs, err := h.rr.Get(fmt.Sprintf(key.PersonalizedArticleIDs, accountId))
+	var articleIDs []int
+	if len(strArticleIDs) < 1 || err != nil {
+		articleIDs, err = h.ps.GetRecommendArticleIDs(accountId)
+		if err != nil {
+			return c.JSON(400, err.Error())
+		}
+		strArticleIDs, err = util.Serialize(articleIDs)
+		if err != nil {
+			return c.JSON(400, err.Error())
+		}
+		if err := h.rr.Set(fmt.Sprintf(key.PersonalizedArticleIDs, accountId), strArticleIDs, 24*time.Hour); err != nil {
+			return c.JSON(400, err.Error())
+		}
+	} else {
+		articleIDs, err = util.Deserialize[[]int](strArticleIDs)
+		if err != nil {
+			return c.JSON(400, err.Error())
+		}
+	}
+	articles, err := h.ar.GetArticlesByIDs(articleIDs)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, articles)
+}
 
 func (h *Handler) GetRSS(c echo.Context) error {
 	result, err := util.FetchAndParseRSSData[dto.RSSFeed](c.QueryParam("url"))

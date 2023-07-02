@@ -47,6 +47,7 @@ services:
         source: tech-guide-volume
         target: /var/lib/mysql
   redis:
+    container_name: tech-guide-redis
     image: redis:latest
     restart: always
     ports:

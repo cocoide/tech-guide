@@ -2,7 +2,6 @@ package handler
 
 import (
 	"strings"
-	"time"
 
 	"github.com/cocoide/tech-guide/pkg/util"
 	"github.com/golang-jwt/jwt/v5"
@@ -26,9 +25,6 @@ func (h *Handler) AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		} else {
 			return c.JSON(403, "failed to get user data form claims")
 		}
-		// tokenのexpire timeを更新
-		expireTime := time.Now().Add(60 * time.Minute)
-		claims["exp"] = expireTime.Unix()
 		return next(c)
 	}
 }

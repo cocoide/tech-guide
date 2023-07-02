@@ -11,12 +11,14 @@ type Handler struct {
 	ur repo.AccountRepo
 	ar repo.ArticleRepo
 	cr repo.CollectionRepo
+	rr repo.CacheRepo
 	tr repo.TopicRepo
 	og gateway.OGPGateway
 	uu usecase.AccountUseCase
 	ts service.TopicAnalysisService
+	ps service.PersonalizeService
 }
 
-func NewHandler(ur repo.AccountRepo, ar repo.ArticleRepo, cr repo.CollectionRepo, og gateway.OGPGateway, uu usecase.AccountUseCase, ts service.TopicAnalysisService, tr repo.TopicRepo) *Handler {
-	return &Handler{ur: ur, ar: ar, cr: cr, og: og, uu: uu, ts: ts, tr: tr}
+func NewHandler(ur repo.AccountRepo, ar repo.ArticleRepo, cr repo.CollectionRepo, rr repo.CacheRepo, og gateway.OGPGateway, uu usecase.AccountUseCase, ts service.TopicAnalysisService, ps service.PersonalizeService, tr repo.TopicRepo) *Handler {
+	return &Handler{ur: ur, ar: ar, cr: cr, rr: rr, og: og, uu: uu, ts: ts, ps: ps, tr: tr}
 }

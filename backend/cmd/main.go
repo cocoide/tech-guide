@@ -3,12 +3,15 @@ package main
 import (
 	"context"
 	"os"
+	"time"
 
 	"github.com/cocoide/tech-guide/conf"
+	"github.com/cocoide/tech-guide/key"
 	"github.com/cocoide/tech-guide/pkg/database"
 	"github.com/cocoide/tech-guide/pkg/gateway"
 	"github.com/cocoide/tech-guide/pkg/handler"
 	repo "github.com/cocoide/tech-guide/pkg/repository"
+	"github.com/cocoide/tech-guide/pkg/scheduler"
 	"github.com/cocoide/tech-guide/pkg/service"
 	"github.com/cocoide/tech-guide/pkg/usecase"
 	"github.com/labstack/echo"
@@ -26,6 +29,8 @@ func main() {
 
 	ctx := context.Background()
 	db := database.NewDatabase()
+	rd := database.NewRedisCilent(ctx)
+	cr := repo.NewCacheRepo(rd)
 
 	or := repo.NewCollectionRepo(db)
 	ar := repo.NewArticleRepo(db)
@@ -36,7 +41,8 @@ func main() {
 	ag := gateway.NewOpenAIGateway(ctx)
 	uu := usecase.NewAccountUseCase(ur)
 	ts := service.NewTopicAnalysisService(ag, tr, ar)
-	h := handler.NewHandler(ur, ar, or, og, uu, ts, tr)
+	ps := service.NewPersonalizeService(tr, cr)
+	h := handler.NewHandler(ur, ar, or, cr, og, uu, ts, ps, tr)
 
 	private := e.Group("/account", h.AuthMiddleware)
 	private.GET("/private/profile/:id", h.GetAccountProfile)
@@ -65,5 +71,16 @@ func main() {
 	private.PUT("/topic/follow/:id", h.DoFollowTopic)
 	private.DELETE("/topic/follow/:id", h.UnFollowTopic)
 
+	private.GET("/article/recommend", h.GetRecommendArticles)
+
+	sp := scheduler.NewSchedulerPool()
+	tw := scheduler.NewTimelineWorker(ur, cr, tr, ps)
+	go func() {
+		sp.AddScheduler(key.TrendingArticlesWorker, 1*time.Hour, tw.CacheTredingArticlesWorker)
+		sp.AddScheduler(key.PersonalizedArticlesWorker, 1*time.Hour, tw.CachePersonalizedArticlesWorker)
+		sp.StartScheduler(key.TrendingArticlesWorker)
+		time.Sleep(60 * time.Second)
+		sp.StartScheduler(key.PersonalizedArticlesWorker)
+	}()
 	e.Logger.Fatal(e.Start(":8080"))
 }

@@ -8,6 +8,7 @@ import (
 )
 
 type AccountRepo interface {
+	GetAllAccountIDs() ([]int, error)
 	Create(account *model.Account) (*model.Account, error)
 	CheckExistByEmail(email string) (bool, error)
 	GetByEmail(email string) (*model.Account, error)
@@ -20,6 +21,14 @@ type accountRepo struct {
 
 func NewAccountRepo(db *gorm.DB) AccountRepo {
 	return &accountRepo{db: db}
+}
+
+func (ar *accountRepo) GetAllAccountIDs() ([]int, error) {
+	var accountIDs []int
+	if err := ar.db.Model(&model.Account{}).Pluck("id", &accountIDs).Error; err != nil {
+		return nil, err
+	}
+	return accountIDs, nil
 }
 
 func (ar *accountRepo) GetAccountProfile(id int) (*model.Account, error) {

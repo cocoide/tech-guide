@@ -10,10 +10,12 @@ import (
 type TopicRepo interface {
 	DoFollowTopic(accountID, topicID int) error
 	UnfollowTopic(accountID, topicID int) error
+	GetFollowingTopicIDs(accountID int) ([]int, error)
 	GetFollowingTopics(accountId int) ([]model.Topic, error)
 	CreateTopics(topics []model.Topic) error
 	GetAllTopics() ([]model.Topic, error)
 	GetTopicToArticleArrayByArticleID(articleID int) ([]model.TopicsToArticles, error)
+	GetTopicToArticleArrayByArticleIDs(articleIDs []int) ([]model.TopicsToArticles, error)
 	GetRecentPopularArticleIDs(duration time.Duration, limit int) ([]int, error)
 }
 
@@ -23,6 +25,20 @@ type topicRepo struct {
 
 func NewTopicRepo(db *gorm.DB) TopicRepo {
 	return &topicRepo{db: db}
+}
+
+func (tr *topicRepo) GetFollowingTopicIDs(accountID int) ([]int, error) {
+	var topicIDs []int
+	err := tr.db.Model(&model.FollowTopic{}).
+		Where("account_id = ?", accountID).
+		Pluck("topic_id", &topicIDs).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return topicIDs, nil
 }
 
 func (tr *topicRepo) DoFollowTopic(accountID, topicID int) error {
@@ -66,6 +82,17 @@ func (r *topicRepo) GetTopicToArticleArrayByArticleID(articleID int) ([]model.To
 	if err := r.db.
 		Select("article_id, topic_id, weight").
 		Where("article_id = ?", articleID).
+		Order("weight DESC").
+		Find(&TopicsToArticlesArray).Error; err != nil {
+		return nil, err
+	}
+	return TopicsToArticlesArray, nil
+}
+func (r *topicRepo) GetTopicToArticleArrayByArticleIDs(articleIDs []int) ([]model.TopicsToArticles, error) {
+	var TopicsToArticlesArray []model.TopicsToArticles
+	if err := r.db.
+		Select("article_id, topic_id, weight").
+		Where("article_id IN (?)", articleIDs).
 		Order("weight DESC").
 		Find(&TopicsToArticlesArray).Error; err != nil {
 		return nil, err

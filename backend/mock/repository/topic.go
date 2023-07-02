@@ -49,6 +49,20 @@ func (mr *MockTopicRepoMockRecorder) CreateTopics(topics interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTopics", reflect.TypeOf((*MockTopicRepo)(nil).CreateTopics), topics)
 }
 
+// DoFollowTopic mocks base method.
+func (m *MockTopicRepo) DoFollowTopic(accountID, topicID int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DoFollowTopic", accountID, topicID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DoFollowTopic indicates an expected call of DoFollowTopic.
+func (mr *MockTopicRepoMockRecorder) DoFollowTopic(accountID, topicID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoFollowTopic", reflect.TypeOf((*MockTopicRepo)(nil).DoFollowTopic), accountID, topicID)
+}
+
 // GetAllTopics mocks base method.
 func (m *MockTopicRepo) GetAllTopics() ([]model.Topic, error) {
 	m.ctrl.T.Helper()
@@ -62,6 +76,36 @@ func (m *MockTopicRepo) GetAllTopics() ([]model.Topic, error) {
 func (mr *MockTopicRepoMockRecorder) GetAllTopics() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllTopics", reflect.TypeOf((*MockTopicRepo)(nil).GetAllTopics))
+}
+
+// GetFollowingTopicIDs mocks base method.
+func (m *MockTopicRepo) GetFollowingTopicIDs(accountID int) ([]int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFollowingTopicIDs", accountID)
+	ret0, _ := ret[0].([]int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFollowingTopicIDs indicates an expected call of GetFollowingTopicIDs.
+func (mr *MockTopicRepoMockRecorder) GetFollowingTopicIDs(accountID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFollowingTopicIDs", reflect.TypeOf((*MockTopicRepo)(nil).GetFollowingTopicIDs), accountID)
+}
+
+// GetFollowingTopics mocks base method.
+func (m *MockTopicRepo) GetFollowingTopics(accountId int) ([]model.Topic, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFollowingTopics", accountId)
+	ret0, _ := ret[0].([]model.Topic)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFollowingTopics indicates an expected call of GetFollowingTopics.
+func (mr *MockTopicRepoMockRecorder) GetFollowingTopics(accountId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFollowingTopics", reflect.TypeOf((*MockTopicRepo)(nil).GetFollowingTopics), accountId)
 }
 
 // GetRecentPopularArticleIDs mocks base method.
@@ -92,4 +136,33 @@ func (m *MockTopicRepo) GetTopicToArticleArrayByArticleID(articleID int) ([]mode
 func (mr *MockTopicRepoMockRecorder) GetTopicToArticleArrayByArticleID(articleID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopicToArticleArrayByArticleID", reflect.TypeOf((*MockTopicRepo)(nil).GetTopicToArticleArrayByArticleID), articleID)
+}
+
+// GetTopicToArticleArrayByArticleIDs mocks base method.
+func (m *MockTopicRepo) GetTopicToArticleArrayByArticleIDs(articleIDs []int) ([]model.TopicsToArticles, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTopicToArticleArrayByArticleIDs", articleIDs)
+	ret0, _ := ret[0].([]model.TopicsToArticles)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTopicToArticleArrayByArticleIDs indicates an expected call of GetTopicToArticleArrayByArticleIDs.
+func (mr *MockTopicRepoMockRecorder) GetTopicToArticleArrayByArticleIDs(articleIDs interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopicToArticleArrayByArticleIDs", reflect.TypeOf((*MockTopicRepo)(nil).GetTopicToArticleArrayByArticleIDs), articleIDs)
+}
+
+// UnfollowTopic mocks base method.
+func (m *MockTopicRepo) UnfollowTopic(accountID, topicID int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UnfollowTopic", accountID, topicID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UnfollowTopic indicates an expected call of UnfollowTopic.
+func (mr *MockTopicRepoMockRecorder) UnfollowTopic(accountID, topicID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnfollowTopic", reflect.TypeOf((*MockTopicRepo)(nil).UnfollowTopic), accountID, topicID)
 }
