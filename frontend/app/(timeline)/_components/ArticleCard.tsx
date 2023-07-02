@@ -1,18 +1,28 @@
 'use client'
 
 import { Article } from '@/app/_models'
-import { collectionDialogAtom } from '@/stores/dialog'
+import { useAuth } from '@/hooks/useAuth'
+import { collectionDialogAtom, loginDialogAtom } from '@/stores/dialog'
 import { ArrowTopRightOnSquareIcon, FolderPlusIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Link from 'next/link'
-
 
 interface Props {
     article: Article
     origin?: string
 }
 const ArticleCard = ({ article, origin }: Props) => {
+    const { status } = useAuth()
+    function handleCollectionDialog() {
+        if (status === "authenticated") {
+            setOpenCollectionDialog(article.id)
+        }
+        if (status === "unauthenticated") {
+            setOpenLoginDialog(true)
+        }
+    }
     const [_, setOpenCollectionDialog] = useAtom(collectionDialogAtom)
+    const [__, setOpenLoginDialog] = useAtom(loginDialogAtom)
     const queryParam = origin ? `?exclude=${origin}` : ''
     return (
         <div className='p-3'>
@@ -31,7 +41,7 @@ const ArticleCard = ({ article, origin }: Props) => {
                 </Link>
                 <div className='flex flex-row justify-between'>
                     <div className='flex flex-row space-x-3'>
-                        <button onClick={() => setOpenCollectionDialog(article.id)}>
+                        <button onClick={handleCollectionDialog}>
                             <FolderPlusIcon className='text-gray-500 h-5 w-5' />
                         </button>
                     </div>

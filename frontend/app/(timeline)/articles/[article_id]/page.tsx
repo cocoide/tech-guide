@@ -11,6 +11,7 @@ export default async function ArticlePage({ params, searchParams }: Props) {
     const { data: relatedArticles } = await articleAPI.GetRelatedArticles(article_id);
     const selectedRelatedArticles = relatedArticles?.filter(article => article.id !== exclude);
     const { data: articleDetail } = await articleAPI.GetArticleDetail(article_id);
+
     return (
         <div className="flex flex-col md:p-5 space-y-5">
             {articleDetail &&
