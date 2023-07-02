@@ -40,6 +40,7 @@ func (r *articleRepo) GetArticleByID(articleID int) (*model.Article, error) {
 	var article model.Article
 	err := r.db.
 		Where("id = ?", articleID).
+		Preload("Topics").
 		First(&article).Error
 	if err != nil {
 		return nil, err
