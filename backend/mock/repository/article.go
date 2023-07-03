@@ -34,6 +34,36 @@ func (m *MockArticleRepo) EXPECT() *MockArticleRepoMockRecorder {
 	return m.recorder
 }
 
+// BatchCreate mocks base method.
+func (m *MockArticleRepo) BatchCreate(articles []*model.Article) ([]int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BatchCreate", articles)
+	ret0, _ := ret[0].([]int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BatchCreate indicates an expected call of BatchCreate.
+func (mr *MockArticleRepoMockRecorder) BatchCreate(articles interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchCreate", reflect.TypeOf((*MockArticleRepo)(nil).BatchCreate), articles)
+}
+
+// CheckArticleExistsByURL mocks base method.
+func (m *MockArticleRepo) CheckArticleExistsByURL(url string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckArticleExistsByURL", url)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CheckArticleExistsByURL indicates an expected call of CheckArticleExistsByURL.
+func (mr *MockArticleRepoMockRecorder) CheckArticleExistsByURL(url interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckArticleExistsByURL", reflect.TypeOf((*MockArticleRepo)(nil).CheckArticleExistsByURL), url)
+}
+
 // Create mocks base method.
 func (m *MockArticleRepo) Create(article *model.Article) (int, error) {
 	m.ctrl.T.Helper()

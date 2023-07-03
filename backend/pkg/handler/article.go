@@ -44,7 +44,7 @@ func (h *Handler) GetRecommendArticles(c echo.Context) error {
 }
 
 func (h *Handler) GetRSS(c echo.Context) error {
-	result, err := util.FetchAndParseRSSData[dto.RSSFeed](c.QueryParam("url"))
+	result, err := util.FetchXML[dto.RSSFeed](c.QueryParam("url"), 5*time.Second)
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
@@ -59,6 +59,9 @@ func (h *Handler) GetOGP(c echo.Context) error {
 		ogp, err := h.og.GetOGPByURL(URL)
 		if err != nil {
 			return c.JSON(400, err.Error())
+		}
+		if len(ogp.Thumbnail) > 500 {
+			ogp.Thumbnail = ""
 		}
 		return c.JSON(200, ogp)
 	}); err != nil {

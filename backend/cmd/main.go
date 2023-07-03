@@ -38,11 +38,12 @@ func main() {
 	tr := repo.NewTopicRepo(db)
 
 	og := gateway.NewOGPGateway()
+	tg := gateway.NewTechFeedGateway()
 	ag := gateway.NewOpenAIGateway(ctx)
 	uu := usecase.NewAccountUseCase(ur)
 	ts := service.NewTopicAnalysisService(ag, tr, ar)
 	ps := service.NewPersonalizeService(tr, cr)
-	h := handler.NewHandler(ur, ar, or, cr, og, uu, ts, ps, tr)
+	h := handler.NewHandler(ur, ar, or, cr, og, uu, ts, ps, tr, tg)
 
 	private := e.Group("/account", h.AuthMiddleware)
 	private.GET("/private/profile/:id", h.GetAccountProfile)
@@ -74,14 +75,20 @@ func main() {
 
 	private.GET("/article/recommend", h.GetRecommendArticles)
 
+	e.GET("/trend/qiita", h.GetQiitaTrend)
+	e.GET("/trend/zenn", h.GetZennTrend)
+
 	sp := scheduler.NewSchedulerPool()
-	tw := scheduler.NewTimelineWorker(ur, cr, tr, ps)
+	tw := scheduler.NewTimelineWorker(ur, ar, cr, tr, ps, tg)
 	go func() {
-		sp.AddScheduler(key.TrendingArticlesWorker, 1*time.Hour, tw.CacheTredingArticlesWorker)
-		sp.AddScheduler(key.PersonalizedArticlesWorker, 1*time.Hour, tw.CachePersonalizedArticlesWorker)
+		sp.AddScheduler(key.TrendingArticlesWorker, 24*time.Hour, tw.CacheTredingArticlesWorker)
+		sp.AddScheduler(key.PersonalizedArticlesWorker, 24*time.Hour, tw.CachePersonalizedArticlesWorker)
+		sp.AddScheduler(key.QiitaTrendsWorker, 24*time.Hour, tw.RegisterQiitaTendsWorker)
 		sp.StartScheduler(key.TrendingArticlesWorker)
 		time.Sleep(60 * time.Second)
 		sp.StartScheduler(key.PersonalizedArticlesWorker)
+		time.Sleep(60 * time.Second)
+		sp.StartScheduler(key.QiitaTrendsWorker)
 	}()
 	e.Logger.Fatal(e.Start(":8080"))
 }

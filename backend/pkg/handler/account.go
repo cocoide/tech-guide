@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"strconv"
 	"time"
 
@@ -66,7 +65,6 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 		Token        string `json:"token"`
 		TokenExpires int64
 	}
-	log.Print(newToken)
 	return c.JSON(200, &response{
 		Token:        newToken,
 		TokenExpires: time.Now().Add(1 * time.Hour).Unix(),
@@ -91,6 +89,13 @@ func (h *Handler) SignUp(c echo.Context) error {
 	}
 	account, err := h.uu.SignUp(account)
 	if err != nil {
+		return c.JSON(403, err.Error())
+	}
+	if err := h.cr.CreateCollection(&model.Collection{
+		AccountID:  account.ID,
+		Name:       "後で読む",
+		Visibility: 0,
+	}); err != nil {
 		return c.JSON(403, err.Error())
 	}
 	token, err := util.GenerateToken(account.ID)

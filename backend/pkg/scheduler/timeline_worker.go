@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/cocoide/tech-guide/key"
+	"github.com/cocoide/tech-guide/pkg/gateway"
+	"github.com/cocoide/tech-guide/pkg/model"
 	repo "github.com/cocoide/tech-guide/pkg/repository"
 	"github.com/cocoide/tech-guide/pkg/service"
 	"github.com/cocoide/tech-guide/pkg/util"
@@ -16,21 +18,68 @@ import (
 type TimelineWorker interface {
 	CacheTredingArticlesWorker()
 	CachePersonalizedArticlesWorker()
+	RegisterQiitaTendsWorker()
 }
 
 type timelineWorker struct {
-	ar repo.AccountRepo
+	ur repo.AccountRepo
+	ar repo.ArticleRepo
 	cr repo.CacheRepo
 	tr repo.TopicRepo
+	tg gateway.TechFeedGateway
 	ps service.PersonalizeService
 }
 
-func NewTimelineWorker(ar repo.AccountRepo, cr repo.CacheRepo, tr repo.TopicRepo, ps service.PersonalizeService) TimelineWorker {
-	return &timelineWorker{ar: ar, cr: cr, tr: tr, ps: ps}
+func NewTimelineWorker(ur repo.AccountRepo, ar repo.ArticleRepo, cr repo.CacheRepo, tr repo.TopicRepo, ps service.PersonalizeService, tg gateway.TechFeedGateway) TimelineWorker {
+	return &timelineWorker{ur: ur, ar: ar, cr: cr, tr: tr, ps: ps, tg: tg}
+}
+
+func (w *timelineWorker) RegisterQiitaTendsWorker() {
+	oneWeekAgo := time.Now().AddDate(0, 0, -7)
+	oneWeekAgoString := oneWeekAgo.Format("2006-01-02")
+	bookmarkThreshold := 50
+	trends, err := w.tg.GetQiitaTrendFeed(5, bookmarkThreshold, oneWeekAgoString)
+	if err != nil {
+		log.Panicln(err)
+	}
+	var articles []*model.Article
+	for _, v := range trends {
+		exists, err := w.ar.CheckArticleExistsByURL(v.URL)
+		if err != nil {
+			log.Println(err)
+		}
+		if !exists {
+			articles = append(articles,
+				&model.Article{Title: v.Title, OriginalURL: v.URL})
+		}
+	}
+	createdIDs, err := w.ar.BatchCreate(articles)
+	strArticleIDs, err := w.cr.Get(key.PopularArticleIDs)
+	if err != nil {
+		log.Panicln(err)
+	}
+	articleIDs, err := util.Deserialize[[]int](strArticleIDs)
+	if err != nil {
+		log.Panicln(err)
+	}
+	existingIDSet := make(map[int]struct{})
+	for _, existingID := range articleIDs {
+		existingIDSet[existingID] = struct{}{}
+	}
+	var uniqueIDs []int
+	for _, createdID := range createdIDs {
+		if _, ok := existingIDSet[createdID]; !ok {
+			uniqueIDs = append(uniqueIDs, createdID)
+		}
+	}
+	strUniqueIDs, err := util.Serialize(uniqueIDs)
+	if err := w.cr.Set(key.PopularArticleIDs, strUniqueIDs, 24*time.Hour); err != nil {
+		log.Println(err)
+	}
 }
 
 func (w *timelineWorker) CachePersonalizedArticlesWorker() {
-	accountIDs, err := w.ar.GetAllAccountIDs()
+	accountIDs, err := w.ur.GetAllAccountIDs()
 	if err != nil {
 		log.Println(err)
 		return

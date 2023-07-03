@@ -7,6 +7,8 @@ import (
 
 type ArticleRepo interface {
 	Create(article *model.Article) (int, error)
+	CheckArticleExistsByURL(url string) (bool, error)
+	BatchCreate(articles []*model.Article) ([]int, error)
 	CreateTopicToArticle(topicToArticles []model.TopicsToArticles) error
 	GetLatestArticleByLimit(limit int) ([]*model.Article, error)
 	GetArticlesByIDs(articleIDs []int) ([]model.Article, error)
@@ -23,6 +25,15 @@ type articleRepo struct {
 
 func NewArticleRepo(db *gorm.DB) ArticleRepo {
 	return &articleRepo{db: db}
+}
+
+func (r *articleRepo) CheckArticleExistsByURL(url string) (bool, error) {
+	var count int64
+	err := r.db.Model(&model.Article{}).Where("original_url = ?", url).Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 func (r *articleRepo) GetArticlesByIDs(articleIDs []int) ([]model.Article, error) {
@@ -57,6 +68,16 @@ func (r *articleRepo) Create(article *model.Article) (int, error) {
 		return 0, err
 	}
 	return article.ID, nil
+}
+func (r *articleRepo) BatchCreate(articles []*model.Article) ([]int, error) {
+	if err := r.db.Create(articles).Error; err != nil {
+		return nil, err
+	}
+	var result []int
+	for _, v := range articles {
+		result = append(result, v.ID)
+	}
+	return result, nil
 }
 
 func (r *articleRepo) GetLatestArticleByLimit(limit int) ([]*model.Article, error) {
