@@ -8,10 +8,10 @@ export default function Providers({ children }: { children: ReactNode }) {
     return (
         <>
             <Provider>
-            <SessionProvider>
-                <Toaster />
-                {children}
-            </SessionProvider>
+                <SessionProvider>
+                    <Toaster />
+                    {children}
+                </SessionProvider>
             </Provider>
         </>
     )

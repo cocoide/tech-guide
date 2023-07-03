@@ -5,7 +5,7 @@ import CollectionDialog from './_components/layouts/CollectionDialog'
 import { Header } from './_components/layouts/Header'
 import LoginDialog from './_components/layouts/LoginDialog'
 import PostDialog from './_components/layouts/PostDialog'
-import Providers from './_providers'
+import Providers from './_components/providers'
 
 export const metadata = {
   title: 'Tech Guide',
