@@ -1,6 +1,6 @@
 'use client'
-import { Topic } from '@/app/_models';
 import { useAuth } from '@/hooks/useAuth';
+import { Topic } from '@/types/model';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';

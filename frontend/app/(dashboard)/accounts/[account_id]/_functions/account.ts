@@ -1,5 +1,5 @@
 import { api } from '@/app/_functions/API';
-import { Account } from '@/app/_models';
+import { Account } from '@/types/model';
 
 export type GetPublicProfile =Pick<Account,'avatar_url'|'display_name'>
 

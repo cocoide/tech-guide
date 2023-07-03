@@ -1,8 +1,8 @@
 "use client"
 import YouTubeEmbed from '@/app/(timeline)/_components/YoutubeEmbed';
-import { Article } from '@/app/_models';
 import { useAuth } from '@/hooks/useAuth';
 import { collectionDialogAtom, loginDialogAtom } from '@/stores/dialog';
+import { Article } from '@/types/model';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 

@@ -1,5 +1,5 @@
 import { api } from '@/app/_functions/API';
-import { Article } from '@/app/_models';
+import { Article } from '@/types/model';
 import { MakeArticle } from '../type';
 
 export const articleAPI={

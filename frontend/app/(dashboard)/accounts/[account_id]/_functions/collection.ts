@@ -1,6 +1,6 @@
 import { NewCollectionRequest } from '@/app/_components/layouts/CollectionDialog'
 import { api } from '@/app/_functions/API'
-import { Collection } from '@/app/_models'
+import { Collection } from '@/types/model'
 
 export const collectionAPI={
     async getCollections(accountId: number){

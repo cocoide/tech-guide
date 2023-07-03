@@ -1,8 +1,8 @@
 'use client'
 
-import { Article } from '@/app/_models'
 import { useAuth } from '@/hooks/useAuth'
 import { collectionDialogAtom, loginDialogAtom } from '@/stores/dialog'
+import { Article } from '@/types/model'
 import { ArrowTopRightOnSquareIcon, FolderPlusIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Link from 'next/link'

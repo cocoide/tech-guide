@@ -1,5 +1,5 @@
 import { api } from '@/app/_functions/API'
-import { Topic } from '@/app/_models'
+import { Topic } from '@/types/model'
 
 export const topicAPI ={
     async GetFollowingTopics(token?: string){

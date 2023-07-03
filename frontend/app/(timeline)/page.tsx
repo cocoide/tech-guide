@@ -1,8 +1,9 @@
-import { Article } from '@/app/_models';
+import { Article } from '@/types/model';
 import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import { authAPI } from '../_functions/auth';
 import ArticleCard from './_components/ArticleCard';
 import { articleAPI } from './_functions/article';
+
 export default async function ArticlePage() {
     const { token } = await authAPI.GetAuthSession()
     const articles = await articleAPI.getLatestArticles()

@@ -1,5 +1,5 @@
 import ArticleCard from '@/app/(timeline)/_components/ArticleCard'
-import { Article } from '@/app/_models'
+import { Article } from '@/types/model'
 
 interface Props {
     articles: Article[]

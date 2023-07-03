@@ -1,4 +1,4 @@
-import { Collection } from '@/app/_models'
+import { Collection } from '@/types/model'
 import Link from 'next/link'
 
 const CollectionSection = ({ collections }: { collections: Collection[] }) => {
