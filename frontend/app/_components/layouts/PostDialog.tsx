@@ -17,7 +17,7 @@ const PostDialog = () => {
     const [url, setUrl] = useState('')
     const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null)
     const [isFetching, setIsFetching] = useState(false)
-    const { user } = useAuth()
+    const { user, token } = useAuth()
 
     const [comment, setComment] = useState("")
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -27,7 +27,7 @@ const PostDialog = () => {
     }
     async function handleSubmitPost(url: string, comment: string) {
         if (ogp) {
-            const { ok } = await api.pos("/comment", { "original_url": url, "comment": comment })
+            const { ok } = await api.pos("/account/comment", { "original_url": url, "comment": comment }, token)
             if (!ok) {
                 toast.error("エラーが発生")
             } else {
