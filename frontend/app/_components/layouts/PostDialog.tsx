@@ -1,9 +1,12 @@
 'use client'
 import { api } from '@/app/_functions/API'
+import { useAuth } from '@/hooks/useAuth'
+import useAutosizeTextArea from '@/hooks/useAutosizeTextArea'
 import { postDialogAtom } from '@/stores/dialog'
-import { DocumentTextIcon } from '@heroicons/react/24/outline'
+import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
-import { useEffect, useState } from 'react'
+import Image from 'next/image'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import CircleLoading from '../animations/CircleLoading'
 import CustomDialog from '../elements/CustomDialog'
@@ -14,9 +17,17 @@ const PostDialog = () => {
     const [url, setUrl] = useState('')
     const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null)
     const [isFetching, setIsFetching] = useState(false)
-    async function SubmitArticle(url: string) {
+    const { user } = useAuth()
+
+    const [comment, setComment] = useState("")
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    useAutosizeTextArea(textAreaRef.current, comment);
+    function handleCommentChange(e: ChangeEvent<HTMLTextAreaElement>) {
+        setComment(e.target.value)
+    }
+    async function handleSubmitPost(url: string, comment: string) {
         if (ogp) {
-            const { ok } = await api.pos("/article", { "original_url": url })
+            const { ok } = await api.pos("/comment", { "original_url": url, "comment": comment })
             if (!ok) {
                 toast.error("エラーが発生")
             } else {
@@ -63,13 +74,16 @@ const PostDialog = () => {
         <CustomDialog
             closeFunc={() => setUrl("")}
             openAtom={postDialogAtom}
-            layout='rounded-xl sm:mx-[15%] sm:my-20 md:mx-[20%] lg:mx-[30%] md:my-[100px] mt-[150px]'
+            layout='overflow-y-auto  rounded-xl sm:mx-[10%] sm:my-20 md:mx-[15%] lg:mx-[30%] md:my-[100px] mt-[150px]'
             content={
-                <div className="h-full w-full py-10 px-12 flex flex-col justify-between">
-                    <div className="flex flex-col space-y-5 text-gray-600">
-                        <div className="text-center flex items-center space-x-3 justify-center">
-                            <DocumentTextIcon className='h-5 w-5' />
-                            <div className=""> 投稿する</div>
+                <div className="h-full w-full p-10 flex flex-col justify-between">
+                    <div className="flex flex-col space-y-7 text-gray-600">
+                        <div className="flex flex-row items-center justify-between">
+                            <button className='flex flex-row items-center' onClick={() => setDialogOpen(false)}>
+                                <XMarkIcon className='h-5 w-5 text-slate-600' />
+                            </button>
+                            <button onClick={async () => await handleSubmitPost(url, comment)} className=" bg-cyan-300 bg-primary rounded-xl shadow-sm p-2 text-bold text-white flex items-center"
+                            ><PlusCircleIcon className="mr-1 h-5 w-5 text-white" />投稿する</button>
                         </div>
                         <input
                             onChange={handleInputChange}
@@ -90,10 +104,14 @@ const PostDialog = () => {
                         <img src={ogp?.thumbnail} alt={ogp?.thumbnail}
                             className='rounded-md  h-[150px] mx-auto' />
                     }
-                    <button disabled={isFetching} onClick={async () => await SubmitArticle(url)}
-                        className='text-cyan-300 ring-1 ring-cyan-400  p-[5px] rounded-md flex items-center 
-                        justify-center space-x-2'
-                    >投稿完了</button>
+                    <div className="flex items-start w-[100%] space-x-3 pt-8">
+                        <Image src={user?.image as string} width={70} height={70} alt={user?.name as string} className="h-[50px] w-[50px] rounded-full bg-shadow" />
+                        <div className="flex flex-col w-[100%] justify-center items-center">
+                            <textarea ref={textAreaRef} onChange={handleCommentChange} value={comment} rows={1}
+                                className="w-[100%] min-h-auto   focus:ring-transparent ring-none border-none resize-none min-h-15" placeholder="コメントを入力"></textarea>
+                            <div className="border w-full border-shadow mb-5"></div>
+                        </div>
+                    </div>
                 </div>
             } />
     )

@@ -31,11 +31,13 @@ func main() {
 	db := database.NewDatabase()
 	rd := database.NewRedisCilent(ctx)
 	cr := repo.NewCacheRepo(rd)
+	tx := repo.NewTxRepo(db)
 
 	or := repo.NewCollectionRepo(db)
 	ar := repo.NewArticleRepo(db)
 	ur := repo.NewAccountRepo(db)
 	tr := repo.NewTopicRepo(db)
+	mr := repo.NewCommentRepo(db)
 
 	og := gateway.NewOGPGateway()
 	tg := gateway.NewTechFeedGateway()
@@ -43,13 +45,14 @@ func main() {
 	uu := usecase.NewAccountUseCase(ur)
 	ts := service.NewTopicAnalysisService(ag, tr, ar)
 	ps := service.NewPersonalizeService(tr, cr)
-	h := handler.NewHandler(ur, ar, or, cr, og, uu, ts, ps, tr, tg)
+	h := handler.NewHandler(tx, ur, ar, mr, or, cr, og, uu, ts, ps, tr, tg)
 
 	private := e.Group("/account", h.AuthMiddleware)
 	private.GET("/private/profile/:id", h.GetAccountProfile)
 	e.GET("account/profile/:id", h.GetAccountProfile)
 	e.GET("account/collection/:id", h.GetCollections)
 
+	private.POST("/comment", h.CreateComment)
 	private.POST("/bookmark", h.DoBookmark)
 	private.POST("/collection", h.CreateCollection)
 	private.GET("/collection", h.GetCollectionForBookmark)

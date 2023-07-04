@@ -7,6 +7,7 @@ import (
 
 type ArticleRepo interface {
 	Create(article *model.Article) (int, error)
+	GetArticleIDByURL(url string) (int, error)
 	CheckArticleExistsByURL(url string) (bool, error)
 	BatchCreate(articles []*model.Article) ([]int, error)
 	CreateTopicToArticle(topicToArticles []model.TopicsToArticles) error
@@ -25,6 +26,15 @@ type articleRepo struct {
 
 func NewArticleRepo(db *gorm.DB) ArticleRepo {
 	return &articleRepo{db: db}
+}
+
+func (r *articleRepo) GetArticleIDByURL(url string) (int, error) {
+	var id int
+	err := r.db.Model(&model.Article{}).Where("original_url = ?", url).Pluck("id", &id).Error
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
 
 func (r *articleRepo) CheckArticleExistsByURL(url string) (bool, error) {

@@ -8,8 +8,10 @@ import (
 )
 
 type Handler struct {
+	tx repo.TxRepo
 	ur repo.AccountRepo
 	ar repo.ArticleRepo
+	mr repo.CommentRepo
 	cr repo.CollectionRepo
 	rr repo.CacheRepo
 	tr repo.TopicRepo
@@ -20,6 +22,6 @@ type Handler struct {
 	ps service.PersonalizeService
 }
 
-func NewHandler(ur repo.AccountRepo, ar repo.ArticleRepo, cr repo.CollectionRepo, rr repo.CacheRepo, og gateway.OGPGateway, uu usecase.AccountUseCase, ts service.TopicAnalysisService, ps service.PersonalizeService, tr repo.TopicRepo, tg gateway.TechFeedGateway) *Handler {
-	return &Handler{ur: ur, ar: ar, cr: cr, rr: rr, og: og, uu: uu, ts: ts, ps: ps, tr: tr, tg: tg}
+func NewHandler(tx repo.TxRepo, ur repo.AccountRepo, ar repo.ArticleRepo, mr repo.CommentRepo, cr repo.CollectionRepo, rr repo.CacheRepo, og gateway.OGPGateway, uu usecase.AccountUseCase, ts service.TopicAnalysisService, ps service.PersonalizeService, tr repo.TopicRepo, tg gateway.TechFeedGateway) *Handler {
+	return &Handler{tx: tx, ur: ur, ar: ar, mr: mr, cr: cr, rr: rr, og: og, uu: uu, ts: ts, ps: ps, tr: tr, tg: tg}
 }
