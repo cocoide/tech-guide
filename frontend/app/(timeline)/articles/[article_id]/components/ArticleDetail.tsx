@@ -1,10 +1,12 @@
 "use client"
 import YouTubeEmbed from '@/app/(timeline)/_components/YoutubeEmbed';
+import { articleAPI } from '@/app/(timeline)/_functions/article';
 import { useAuth } from '@/hooks/useAuth';
 import { collectionDialogAtom, loginDialogAtom } from '@/stores/dialog';
 import { Article } from '@/types/model';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
+import { toast } from 'react-hot-toast';
 
 export default function ArticleDetail({ article }: { article: Article }) {
     const [_, setOpenCollectionDialog] = useAtom(collectionDialogAtom)
@@ -13,13 +15,21 @@ export default function ArticleDetail({ article }: { article: Article }) {
         const match = url.match(/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:\S*?&)?v=|(?:embed|v|vi|user)\/))([\w-]+)/);
         return match ? match[1] : null;
     }
-    const { status } = useAuth()
+    const { status, token } = useAuth()
     function handleCollectionDialog() {
         if (status === "authenticated") {
             setOpenCollectionDialog(article.id)
         }
         if (status === "unauthenticated") {
             setOpenLoginDialog(true)
+        }
+    }
+    async function handleOnRead(article_id: number) {
+        if (token) {
+            const { ok } = await articleAPI.ReadArticle(article_id, token)
+            if (!ok) {
+                toast.error("エラーが発生")
+            }
         }
     }
     const youtube_id = extractYoutubeID(String(article?.original_url))
@@ -43,7 +53,7 @@ export default function ArticleDetail({ article }: { article: Article }) {
                 )}</div>
                 <div className="flex flex-row items-center space-x-3">
                     <button onClick={handleCollectionDialog} className="bg-cyan-300 text-white p-[5px] rounded-xl text-sm">保存</button>
-                    <Link href={article.original_url} className="bg-slate-100 text-slate-500 p-[5px] rounded-xl text-sm">読む</Link>
+                    <Link href={article.original_url} onClick={() => handleOnRead(article.id)} className="bg-slate-100 text-slate-500 p-[5px] rounded-xl text-sm">読む</Link>
                 </div>
             </div>
         </div>

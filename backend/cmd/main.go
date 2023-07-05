@@ -56,6 +56,8 @@ func main() {
 	private.POST("/bookmark", h.DoBookmark)
 	private.POST("/collection", h.CreateCollection)
 	private.GET("/collection", h.GetCollectionForBookmark)
+	private.PUT("/article/read", h.SetReadArticle)
+	private.GET("/article/read", h.GetReadArticle)
 	e.POST("/login", h.Login)
 	e.POST("/signup", h.SignUp)
 	e.POST("/refresh", h.RefreshToken)

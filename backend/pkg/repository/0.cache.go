@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/cocoide/tech-guide/pkg/model/dto"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -15,6 +16,8 @@ type CacheRepo interface {
 	Delete(key string) error
 	Update(key string, value string, expire time.Duration) error
 	ExtendExpiry(key string, extension time.Duration) error
+	AddSortedSet(key string, member interface{}, score float64, expire time.Duration) error
+	GetAllSortedSet(key string) ([]dto.SortedSet, error)
 }
 
 type cacheRepo struct {
@@ -79,4 +82,35 @@ func (r *cacheRepo) ExtendExpiry(key string, extension time.Duration) error {
 	}
 
 	return nil
+}
+
+func (r *cacheRepo) AddSortedSet(key string, member interface{}, score float64, expire time.Duration) error {
+	err := r.redis.ZAdd(r.ctx, key, redis.Z{
+		Score:  score,
+		Member: member,
+	}).Err()
+	if err != nil {
+		return err
+	}
+	err = r.redis.Expire(r.ctx, key, expire).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *cacheRepo) GetAllSortedSet(key string) ([]dto.SortedSet, error) {
+	var result []dto.SortedSet
+	redisZ, err := r.redis.ZRangeWithScores(r.ctx, key, 0, -1).Result()
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range redisZ {
+		result = append(result, dto.SortedSet{
+			Score:  v.Score,
+			Member: v.Member.(string),
+		})
+	}
+	return result, nil
 }

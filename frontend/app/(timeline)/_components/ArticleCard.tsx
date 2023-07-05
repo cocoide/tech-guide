@@ -6,19 +6,29 @@ import { Article } from '@/types/model'
 import { ArrowTopRightOnSquareIcon, FolderPlusIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Link from 'next/link'
+import { toast } from 'react-hot-toast'
+import { articleAPI } from '../_functions/article'
 
 interface Props {
     article: Article
     origin?: string
 }
 const ArticleCard = ({ article, origin }: Props) => {
-    const { status } = useAuth()
+    const { status, token } = useAuth()
     function handleCollectionDialog() {
         if (status === "authenticated") {
             setOpenCollectionDialog(article.id)
         }
         if (status === "unauthenticated") {
             setOpenLoginDialog(true)
+        }
+    }
+    async function handleOnRead(article_id: number) {
+        if (token) {
+            const { ok } = await articleAPI.ReadArticle(article_id, token)
+            if (!ok) {
+                toast.error("エラーが発生")
+            }
         }
     }
     const [_, setOpenCollectionDialog] = useAtom(collectionDialogAtom)
@@ -45,7 +55,7 @@ const ArticleCard = ({ article, origin }: Props) => {
                             <FolderPlusIcon className='text-gray-500 h-5 w-5' />
                         </button>
                     </div>
-                    <Link href={article.original_url} passHref>
+                    <Link onClick={() => handleOnRead(article.id)} href={article.original_url} passHref>
                         <ArrowTopRightOnSquareIcon className='text-cyan-300 h-5 w-5' />
                     </Link>
                 </div>
