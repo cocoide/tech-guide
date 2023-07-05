@@ -4,12 +4,12 @@ import Link from 'next/link'
 const CollectionSection = ({ collections }: { collections: Collection[] }) => {
     return (
         <div className="">
-            <div className="gap-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 place-items-center">
+            <div className="gap-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 place-items-center">
                 {collections?.map(c => (
-                    <Link href={`/collections/${c.id}`} key={c.id} className="flex flex-col space-y-3 w-[200px]">
+                    <Link href={`/collections/${c.id}`} key={c.id} className="flex flex-col space-y-3 w-auto">
                         {c.articles[0]?.thumbnail_url ?
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={c.articles[0].thumbnail_url} alt={c.articles[0].title} width={200} className='rounded-md w-[200px] h-[100px] shadow-md' />
+                            <img src={c.articles[0].thumbnail_url} alt={c.articles[0].title} width={100} className='rounded-md w-auto shadow-md' />
                             :
                             <div className="rounded-md w-[200px] h-[100px] bg-slate-200 shadow-[3px]"></div>
                         }
