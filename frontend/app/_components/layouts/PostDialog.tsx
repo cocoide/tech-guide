@@ -25,9 +25,9 @@ const PostDialog = () => {
     function handleCommentChange(e: ChangeEvent<HTMLTextAreaElement>) {
         setComment(e.target.value)
     }
-    async function handleSubmitPost(url: string, comment: string) {
+    async function handleSubmitPost(url: string, content: string) {
         if (ogp) {
-            const { ok } = await api.pos("/account/comment", { "original_url": url, "comment": comment }, token)
+            const { ok } = await api.pos("/account/comment", { "original_url": url, "content": content }, token)
             if (!ok) {
                 toast.error("エラーが発生")
             } else {
