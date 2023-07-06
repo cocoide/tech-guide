@@ -17,21 +17,17 @@ import (
 func (h *Handler) GetReadArticle(c echo.Context) error {
 	var articleIDs []int
 	accountId := int(c.Get("account_id").(float64))
-	if strArticleID := c.QueryParam("article_id"); strArticleID != "" {
-		cacheKey := fmt.Sprintf(key.RecentReads, accountId)
-		sortedSet, err := h.rr.GetAllSortedSet(cacheKey)
+	cacheKey := fmt.Sprintf(key.RecentReads, accountId)
+	sortedSet, err := h.rr.GetAllSortedSet(cacheKey)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	for i := len(sortedSet) - 1; i >= 0; i-- {
+		id, err := strconv.Atoi(sortedSet[i].Member.(string))
 		if err != nil {
 			return c.JSON(400, err.Error())
 		}
-		for i := len(sortedSet) - 1; i >= 0; i-- {
-			id, err := strconv.Atoi(sortedSet[i].Member.(string))
-			if err != nil {
-				return c.JSON(400, err.Error())
-			}
-			articleIDs = append(articleIDs, id)
-		}
-	} else {
-		return c.JSON(400, "article_id is not set for search param")
+		articleIDs = append(articleIDs, id)
 	}
 	articles, err := h.ar.GetArticlesByIDs(articleIDs)
 	if err != nil {

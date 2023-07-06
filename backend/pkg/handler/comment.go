@@ -9,11 +9,14 @@ func (h *Handler) CreateComment(c echo.Context) error {
 	accountId := int(c.Get("account_id").(float64))
 	type body struct {
 		OriginalURL string `json:"original_url"`
-		Content     string `json:"comment"`
+		Content     string `json:"content"`
 	}
 	req := new(body)
 	if err := c.Bind(req); err != nil {
 		return c.JSON(403, err.Error())
+	}
+	if len(req.Content) < 1 {
+		return c.JSON(400, "commnent content required")
 	}
 
 	articleId, err := h.ar.GetArticleIDByURL(req.OriginalURL)

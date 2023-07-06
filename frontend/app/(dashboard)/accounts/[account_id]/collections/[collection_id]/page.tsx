@@ -1,7 +1,7 @@
 import ArticleCard from '@/app/(timeline)/_components/ArticleCard';
 import { ChevronLeftIcon, FolderIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { authAPI } from '../../../_functions/auth';
+import { authAPI } from '../../../../../_functions/auth';
 import { collectionAPI } from './_functions/collection';
 
 interface Porps {
@@ -16,7 +16,7 @@ export default async function CollectionPage({ params }: Porps) {
     return (
         <div className="w-full lg:px-[10%] flex flex-col space-y-3 p-5">
             <div className="text-slate-600 text-center w-full flex flex-row items-center space-x-3">
-                <Link href={`/accounts/${user.uid}`}>
+                <Link href={`/accounts/${user.uid}/collections`}>
                     <ChevronLeftIcon className="h-5 w-5"></ChevronLeftIcon>
                 </Link>
                 <FolderIcon className='h-5 w-5' />

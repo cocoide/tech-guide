@@ -10,7 +10,7 @@ export default async function page({ params }: Props) {
     return (
         <div className="flex flex-col space-y-3">
             {collections &&
-                <CollectionSection collections={collections} />
+                <CollectionSection collections={collections} account_id={params.account_id} />
             }
         </div>
     )
