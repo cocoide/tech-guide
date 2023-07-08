@@ -9,6 +9,7 @@ import (
 	reflect "reflect"
 	time "time"
 
+	dto "github.com/cocoide/tech-guide/pkg/model/dto"
 	repository "github.com/cocoide/tech-guide/pkg/repository"
 	gomock "github.com/golang/mock/gomock"
 )
@@ -34,6 +35,20 @@ func NewMockCacheRepo(ctrl *gomock.Controller) *MockCacheRepo {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockCacheRepo) EXPECT() *MockCacheRepoMockRecorder {
 	return m.recorder
+}
+
+// AddSortedSet mocks base method.
+func (m *MockCacheRepo) AddSortedSet(key string, member interface{}, score float64, expire time.Duration) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddSortedSet", key, member, score, expire)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddSortedSet indicates an expected call of AddSortedSet.
+func (mr *MockCacheRepoMockRecorder) AddSortedSet(key, member, score, expire interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddSortedSet", reflect.TypeOf((*MockCacheRepo)(nil).AddSortedSet), key, member, score, expire)
 }
 
 // Delete mocks base method.
@@ -79,6 +94,36 @@ func (mr *MockCacheRepoMockRecorder) Get(key interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockCacheRepo)(nil).Get), key)
 }
 
+// GetAllSortedSet mocks base method.
+func (m *MockCacheRepo) GetAllSortedSet(key string) ([]dto.SortedSet, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllSortedSet", key)
+	ret0, _ := ret[0].([]dto.SortedSet)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllSortedSet indicates an expected call of GetAllSortedSet.
+func (mr *MockCacheRepoMockRecorder) GetAllSortedSet(key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllSortedSet", reflect.TypeOf((*MockCacheRepo)(nil).GetAllSortedSet), key)
+}
+
+// GetHashField mocks base method.
+func (m *MockCacheRepo) GetHashField(hashKey, field string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetHashField", hashKey, field)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetHashField indicates an expected call of GetHashField.
+func (mr *MockCacheRepoMockRecorder) GetHashField(hashKey, field interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHashField", reflect.TypeOf((*MockCacheRepo)(nil).GetHashField), hashKey, field)
+}
+
 // Set mocks base method.
 func (m *MockCacheRepo) Set(key, value string, expire time.Duration) error {
 	m.ctrl.T.Helper()
@@ -91,6 +136,20 @@ func (m *MockCacheRepo) Set(key, value string, expire time.Duration) error {
 func (mr *MockCacheRepoMockRecorder) Set(key, value, expire interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockCacheRepo)(nil).Set), key, value, expire)
+}
+
+// SetHashField mocks base method.
+func (m *MockCacheRepo) SetHashField(hashKey, field, value string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetHashField", hashKey, field, value)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetHashField indicates an expected call of SetHashField.
+func (mr *MockCacheRepoMockRecorder) SetHashField(hashKey, field, value interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetHashField", reflect.TypeOf((*MockCacheRepo)(nil).SetHashField), hashKey, field, value)
 }
 
 // Update mocks base method.

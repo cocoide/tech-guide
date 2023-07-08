@@ -38,6 +38,7 @@ func main() {
 	ur := repo.NewAccountRepo(db)
 	tr := repo.NewTopicRepo(db)
 	mr := repo.NewCommentRepo(db)
+	vr := repo.NewActivityRepo(db)
 
 	og := gateway.NewOGPGateway()
 	tg := gateway.NewTechFeedGateway()
@@ -45,13 +46,15 @@ func main() {
 	uu := usecase.NewAccountUseCase(ur)
 	ts := service.NewTopicAnalysisService(ag, tr, ar)
 	ps := service.NewPersonalizeService(tr, cr)
-	h := handler.NewHandler(tx, ur, ar, mr, or, cr, og, uu, ts, ps, tr, tg)
+	as := service.NewActivityService(cr)
+	h := handler.NewHandler(tx, ur, vr, ar, mr, or, cr, og, uu, ts, ps, tr, tg, as)
 
 	private := e.Group("/account", h.AuthMiddleware)
 	private.GET("/private/profile/:id", h.GetAccountProfile)
 	e.GET("account/profile/:id", h.GetAccountProfile)
 	e.GET("account/collection/:id", h.GetCollections)
 
+	private.GET("/contribute", h.GetContributions)
 	private.POST("/comment", h.CreateComment)
 	private.POST("/bookmark", h.DoBookmark)
 	private.POST("/collection", h.CreateCollection)
@@ -84,16 +87,19 @@ func main() {
 	e.GET("/trend/zenn", h.GetZennTrend)
 
 	sp := scheduler.NewSchedulerPool()
-	tw := scheduler.NewTimelineWorker(ur, ar, cr, tr, ps, tg)
+	tw := scheduler.NewTimelineWorker(ur, ar, vr, as, cr, tr, ps, tg)
 	go func() {
 		sp.AddScheduler(key.TrendingArticlesWorker, 24*time.Hour, tw.CacheTredingArticlesWorker)
 		sp.AddScheduler(key.PersonalizedArticlesWorker, 24*time.Hour, tw.CachePersonalizedArticlesWorker)
 		sp.AddScheduler(key.QiitaTrendsWorker, 24*time.Hour, tw.RegisterQiitaTendsWorker)
+		sp.AddScheduler(key.ContributioinWorker, 24*time.Hour, tw.ContributionWorker)
 		sp.StartScheduler(key.TrendingArticlesWorker)
 		time.Sleep(60 * time.Second)
 		sp.StartScheduler(key.PersonalizedArticlesWorker)
 		time.Sleep(60 * time.Second)
 		sp.StartScheduler(key.QiitaTrendsWorker)
+		time.Sleep(60 * time.Second)
+		sp.StartScheduler(key.ContributioinWorker)
 	}()
 	e.Logger.Fatal(e.Start(":8080"))
 }

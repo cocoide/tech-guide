@@ -18,6 +18,9 @@ type CacheRepo interface {
 	ExtendExpiry(key string, extension time.Duration) error
 	AddSortedSet(key string, member interface{}, score float64, expire time.Duration) error
 	GetAllSortedSet(key string) ([]dto.SortedSet, error)
+	GetHashField(key string, fieldKey string) (string, error)
+	SetHashField(key string, field map[string]interface{}, expire time.Duration) error
+	GetAllHashFields(key string) (map[string]string, error)
 }
 
 type cacheRepo struct {
@@ -111,6 +114,31 @@ func (r *cacheRepo) GetAllSortedSet(key string) ([]dto.SortedSet, error) {
 			Score:  v.Score,
 			Member: v.Member.(string),
 		})
+	}
+	return result, nil
+}
+
+func (r *cacheRepo) GetHashField(key string, fieldKey string) (string, error) {
+	return r.redis.HGet(r.ctx, key, fieldKey).Result()
+}
+
+func (r *cacheRepo) SetHashField(key string, field map[string]interface{}, expire time.Duration) error {
+	if err := r.redis.HSet(r.ctx, key, field).Err(); err != nil {
+		return nil
+	}
+	if expire > 0 {
+		err := r.redis.Expire(r.ctx, key, expire).Err()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (r *cacheRepo) GetAllHashFields(key string) (map[string]string, error) {
+	result, err := r.redis.HGetAll(r.ctx, key).Result()
+	if err != nil {
+		return nil, err
 	}
 	return result, nil
 }

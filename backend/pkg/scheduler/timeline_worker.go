@@ -19,6 +19,7 @@ type TimelineWorker interface {
 	CacheTredingArticlesWorker()
 	CachePersonalizedArticlesWorker()
 	RegisterQiitaTendsWorker()
+	ContributionWorker()
 }
 
 type timelineWorker struct {
@@ -26,12 +27,14 @@ type timelineWorker struct {
 	ar repo.ArticleRepo
 	cr repo.CacheRepo
 	tr repo.TopicRepo
+	vr repo.ActivityRepo
+	vs service.ActivityService
 	tg gateway.TechFeedGateway
 	ps service.PersonalizeService
 }
 
-func NewTimelineWorker(ur repo.AccountRepo, ar repo.ArticleRepo, cr repo.CacheRepo, tr repo.TopicRepo, ps service.PersonalizeService, tg gateway.TechFeedGateway) TimelineWorker {
-	return &timelineWorker{ur: ur, ar: ar, cr: cr, tr: tr, ps: ps, tg: tg}
+func NewTimelineWorker(ur repo.AccountRepo, ar repo.ArticleRepo, vr repo.ActivityRepo, vs service.ActivityService, cr repo.CacheRepo, tr repo.TopicRepo, ps service.PersonalizeService, tg gateway.TechFeedGateway) TimelineWorker {
+	return &timelineWorker{ur: ur, ar: ar, cr: cr, vr: vr, vs: vs, tr: tr, ps: ps, tg: tg}
 }
 
 func (w *timelineWorker) RegisterQiitaTendsWorker() {
@@ -122,6 +125,16 @@ func (w *timelineWorker) CacheTredingArticlesWorker() {
 		log.Println(err)
 	}
 	if err := cr.Set(key.PopularArticleIDs, serializedIDs, 24*time.Hour); err != nil {
+		log.Println(err)
+	}
+}
+
+func (w *timelineWorker) ContributionWorker() {
+	contributions, err := w.vs.GetContributionsFromCache()
+	if err != nil {
+		log.Println(err)
+	}
+	if err := w.vr.BatchCreateContributions(contributions); err != nil {
 		log.Println(err)
 	}
 }
