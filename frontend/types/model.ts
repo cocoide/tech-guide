@@ -27,3 +27,8 @@ export type Account={
     display_name: string
     avatar_url: string
 }
+
+export type Contribution={
+    date: Date
+    points: number
+}

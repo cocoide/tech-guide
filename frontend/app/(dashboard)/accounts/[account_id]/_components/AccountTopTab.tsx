@@ -13,11 +13,14 @@ export default function AccountTopTab({ account_id }: { account_id: string }) {
     const pathname = usePathname()
     return (
         <div className="text-slate-400 w-full justify-center flex flex-row space-x-10 items-center p-1">
-            <Link href={`/accounts/${account_id}`} className={clsx("p-1", checkAccountPathname("", pathname) ? "text-slate-600 border-b border-cyan-300" : "")}>投稿</Link>
-            <Link href={`/accounts/${account_id}/collections`} className={clsx("p-1", checkAccountPathname("/collections", pathname) ? "text-slate-600 border-b border-cyan-300" : "")}>保存</Link>
+            <Link href={`/accounts/${account_id}`} className={clsx("p-1", checkAccountPathname("", pathname) ? "text-slate-600 border-b border-cyan-300" : "")}
+            >活動</Link>
+            <Link href={`/accounts/${account_id}/collections`} className={clsx("p-1", checkAccountPathname("/collections", pathname) ? "text-slate-600 border-b border-cyan-300" : "")}
+            >保存</Link>
             {
                 user.uid === Number(account_id) &&
-            <Link href={`/accounts/${account_id}/histories`} className={clsx("p-1", checkAccountPathname("/histories", pathname) ? "text-slate-600 border-b border-cyan-300" : "")}>履歴</Link>
+                <Link href={`/accounts/${account_id}/histories`} className={clsx("p-1", checkAccountPathname("/histories", pathname) ? "text-slate-600 border-b border-cyan-300" : "")}
+                >履歴</Link>
             }
         </div >
     )

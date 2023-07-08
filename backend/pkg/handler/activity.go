@@ -12,7 +12,10 @@ import (
 )
 
 func (h *Handler) GetContributions(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
+	accountId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(403, err.Error())
+	}
 	contributions, err := h.vr.GetContributionsByAccountID(accountId)
 	if err != nil {
 		return c.JSON(403, err.Error())

@@ -54,7 +54,6 @@ func main() {
 	e.GET("account/profile/:id", h.GetAccountProfile)
 	e.GET("account/collection/:id", h.GetCollections)
 
-	private.GET("/contribute", h.GetContributions)
 	private.POST("/comment", h.CreateComment)
 	private.POST("/bookmark", h.DoBookmark)
 	private.POST("/collection", h.CreateCollection)
@@ -65,6 +64,7 @@ func main() {
 	e.POST("/signup", h.SignUp)
 	e.POST("/refresh", h.RefreshToken)
 	e.GET("/email", h.CheckEmail)
+	e.GET("/contribution/:id", h.GetContributions)
 
 	e.GET("/rss", h.GetRSS)
 	e.GET("/ogp", h.GetOGP)
