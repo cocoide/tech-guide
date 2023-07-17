@@ -1,4 +1,5 @@
 'use client'
+import { Analytics } from '@vercel/analytics/react';
 import { Provider } from 'jotai';
 import { SessionProvider } from 'next-auth/react';
 import { ReactNode } from 'react';
@@ -11,6 +12,7 @@ export default function Providers({ children }: { children: ReactNode }) {
                 <SessionProvider>
                     <Toaster />
                     {children}
+                    <Analytics />
                 </SessionProvider>
             </Provider>
         </>
