@@ -5,6 +5,7 @@ import { collectionDialogAtom, loginDialogAtom } from '@/stores/dialog'
 import { Article } from '@/types/model'
 import { ArrowTopRightOnSquareIcon, FolderPlusIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
+import Image from 'next/image'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
 import { articleAPI } from '../_functions/article'
@@ -39,7 +40,13 @@ const ArticleCard = ({ article, origin }: Props) => {
             <div className='flex flex-col space-y-[5px]'>
                 <Link href={`/articles/${article.id}${queryParam}`} className='flex flex-row justify-between'>
                     <div className="flex flex-col space-y-[3px]">
-                        <div className='text-slate-700'>{article.title}</div>
+                        <div className="flex flex-row space-x-3">
+                            {article.source.icon_url &&
+                                <Image src={article.source.icon_url} alt={article.source.name} width={100} height={100}
+                                    className='rounded-full h-7 w-7' />
+                            }
+                            <div className='text-slate-700'>{article.title}</div>
+                        </div>
                         <div className="text-slate-500 mr-auto">{article.topics?.slice(0, 1).map(topic =>
                             (<div key={topic.id} className='flex flex-row items-center text-[10px] ring-1 rounded-md ring-slate-300 p-[2px]'>{topic.name}</div>)
                         )}</div>

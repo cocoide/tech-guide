@@ -15,7 +15,9 @@ export type Article={
     summary: string
     created_at: string
     topics: Topic[]
+    source: Source
 }
+
 export type Topic={
     id: number
     name: string
@@ -26,6 +28,13 @@ export type Account={
     id: number
     display_name: string
     avatar_url: string
+}
+
+export type Source={
+    id : number
+    name : string
+    icon_url: string
+    domain: string
 }
 
 export type Contribution={
