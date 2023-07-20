@@ -1,5 +1,4 @@
 import { Article } from '@/types/model';
-import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import { authAPI } from '../_functions/auth';
 import ArticleCard from './_components/ArticleCard';
 import { articleAPI } from './_functions/article';
@@ -15,7 +14,7 @@ export default async function ArticlePage() {
     const latest_articles = articles?.filter(article => !recommends?.some(rec => rec.id === article.id));
     return (
         <div className="flex flex-col w-full">
-            {recommends && recommends.length > 0 &&
+            {/* {recommends && recommends.length > 0 &&
                 <div className="bg-cyan-50/70  lg:px-[10%] border-y-[1px] border-cyan-300/50">
                     <div className="p-3 text-cyan-300 flex flex-row items-center">
                         <ChatBubbleOvalLeftEllipsisIcon className="h-5 w-5" />
@@ -27,8 +26,8 @@ export default async function ArticlePage() {
                         ))}
                     </div>
                 </div>
-            }
-        <div className="min-h-screen w-full pt-3 px-3 lg:px-[10%] gap-3 grid lg:grid-cols-2">
+            } */}
+            <div className="min-h-screen w-full space-y-3 divide-y-[0.5px]">
                 {latest_articles?.map(article => (
                 <ArticleCard key={article.title} article={article} />
             )

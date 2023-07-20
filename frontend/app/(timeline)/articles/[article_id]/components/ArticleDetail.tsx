@@ -36,15 +36,15 @@ export default function ArticleDetail({ article }: { article: Article }) {
     return (
         <div className="bg-white rounded-xl 
         shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
-        p-5  flex flex-col md:flex-row items-center 
-        space-y-3 md:space-x-3">
+        p-5  flex flex-col lg:flex-row items-center
+        space-y-3 lg:space-x-3">
             {youtube_id ?
                 <YouTubeEmbed youtube_id={youtube_id} />
                 :
                 article?.thumbnail_url &&
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={article.thumbnail_url} alt={article.title} width={500}
-                    className='w-full h-auto md:w-[500px] rounded-md' />
+                    className='w-full h-auto lg:w-[50%] rounded-md' />
             }
             <div className="flex flex-col items-center w-full space-y-2">
                 <div className="text-slate-700">{article.title}</div>
