@@ -2,7 +2,7 @@
 function YouTubeEmbed({ youtube_id }: { youtube_id: string }) {
         return (
             <iframe
-                className='w-full md:h-[300px] md:w-[500px] rounded-xl'
+                className='w-full md:h-[300px] lg:w-[700px] rounded-xl animate-appear'
                 width="500"
                 height="300"
                 src={`https://www.youtube.com/embed/${youtube_id}`}

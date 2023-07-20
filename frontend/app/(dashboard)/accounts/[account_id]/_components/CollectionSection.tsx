@@ -8,7 +8,7 @@ interface Props {
 const CollectionSection = ({ collections, account_id }: Props) => {
     return (
         <div className="">
-            <div className="gap-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 place-items-center">
+            <div className="gap-5 grid grid-cols-2 lg:grid-cols-3 p-5 place-items-center">
                 {collections?.map(c => (
                     <Link href={`/accounts/${account_id}/collections/${c.id}/`} key={c.id} className="flex flex-col space-y-3 w-auto">
                         {c.articles[0]?.thumbnail_url ?

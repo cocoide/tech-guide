@@ -1,7 +1,7 @@
 "use client"
 import { useAuth } from '@/hooks/useAuth'
 import { loginDialogAtom, postDialogAtom } from '@/stores/dialog'
-import { DocumentDuplicateIcon, FireIcon, HomeIcon, PlusCircleIcon, RssIcon } from '@heroicons/react/24/outline'
+import { DocumentDuplicateIcon, FireIcon, HomeIcon, PlusCircleIcon, RssIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -17,14 +17,6 @@ const LeftSideVar = () => {
     const [_, openPostDialog] = useAtom(postDialogAtom)
     const [__, openLoginDialog] = useAtom(loginDialogAtom)
     const { status, user } = useAuth()
-    function handleOpenPostDIalog() {
-        if (status == "authenticated") {
-            openPostDialog(true)
-        }
-        if (status == "unauthenticated") {
-            openLoginDialog(true)
-        }
-    }
     return (
         <div className="hidden md:flex flex-col p-5 w-[220px] lg:w-[250px] justify-between  items-center h-[100%]">
             <Link href={"/"} className="text-3xl font-bold text-slate-700 w-full"
@@ -39,13 +31,21 @@ const LeftSideVar = () => {
                 )))
             }</div>
             <div className="flex flex-col space-y-3 w-full mt-auto">
-                <button onClick={handleOpenPostDIalog}
-                    className="bg-cyan-300  text-white py-2 w-[150px] rounded-xl shadow-sm flex flex-row items-center justify-center space-x-1"
+                {status === 'authenticated' ?
+                    <button onClick={() => openPostDialog(true)}
+                        className="animate-appear bg-cyan-300  text-white py-2 w-[150px] rounded-xl shadow-sm flex flex-row items-center justify-center space-x-1"
                 ><PlusCircleIcon className='h-5 w-5' />
                     <div className="">投稿する</div>
                 </button>
+                    :
+                    <button onClick={() => openLoginDialog(true)}
+                        className="animate-appear bg-white  text-cyan-300 ring-1 ring-cyan-300 py-2 w-[150px] rounded-xl shadow-sm flex flex-row items-center justify-center space-x-1"
+                    ><UserCircleIcon className='h-5 w-5' />
+                        <div className="">ログイン</div>
+                    </button>
+                }
                 {user.image &&
-                    <Link href={`accounts/${user.uid}`} className="flex flex-row space-x-3 ring-[0.5px] w-[150px] items-center p-1 rounded-md ring-gray-200">
+                    <Link href={`accounts/${user.uid}`} className="animate-appear flex flex-row space-x-3 ring-[0.5px] w-[150px] items-center p-1 rounded-md ring-gray-200">
                         <Image src={user.image} alt={''} width={100} height={100} className='h-7 w-7 rounded-full' />
                         <div className="">{user.name}</div>
                     </Link>
