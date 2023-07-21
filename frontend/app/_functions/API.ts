@@ -1,3 +1,4 @@
+import { API_URL } from '@/libs/constant'
 
 interface ApiService {
   get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>>
@@ -106,5 +107,5 @@ function buildApiURL(dirURL: string, params?: Params): string {
       })
       .join('&')
     : '';
-  return process.env.NEXT_PUBLIC_API_BASE_URL + dirURL + queryParam
+  return  API_URL + dirURL + queryParam
 }
