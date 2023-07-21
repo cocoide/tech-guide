@@ -36,7 +36,7 @@ const ArticleCard = ({ article, origin }: Props) => {
     const [__, setOpenLoginDialog] = useAtom(loginDialogAtom)
     const queryParam = origin ? `?exclude=${origin}` : ''
     return (
-        <div className='p-3'>
+        <div className='p-3 hover:bg-slate-50 duaration-500'>
             <div className='flex flex-col space-y-[5px]'>
                 <Link href={`/articles/${article.id}${queryParam}`} className='flex flex-row justify-between'>
                     <div className="flex flex-col space-y-[3px]">
