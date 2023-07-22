@@ -10,3 +10,7 @@ body {
 place-center {
   @apply top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
 }
+
+button-hover {
+  @apply p-[3px] hover:bg-gray-200 duration-500 rounded-md;
+}

@@ -53,7 +53,7 @@ const ArticleCard = ({ article, origin }: Props) => {
                     </div>
                     {article.thumbnail_url &&
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={article.thumbnail_url} alt={article.title} width={200} />
+                        <img src={article.thumbnail_url} alt={article.title} width={200} className="rounded-md" />
                     }
                 </Link>
                 <div className='flex flex-row justify-between'>
