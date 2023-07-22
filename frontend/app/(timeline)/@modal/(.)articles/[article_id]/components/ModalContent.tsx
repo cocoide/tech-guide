@@ -52,7 +52,7 @@ const ModalContent = ({ article, overview }: Props) => {
                         <div className="w-full flex flex-wrap gap-3">{article.topics.map((topic) => (
                             <div key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</div>
                         ))}</div>
-                        <div className="w-full rounded-xl p-2 flex flex-row items-center  space-x-3
+                        <div className="hidden w-full rounded-xl p-2 sm:flex flex-row items-center  space-x-3
                         ring-1 ring-gray-300"
                         ><HandThumbUpIcon className='h-7 w-7 text-gray-500 hover:text-pink-300 hover:bg-pink-100 p-[1px] rounded-full' />
                             <HandThumbDownIcon className='h-7 w-7 text-gray-500' />
