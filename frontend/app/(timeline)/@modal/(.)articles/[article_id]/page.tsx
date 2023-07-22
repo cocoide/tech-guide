@@ -7,10 +7,11 @@ interface Props extends ArticleParams {
 
 export default async function Page({ params }: Props) {
     const { data: article } = await articleAPI.GetArticleDetail(params.article_id)
+    const { data: overview }=await articleAPI.GetOverview(article?.original_url)
     return (
         <>
             <Overlay />
-            <ModalContent article={article} />
+            <ModalContent article={article} overview={overview}/>
         </>
     )
 }

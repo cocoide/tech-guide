@@ -14,3 +14,35 @@ place-center {
 button-hover {
   @apply p-[3px] hover:bg-gray-200 duration-500 rounded-md;
 }
+
+.markdown ol {
+  @apply list-decimal pl-5 text-gray-700;
+}
+
+.markdown ul {
+  @apply list-disc pl-5 text-gray-700;
+}
+
+.markdown h5 {
+  @apply text-[11px] border-l-2 border-gray-300 my-2 pl-2;
+}
+
+.markdown h4 {
+  @apply text-[12px] border-l-2 border-gray-300 my-2 pl-2;
+}
+
+.markdown h3 {
+  @apply text-[13px] border-l-2 border-gray-300 my-2 pl-2;
+}
+
+.markdown h2 {
+  @apply text-[14x] border-l-2 border-gray-400 my-2 pl-2;
+}
+
+.markdown h1 {
+  @apply text-[15px] border-l-2 border-gray-500 my-2 pl-2;
+}
+
+.markdown p {
+  @apply text-[13px] text-gray-700 my-2;
+}

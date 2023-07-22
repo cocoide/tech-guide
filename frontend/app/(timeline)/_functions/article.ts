@@ -24,5 +24,8 @@ export const articleAPI = {
     },
     async GetReadArticles(token?: string) {
         return await api.get<Article[]>('/account/article/read', "no-store", token)
+    },
+    async GetOverview(url?: string){
+        return await api.get<string>(`/overview?url=${url}`)
     }
 }
