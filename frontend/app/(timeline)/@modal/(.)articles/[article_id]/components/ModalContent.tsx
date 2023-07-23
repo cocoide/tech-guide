@@ -1,20 +1,20 @@
 "use client"
 
-import YouTubeEmbed from '@/app/(timeline)/_components/YoutubeEmbed'
 import { Article } from '@/types/model'
-import { extractYoutubeID } from '@/utils/regex'
 import { ArrowTopRightOnSquareIcon, ChatBubbleOvalLeftEllipsisIcon, ChevronLeftIcon, ChevronRightIcon, DocumentIcon, EllipsisVerticalIcon, HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import ReactMarkdown from "react-markdown"
-import remarkGfm from 'remark-gfm'
+import { Suspense } from 'react'
+import OutlineLoader from '../loadings/OutlineLoader'
+import ArticlePreviewSection from './ArticlePreviewSection'
 import CloseButton from './CloseButton'
+import OutlineSection from './OutlineSection'
 
 interface Props {
     article?: Article
     overview?: string
 }
 const ModalContent = ({ article, overview }: Props) => {
-    const youtubeID = extractYoutubeID(article?.original_url)
+
     return (
         <div>
             {article &&
@@ -37,21 +37,8 @@ const ModalContent = ({ article, overview }: Props) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="text-2xl text-gray-700 font-bold">{article?.title}</div>
-                        {youtubeID ?
-                            <YouTubeEmbed youtube_id={youtubeID} />
-                            :
-                            <>
-                                {article.thumbnail_url &&
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img src={article.thumbnail_url} alt={article?.title} width={200} height={100}
-                                        className='w-[500px] h-auto rounded-xl ring-1 ring-gray-300' />
-                                }
-                            </>
-                        }
-                        <div className="w-full flex flex-wrap gap-3">{article.topics.map((topic) => (
-                            <div key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</div>
-                        ))}</div>
+                        <ArticlePreviewSection article={article} />
+
                         <div className="hidden w-full rounded-xl p-2 sm:flex flex-row items-center  space-x-3
                         ring-1 ring-gray-300"
                         ><HandThumbUpIcon className='h-7 w-7 text-gray-500 hover:text-pink-300 hover:bg-pink-100 p-[1px] rounded-full' />
@@ -59,12 +46,11 @@ const ModalContent = ({ article, overview }: Props) => {
                             <ChatBubbleOvalLeftEllipsisIcon className='h-7 w-7 text-gray-500' />
                             <DocumentIcon className='h-7 w-7 text-gray-500' />
                         </div>
-                        {overview &&
-                            <div className="sm:hidden flex flex-col  p-2 ring-1 ring-gray-300 rounded-md space-y-2">
-                                <div className="text-gray-500">Outlines</div>
-                                <ReactMarkdown remarkPlugins={[remarkGfm]} className='markdown'>{overview}</ReactMarkdown>
-                            </div>
-                        }
+                        <div className="sm:hidden">
+                            <Suspense fallback={<OutlineLoader />}>
+                                <OutlineSection articleURL={article.original_url} />
+                            </Suspense>
+                        </div>
                     </div>
 
                     <div className="hidden sm:flex w-[400px] lg:w-[500px] flex-col p-5 lg:p-7 space-y-5">
@@ -80,12 +66,9 @@ const ModalContent = ({ article, overview }: Props) => {
                             <img src={article.source.icon_url} alt="" className="h-7 w-7 rounded-full " />
                             <div className="text-gray-500">{article.source.name}</div>
                         </div>
-                        {overview &&
-                            <div className="flex flex-col  p-2 ring-1 ring-gray-300 rounded-md space-y-2">
-                                <div className="text-gray-500">Outlines</div>
-                                <ReactMarkdown remarkPlugins={[remarkGfm]} className='markdown'>{overview}</ReactMarkdown>
-                            </div>
-                        }
+                        <Suspense fallback={<OutlineLoader />}>
+                            <OutlineSection articleURL={article.original_url} />
+                        </Suspense>
                     </div>
                 </div>
             }

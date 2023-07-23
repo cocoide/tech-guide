@@ -29,7 +29,7 @@ export default async function ArticlePage() {
             } */}
             <div className="min-h-screen w-full divide-y-[0.5px]">
                 {latest_articles?.map(article => (
-                <ArticleCard key={article.title} article={article} />
+                    <ArticleCard key={article.title} article={article} />
             )
             )}
         </div>

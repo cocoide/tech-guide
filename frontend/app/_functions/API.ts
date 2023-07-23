@@ -19,7 +19,7 @@ type ParamValue = string | number | boolean | string[] | number[]
 type Params = {
   [key: string]: ParamValue
 }
-type Cache = 'no-store' | 'force-cache' | 'reload'| number // SSR | SSG | SSG (from when reload) | ※default SSG
+type Cache = 'no-store' | 'force-cache' | 'reload'|'reload'| number // SSR | SSG | SSG (from when reload) | ※default SSG
 // 公式ドキュメント: https://nextjs.org/docs/app/building-your-application/data-fetching/caching
 
 const headers: HeadersInit = {

@@ -7,6 +7,7 @@ import { ArrowTopRightOnSquareIcon, FolderPlusIcon } from '@heroicons/react/24/o
 import { useAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { articleAPI } from '../_functions/article'
 
@@ -34,7 +35,16 @@ const ArticleCard = ({ article, origin }: Props) => {
     }
     const [_, setOpenCollectionDialog] = useAtom(collectionDialogAtom)
     const [__, setOpenLoginDialog] = useAtom(loginDialogAtom)
-    const queryParam = origin ? `?exclude=${origin}` : ''
+    const [queryParam, setQueryParam] = useState<string>("")
+    useEffect(() => {
+        if (origin) {
+            let query = '';
+            if (origin) {
+                query += `?exclude=${origin}`;
+            }
+            setQueryParam(query);
+        }
+    }, [origin]);
     return (
         <div className='p-3 hover:bg-slate-50 duaration-500'>
             <div className='flex flex-col space-y-[5px]'>
