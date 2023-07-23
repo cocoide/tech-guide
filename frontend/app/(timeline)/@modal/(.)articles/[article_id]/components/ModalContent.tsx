@@ -11,9 +11,8 @@ import OutlineSection from './OutlineSection'
 
 interface Props {
     article?: Article
-    overview?: string
 }
-const ModalContent = ({ article, overview }: Props) => {
+const ModalContent = ({ article }: Props) => {
 
     return (
         <div>
