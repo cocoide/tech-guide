@@ -25,11 +25,12 @@ const PostDialog = () => {
     function handleCommentChange(e: ChangeEvent<HTMLTextAreaElement>) {
         setComment(e.target.value)
     }
-    async function handleSubmitPost(url: string, content: string) {
+    async function handleSubmitPost(url: string, comment: string) {
         if (ogp) {
-            const { ok } = await api.pos("/account/comment", { "original_url": url, "content": content }, token)
+            const { ok, error } = await api.pos("/account/comment", { "original_url": url, "comment": comment }, token)
             if (!ok) {
                 toast.error("エラーが発生")
+                console.log(error)
             } else {
                 toast.success("投稿完了")
                 setDialogOpen(false)
@@ -82,7 +83,7 @@ const PostDialog = () => {
                             <button className='flex flex-row items-center' onClick={() => setDialogOpen(false)}>
                                 <XMarkIcon className='h-5 w-5 text-slate-600' />
                             </button>
-                            <button onClick={async () => await handleSubmitPost(url, comment)} className=" bg-cyan-300 bg-primary rounded-xl shadow-sm p-2 text-bold text-white flex items-center"
+                            <button onClick={() => handleSubmitPost(url, comment)} className=" bg-cyan-300 bg-primary rounded-xl shadow-sm p-2 text-bold text-white flex items-center"
                             ><PlusCircleIcon className="mr-1 h-5 w-5 text-white" />投稿する</button>
                         </div>
                         <input
