@@ -5,6 +5,7 @@ import CollectionDialog from './_components/layouts/CollectionDialog'
 import { Header } from './_components/layouts/Header'
 import LoginDialog from './_components/layouts/LoginDialog'
 import PostDialog from './_components/layouts/PostDialog'
+import BottomNavigation from './_components/layouts/mobile/BottomNavigation'
 import LeftSideVar from './_components/layouts/mobile/LeftSideVar'
 import Providers from './_components/providers'
 
@@ -25,7 +26,7 @@ export default function RootLayout({ children }: Props) {
               <LeftSideVar />
             </div>
             <div className='flex flex-col w-full'>
-              <div className="sticky top-0 z-30 flex md:hidden">
+              <div className="flex md:hidden">
               <Header />
             </div>
             <Suspense fallback={<CircleLoader />}>
@@ -34,6 +35,9 @@ export default function RootLayout({ children }: Props) {
                 </div>
             </Suspense>
           </div>
+          </div>
+          <div className="fixed bottom-0 w-[100%] z-30 flex md:hidden">
+            <BottomNavigation />
           </div>
           <CollectionDialog />
           <LoginDialog />
