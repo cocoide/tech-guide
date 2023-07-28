@@ -1,16 +1,15 @@
 "use client"
 import { useAuth } from '@/hooks/useAuth'
 import { loginDialogAtom, postDialogAtom } from '@/stores/dialog'
-import { DocumentDuplicateIcon, FireIcon, HomeIcon, PlusCircleIcon, RssIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import { BookmarkIcon, FireIcon, NewspaperIcon, PlusCircleIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
 
 const SideVarList = [
-    { label: "ホーム", href: "/", icon: <HomeIcon className='h-7 w-7' />, isLogin: false },
     { label: "トレンド", href: "/trend", icon: <FireIcon className='h-7 w-7' />, isLogin: false },
-    { label: "フィード", href: "/trend", icon: <RssIcon className='h-7 w-7' />, isLogin: true },
-    { label: "保存リスト", href: "", icon: <DocumentDuplicateIcon className='h-7 w-7' />, isLogin: true },
+    { label: "フィード", href: "/feed", icon: <NewspaperIcon className='h-7 w-7' />, isLogin: true },
+    { label: "保存リスト", href: "", icon: <BookmarkIcon className='h-7 w-7' />, isLogin: true },
 ]
 
 const LeftSideVar = () => {
