@@ -27,5 +27,9 @@ export const articleAPI = {
     },
     async GetOverview(url?: string){
         return await api.get<string>(`/overview?url=${url}`,"reload")
-    }
+    },
+    async GetArticlesByPagination(page: number){
+        const{data}=await api.get<Article[]>(`/article?page=${page}`,"no-store")
+        return data
+    },
 }

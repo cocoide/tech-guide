@@ -1,38 +1,45 @@
-import { Article } from '@/types/model';
-import { authAPI } from '../_functions/auth';
-import ArticleCard from './_components/ArticleCard';
-import { articleAPI } from './_functions/article';
+"use client"
+import { useInfiniteQuery } from "@tanstack/react-query"
+import { useEffect, useRef } from "react"
+import CircleLoading from '../_components/animations/CircleLoading'
+import ArticleCard from './_components/ArticleCard'
+import { articleAPI } from './_functions/article'
 
-export default async function ArticlePage() {
-    const { token } = await authAPI.GetAuthSession()
-    const articles = await articleAPI.getLatestArticles()
-    let recommends: Article[] | undefined = []
-    if (token) {
-        const response = await articleAPI.GetRecommendArticles(token);
-        recommends = response.data;
-    }
-    const latest_articles = articles?.filter(article => !recommends?.some(rec => rec.id === article.id));
+export default function ArticlePage() {
+    const myRef = useRef(null)
+    const { data: articles, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
+        ['query'],
+        async ({ pageParam = 1 }) => await articleAPI.GetArticlesByPagination(pageParam),
+        {
+            getNextPageParam: (_, pages) => pages.length + 1
+        }
+    )
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(e => fetchNextPage())
+            })
+        if (myRef.current) {
+            observer.observe(myRef.current)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [myRef])
+
     return (
-        <div className="flex flex-col w-full">
-            {/* {recommends && recommends.length > 0 &&
-                <div className="bg-cyan-50/70  lg:px-[10%] border-y-[1px] border-cyan-300/50">
-                    <div className="p-3 text-cyan-300 flex flex-row items-center">
-                        <ChatBubbleOvalLeftEllipsisIcon className="h-5 w-5" />
-                        <div>おすすめ</div>
-                    </div>
-                    <div className="w-full gap-3 grid lg:grid-cols-2">
-                        {recommends.map(recommend => (
-                            <ArticleCard key={recommend.title} article={recommend} />
-                        ))}
-                    </div>
-                </div>
-            } */}
+        <div className="flex flex-col w-full pb-10">
             <div className="min-h-screen w-full divide-y-[0.5px]">
-                {latest_articles?.map((article, index) => (
-                    <ArticleCard key={article.title + index} article={article} />
-            )
-            )}
+                {articles?.pages.map(page => (
+                    page?.map((article, index) => (
+                        <ArticleCard key={article.title + index} article={article} />
+                    )
+                    ))
+                )}
+                <span ref={myRef}></span>
         </div>
+            {isFetchingNextPage &&
+                <div className="flex flex-row items-center justify-center w-full h-[200px]"
+                ><CircleLoading /></div>
+            }
         </div>
     )
 }
