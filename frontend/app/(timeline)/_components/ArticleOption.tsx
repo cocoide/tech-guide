@@ -36,17 +36,21 @@ const ArticleOption = ({ article }: Props) => {
       <div className="">
 
       </div>
-      <button className='absolute bottom-[12px] left-[40px]' onClick={handleCollectionDialog}>
-        <HandThumbUpIcon className='text-slate-400 h-5 w-5' />
+      <button className='absolute bottom-[10px] left-[40px] p-1 rounded-full
+      text-slate-400 hover:text-pink-300  hover:bg-pink-50 duration-500' onClick={handleCollectionDialog}>
+        <HandThumbUpIcon className='h-5 w-5' />
       </button>
-      <button className='absolute bottom-[12px] left-[70px]' onClick={handleCollectionDialog}>
-        <ChatBubbleOvalLeftEllipsisIcon className='text-slate-400 h-5 w-5' />
+      <button className='absolute bottom-[10px] left-[70px] p-1 rounded-full
+      text-slate-400 hover:text-blue-300  hover:bg-blue-50 duration-500' onClick={handleCollectionDialog}>
+        <ChatBubbleOvalLeftEllipsisIcon className='h-5 w-5' />
       </button>
-      <button className='absolute bottom-[12px] left-[100px]' onClick={handleCollectionDialog}>
-        <BookmarkIcon className='text-slate-400 h-5 w-5' />
+      <button className='absolute bottom-[10px] left-[100px] p-1 rounded-full 
+      text-slate-400 hover:text-green-300 hover:bg-green-50  duration-500' onClick={handleCollectionDialog}>
+        <BookmarkIcon className='h-5 w-5' />
       </button>
-      <Link className='absolute bottom-[12px] right-[5px]' onClick={() => handleOnRead(article.id)} href={article.original_url} passHref>
-        <ArrowTopRightOnSquareIcon className='text-cyan-300 h-5 w-5' />
+      <Link className='absolute bottom-[10px] right-[5px] rounded-full p-1
+      text-slate-400 hover:text-cyan-300 hover:bg-cyan-50 duration-500' onClick={() => handleOnRead(article.id)} href={article.original_url} passHref>
+        <ArrowTopRightOnSquareIcon className='h-5 w-5' />
       </Link>
     </>
   )

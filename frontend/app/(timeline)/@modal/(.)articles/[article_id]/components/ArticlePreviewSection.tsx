@@ -5,8 +5,17 @@ import { extractYoutubeID } from '@/utils/regex';
 export default function ArticlePreviewSection({ article }: { article: Article }) {
     const youtubeID = extractYoutubeID(article?.original_url)
     return (
-        <>
+        <div className="flex flex-col space-y-2 w-full">
             <div className="text-2xl text-gray-700 font-bold">{article?.title}</div>
+            {article.summary?.length > 0 &&
+                <div className="bg-gray-100 text-gray-400 text-sm p-3 rounded-md">
+                    <div className="border-gray-500  border-l-2 pl-2">Sumamry: {article.summary}
+                    </div>
+                </div>
+            }
+            <div className="w-full flex flex-wrap gap-3">{article.topics.map((topic) => (
+                <div key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</div>
+            ))}</div>
             {youtubeID ?
                 <YouTubeEmbed youtube_id={youtubeID} />
                 :
@@ -18,15 +27,6 @@ export default function ArticlePreviewSection({ article }: { article: Article })
                     }
                 </>
             }
-            {article.summary?.length > 0 &&
-                <div className="bg-gray-100 text-gray-400 text-sm p-3 rounded-md">
-                    <div className="border-gray-500  border-l-2 pl-2">Sumamry: {article.summary}
-                    </div>
-                </div>
-            }
-            <div className="w-full flex flex-wrap gap-3">{article.topics.map((topic) => (
-                <div key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</div>
-            ))}</div>
-        </>
+        </div>
     )
 }

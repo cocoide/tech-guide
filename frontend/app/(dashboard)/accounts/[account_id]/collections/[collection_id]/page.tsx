@@ -19,7 +19,7 @@ export default async function CollectionPage({ params }: Porps) {
                     <ChevronLeftIcon className="h-5 w-5"></ChevronLeftIcon>
                 </Link>
                 <FolderIcon className='h-5 w-5' />
-                <div>  {collection?.name}</div>
+                <div>{collection?.name}</div>
             </div>
             <div className="grid lg:grid-cols-2 w-full bg-cyan-50/70 rounded-xl gap-3">
                 {collection?.articles.map(article => (
