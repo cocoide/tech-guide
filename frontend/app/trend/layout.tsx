@@ -2,7 +2,6 @@ import RightSidevar from './_components/RightSidevar'
 
 interface Props {
     children: React.ReactNode
-    modal: React.ReactNode
 }
 const TrendLayout = ({ children }: Props) => {
     return (

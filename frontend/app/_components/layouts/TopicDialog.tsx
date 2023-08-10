@@ -23,7 +23,7 @@ const TopicDialog = () => {
             const { data: topics } = await topicAPI.GetAllTopics()
             setExistTopic(topics)
         })()
-    }, [token,topicDialogAtom ])
+    }, [token])
     const unfollow_topics = existTopic?.filter(topic => {
         return !followTopic?.some(followTopic => followTopic.id === topic.id);
     });
