@@ -1,5 +1,4 @@
 import { articleAPI } from '@/app/(timeline)/_functions/article';
-import MobileFooter from './components/MobileFooter';
 import ModalContent from './components/ModalContent';
 import Overlay from './components/Overlay';
 
@@ -12,7 +11,6 @@ export default async function Page({ params }: Props) {
         <>
             <Overlay />
             <ModalContent article={article} />
-            <MobileFooter />
         </>
     )
 }

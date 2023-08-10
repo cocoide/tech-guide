@@ -1,3 +1,4 @@
+"use client"
 import { api } from '@/app/_functions/API'
 
 export default async function SpeakerDeckEmbed({ url }: { url: string }) {
@@ -5,7 +6,7 @@ export default async function SpeakerDeckEmbed({ url }: { url: string }) {
     return (
         <>
                 <iframe
-                    className='w-full md:h-[300px] lg:h-[400px] lg:w-[500px] rounded-xl animate-appear'
+                className='w-full md:h-[300px] lg:h-[400px] rounded-xl bg-gray-100'
                     width="400"
                     height="300"
                     src={`//speakerdeck.com/player/${id}`}
