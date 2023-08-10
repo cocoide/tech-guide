@@ -1,4 +1,3 @@
-"use client"
 import { api } from '@/app/_functions/API'
 
 export default async function SpeakerDeckEmbed({ url }: { url: string }) {
