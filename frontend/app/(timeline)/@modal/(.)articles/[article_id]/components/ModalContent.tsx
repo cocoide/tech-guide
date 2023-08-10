@@ -68,7 +68,7 @@ const ModalContent = ({ article }: Props) => {
                             </Link>
                             <CloseButton />
                         </div>
-                        <div className="flex flex-row items-center p-2 ring-1 ring-gray-300 rounded-xl space-x-2">
+                        <div className="flex flex-row items-center p-2 custom-border rounded-xl space-x-2">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={article.source.icon_url} alt="" className="h-7 w-7 rounded-full " />
                             <div className="text-gray-500">{article.source.name}</div>

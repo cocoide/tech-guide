@@ -17,6 +17,7 @@ type TopicRepo interface {
 	GetTopicToArticleArrayByArticleID(articleID int) ([]model.TopicsToArticles, error)
 	GetTopicToArticleArrayByArticleIDs(articleIDs []int) ([]model.TopicsToArticles, error)
 	GetRecentPopularArticleIDs(duration time.Duration, limit int) ([]int, error)
+	GetPopularTopics(limit int) ([]model.Topic, error)
 }
 
 type topicRepo struct {
@@ -25,6 +26,23 @@ type topicRepo struct {
 
 func NewTopicRepo(db *gorm.DB) TopicRepo {
 	return &topicRepo{db: db}
+}
+
+func (tr *topicRepo) GetPopularTopics(limit int) ([]model.Topic, error) {
+	var popularTopics []model.Topic
+	err := tr.db.
+		Table("follow_topics").
+		Select("topics.*, COUNT(follow_topics.account_id) as follow_count").
+		Joins("INNER JOIN topics ON topics.id = follow_topics.topic_id").
+		Group("topics.id").
+		Order("follow_count DESC").
+		Limit(limit).
+		Find(&popularTopics).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return popularTopics, nil
 }
 
 func (tr *topicRepo) GetFollowingTopicIDs(accountID int) ([]int, error) {

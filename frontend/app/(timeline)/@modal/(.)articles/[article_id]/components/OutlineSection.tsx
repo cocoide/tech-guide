@@ -8,7 +8,7 @@ export default async function OutlineSection({ articleURL }: { articleURL: strin
         return null
     }
     return (
-        <div className="relative flex flex-col  p-2 ring-1 ring-gray-300 rounded-md space-y-2">
+        <div className="relative flex flex-col  p-2 custom-border rounded-xl space-y-2">
             <div className="text-gray-500">Outlines</div>
             <ReactMarkdown remarkPlugins={[remarkGfm]} className='markdown'
             >{overview}</ReactMarkdown>

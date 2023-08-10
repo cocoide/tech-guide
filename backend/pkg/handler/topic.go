@@ -7,6 +7,14 @@ import (
 	"github.com/labstack/echo"
 )
 
+func (h *Handler) GetPopularTopics(c echo.Context) error {
+	topics, err := h.tr.GetPopularTopics(5)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, topics)
+}
+
 func (h *Handler) GetFollowingTopics(c echo.Context) error {
 	accountId := int(c.Get("account_id").(float64))
 	topics, err := h.tr.GetFollowingTopics(accountId)
