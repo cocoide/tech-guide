@@ -21,7 +21,7 @@ export default function RootLayout({ children }: Props) {
     <html lang="ja">
       <body >
         <Providers>
-          <div className="flex justify-center md:w-[770px] lg:w-[1000px] xl:w-[1200px]  mx-auto relative">
+          <div className="flex justify-center md:w-[770px] lg:w-[1050px] xl:w-[1250px]  mx-auto relative">
             <div className="sticky top-0 h-screen">
               <LeftSideVar />
             </div>
