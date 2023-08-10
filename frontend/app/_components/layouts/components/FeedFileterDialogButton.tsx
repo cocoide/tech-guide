@@ -4,7 +4,7 @@ import { topicDialogAtom } from '@/stores/dialog'
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 
-const TopicDialogButton = () => {
+const FeedFileterDialogButton = () => {
     const [__, setTopicDialogOpen] = useAtom(topicDialogAtom)
     return (
         <button onClick={() => setTopicDialogOpen(true)} className="text-gray-500">
@@ -12,4 +12,4 @@ const TopicDialogButton = () => {
         </button>
     )
 }
-export default TopicDialogButton
+export default FeedFileterDialogButton

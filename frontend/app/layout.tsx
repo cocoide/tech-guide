@@ -2,10 +2,10 @@ import CircleLoader from '@/ui/CircleLoader'
 import { Suspense } from 'react'
 import '../styles/globals.css'
 import CollectionDialog from './_components/layouts/CollectionDialog'
+import FeedFilterDialog from './_components/layouts/FeedFilterDialog'
 import { Header } from './_components/layouts/Header'
 import LoginDialog from './_components/layouts/LoginDialog'
 import PostDialog from './_components/layouts/PostDialog'
-import TopicDialog from './_components/layouts/TopicDialog'
 import LeftSideVar from './_components/layouts/desktop/LeftSideVar'
 import BottomNavigation from './_components/layouts/mobile/BottomNavigation'
 import Providers from './_components/providers'
@@ -44,7 +44,7 @@ export default function RootLayout({ children, modal }: Props) {
           <CollectionDialog />
           <LoginDialog />
           <PostDialog />
-          <TopicDialog />
+          <FeedFilterDialog />
           {modal}
         </Providers>
       </body>

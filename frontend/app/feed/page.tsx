@@ -2,7 +2,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
 import CircleLoading from '../_components/animations/CircleLoading'
-import TopicDialogButton from '../_components/elements/TopicDialogButton'
+import TopicDialogButton from '../_components/layouts/components/FeedFileterDialogButton'
 import SectionHeader from '../_components/layouts/desktop/SectionHeader'
 import { articleAPI } from '../_functions/article'
 import ArticleCard from '../trend/_components/ArticleCard'

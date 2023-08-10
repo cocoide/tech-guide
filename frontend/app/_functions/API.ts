@@ -13,7 +13,7 @@ export type ApiResponse<T> = {
   status?: number
   ok: boolean
 }
-type ApiErrorResponse = string | { message: string }
+export type ApiErrorResponse = string | { message: string }
 
 type ParamValue = string | number | boolean | string[] | number[]
 type Params = {
