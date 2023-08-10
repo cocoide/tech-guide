@@ -1,14 +1,14 @@
 'use client'
 
 import { loginDialogAtom } from '@/stores/dialog'
-import { UserCircleIcon } from '@heroicons/react/24/outline'
+import { BellIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 
 export function Header() {
     const { data: session, status } = useSession()
-    const [__, setLoginDialogOpen] = useAtom(loginDialogAtom)
+    const [_, setLoginDialogOpen] = useAtom(loginDialogAtom)
     return (
         <div className="w-full p-[12px] bg-white/70 backdrop-blur-[3px] flex flex-row items-center justify-between min-h-19">
             <Link href={'/'} className="text-xl font-bold">Tech Guide</Link>
@@ -19,6 +19,9 @@ export function Header() {
                 flex flex-row items-center text-sm
                 animate-appear duration-500"
                 ><UserCircleIcon className='h-5 w-5' />ログイン</button>
+            }
+            {status != "loading" && session?.user &&
+                <BellIcon className='h-7 w-7 text-gray-500' />
             }
         </div>
     )

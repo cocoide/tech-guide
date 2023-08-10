@@ -1,4 +1,4 @@
-import ArticleCard from '@/app/(timeline)/_components/ArticleCard';
+import ArticleCard from '@/app/trend/_components/ArticleCard';
 import { ChevronLeftIcon, FolderIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { collectionAPI } from './_functions/collection';

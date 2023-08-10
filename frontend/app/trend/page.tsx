@@ -1,9 +1,11 @@
 "use client"
+import { BarsArrowUpIcon } from '@heroicons/react/24/outline'
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
 import CircleLoading from '../_components/animations/CircleLoading'
+import SectionHeader from '../_components/layouts/desktop/SectionHeader'
+import { articleAPI } from '../_functions/article'
 import ArticleCard from './_components/ArticleCard'
-import { articleAPI } from './_functions/article'
 
 export default function ArticlePage() {
     const myRef = useRef(null)
@@ -27,6 +29,7 @@ export default function ArticlePage() {
 
     return (
         <div className="flex flex-col w-full pb-10">
+            <SectionHeader title={"トレンド"} rightItem={<BarsArrowUpIcon className='h-7 w-7 text-gray-500' />} />
             <div className="min-h-screen w-full divide-y-[0.5px]">
                 {articles?.pages.map(page => (
                     page?.map((article, index) => (
@@ -35,7 +38,7 @@ export default function ArticlePage() {
                     ))
                 )}
                 <span ref={myRef}></span>
-        </div>
+                S</div>
             {isFetchingNextPage &&
                 <div className="flex flex-row items-center justify-center w-full h-[200px]"
                 ><CircleLoading /></div>

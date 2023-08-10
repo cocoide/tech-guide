@@ -1,4 +1,4 @@
-import { articleAPI } from '@/app/(timeline)/_functions/article'
+import { articleAPI } from '@/app/_functions/article'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 

@@ -27,10 +27,10 @@ export default function BottomNavigation() {
   }
   return (
     <div className="w-full flex flex-row items-center justify-between px-[10%] py-2 bg-white/80 backdrop-blur-[5px] text-slate-500">
-      <Link href={"/"} ><FireIcon className='h-7 w-7' /></Link>
-      <Link href={"/"} ><NewspaperIcon className='h-7 w-7' /></Link>
+      <Link href={"/trend"} ><FireIcon className='h-7 w-7' /></Link>
+      <Link href={"/feed"} ><NewspaperIcon className='h-7 w-7' /></Link>
       <button onClick={handlePost}><PlusCircleIcon className='h-7 w-7' /></button>
-      <Link href={"/"} ><MagnifyingGlassIcon className='h-7 w-7' /></Link>
+      <Link href={"/explore"} ><MagnifyingGlassIcon className='h-7 w-7' /></Link>
       <Link href={AccountURL} onClick={handleAuth}>
         {
           user.uid && user.name && user.image ?

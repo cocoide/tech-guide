@@ -6,7 +6,7 @@ import { ArrowTopRightOnSquareIcon, BookmarkIcon, ChatBubbleOvalLeftEllipsisIcon
 import { useAtom } from 'jotai'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import { articleAPI } from '../_functions/article'
+import { articleAPI } from '../../_functions/article'
 
 interface Props {
   article: Article

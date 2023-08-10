@@ -1,4 +1,4 @@
-import ArticleCard from '@/app/(timeline)/_components/ArticleCard'
+import ArticleCard from '@/app/trend/_components/ArticleCard'
 import { Article } from '@/types/model'
 
 interface Props {

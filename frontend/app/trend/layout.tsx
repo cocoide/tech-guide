@@ -4,16 +4,15 @@ interface Props {
     children: React.ReactNode
     modal: React.ReactNode
 }
-const HomeLayout = ({ children, modal }: Props) => {
+const TrendLayout = ({ children }: Props) => {
     return (
         <>
             <div className="flex flex-row relative">
-            {children}
+                {children}
                 <div className="hidden lg:flex sticky top-0 h-screen"
                 ><RightSidevar /></div>
             </div>
-            {modal}
         </>
     )
 }
-export default HomeLayout
+export default TrendLayout

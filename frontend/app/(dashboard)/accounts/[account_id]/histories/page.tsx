@@ -1,6 +1,6 @@
-import ArticleCard from '@/app/(timeline)/_components/ArticleCard'
-import { articleAPI } from '@/app/(timeline)/_functions/article'
+import { articleAPI } from '@/app/_functions/article'
 import { authAPI } from '@/app/_functions/auth'
+import ArticleCard from '@/app/trend/_components/ArticleCard'
 
 export default async function HistoryPage() {
     const { token } = await authAPI.GetAuthSession()

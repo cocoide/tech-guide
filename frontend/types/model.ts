@@ -41,3 +41,7 @@ export type Contribution={
     date: Date
     points: number
 }
+
+export type UserSession={
+    is_setup_done: boolean
+}

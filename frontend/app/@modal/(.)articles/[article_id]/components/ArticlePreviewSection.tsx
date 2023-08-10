@@ -1,4 +1,4 @@
-import YouTubeEmbed from '@/app/(timeline)/_components/YoutubeEmbed';
+import YouTubeEmbed from '@/app/trend/_components/YoutubeEmbed';
 import { Article } from '@/types/model';
 import { extractYoutubeID } from '@/utils/regex';
 import { Suspense } from 'react';
@@ -12,22 +12,22 @@ export default async function ArticlePreviewSection({ article }: { article: Arti
         <div className="flex flex-col space-y-2 w-full">
             <div className="text-xl text-gray-700 font-bold">{article?.title}</div>
             <>
-            {youtubeID ?
-                <YouTubeEmbed youtube_id={youtubeID} />
-                :
+                {youtubeID ?
+                    <YouTubeEmbed youtube_id={youtubeID} />
+                    :
                     isSpeakerDeck ?
                         <Suspense fallback={<SpeakerDeckLoader />}>
                             <SpeakerDeckEmbed url={article.original_url} />
                         </Suspense>
                         :
                         <>
-                    {article.thumbnail_url &&
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={article.thumbnail_url} alt={article?.title} width={200} height={100}
-                                className='w-[500px] h-auto rounded-xl ring-1 ring-gray-300' />
-                    }
-                </>
-            }
+                            {article.thumbnail_url &&
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={article.thumbnail_url} alt={article?.title} width={200} height={100}
+                                    className='w-[500px] h-auto rounded-xl ring-1 ring-gray-300' />
+                            }
+                        </>
+                }
             </>
         </div>
     )

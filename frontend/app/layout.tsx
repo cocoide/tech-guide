@@ -5,8 +5,9 @@ import CollectionDialog from './_components/layouts/CollectionDialog'
 import { Header } from './_components/layouts/Header'
 import LoginDialog from './_components/layouts/LoginDialog'
 import PostDialog from './_components/layouts/PostDialog'
+import TopicDialog from './_components/layouts/TopicDialog'
+import LeftSideVar from './_components/layouts/desktop/LeftSideVar'
 import BottomNavigation from './_components/layouts/mobile/BottomNavigation'
-import LeftSideVar from './_components/layouts/mobile/LeftSideVar'
 import Providers from './_components/providers'
 
 export const metadata = {
@@ -15,8 +16,9 @@ export const metadata = {
 }
 interface Props {
   children: React.ReactNode
+  modal: React.ReactNode
 }
-export default function RootLayout({ children }: Props) {
+export default function RootLayout({ children, modal }: Props) {
   return (
     <html lang="ja">
       <body >
@@ -42,6 +44,8 @@ export default function RootLayout({ children }: Props) {
           <CollectionDialog />
           <LoginDialog />
           <PostDialog />
+          <TopicDialog />
+          {modal}
         </Providers>
       </body>
     </html>

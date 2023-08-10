@@ -1,4 +1,4 @@
-import { articleAPI } from '@/app/(timeline)/_functions/article';
+import { articleAPI } from '@/app/_functions/article';
 import ModalContent from './components/ModalContent';
 import Overlay from './components/Overlay';
 

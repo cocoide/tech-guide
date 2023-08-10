@@ -1,6 +1,7 @@
 import { api } from '@/app/_functions/API';
 import { Article } from '@/types/model';
-import { MakeArticle } from '../type';
+
+type MakeArticle=Pick<Article,"original_url">
 
 export const articleAPI = {
     async getLatestArticles() {
