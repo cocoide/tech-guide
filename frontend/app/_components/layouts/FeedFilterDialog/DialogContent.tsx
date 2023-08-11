@@ -13,6 +13,10 @@ import SettingMenue from './SetttingMenue'
 import TopicFollowSection from './TopicFollowSection'
 
 export default function DialogContent() {
+    function handleClose() {
+        window.location.reload()
+        setDialogOpen(false)
+    }
     const { token } = useAuth();
     const [openSection, setOpenSection] = useState(1)
     const [_, setDialogOpen] = useAtom(topicDialogAtom)
@@ -38,7 +42,7 @@ export default function DialogContent() {
     })
     return (
         <div className='flex flex-col w-full h-full overflow-y-scroll p-3 space-y-5 relative'>
-            <button onClick={() => setDialogOpen(false)}
+            <button onClick={handleClose}
             ><XMarkIcon className='h-6 w-6 text-gray-500 absolute right-3 top-3' /></button>
             <div className="flex flex-row justify-center">
                 <SettingMenue
