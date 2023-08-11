@@ -13,7 +13,7 @@ const LeftSideVar = () => {
     const { status, user } = useAuth()
     const SideVarList = [
         { label: "トレンド", href: "/trend", icon: <FireIcon className='h-7 w-7' />, isLogin: false },
-        { label: "フィード", href: "/feed", icon: <NewspaperIcon className='h-7 w-7' />, isLogin: true },
+        { label: "フィード", href: "/", icon: <NewspaperIcon className='h-7 w-7' />, isLogin: true },
         { label: "保存リスト", href: `/accounts/${user.uid}/collections`, icon: <BookmarkIcon className='h-7 w-7' />, isLogin: true },
     ]
     return (

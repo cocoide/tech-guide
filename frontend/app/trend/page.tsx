@@ -38,7 +38,7 @@ export default function ArticlePage() {
                     ))
                 )}
                 <span ref={myRef}></span>
-                S</div>
+            </div>
             {isFetchingNextPage &&
                 <div className="flex flex-row items-center justify-center w-full h-[200px]"
                 ><CircleLoading /></div>
