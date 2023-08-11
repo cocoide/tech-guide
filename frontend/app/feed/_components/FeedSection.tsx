@@ -1,8 +1,8 @@
 "use client"
+import ArticleCard from '@/app/(home)/_components/ArticleCard'
 import CircleLoading from '@/app/_components/animations/CircleLoading'
 import SectionHeader from '@/app/_components/layouts/desktop/SectionHeader'
 import { articleAPI } from '@/app/_functions/article'
-import ArticleCard from '@/app/trend/_components/ArticleCard'
 import { useAuth } from '@/hooks/useAuth'
 import { NewspaperIcon } from '@heroicons/react/24/outline'
 import { useInfiniteQuery } from "@tanstack/react-query"

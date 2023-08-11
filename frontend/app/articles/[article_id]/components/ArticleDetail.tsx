@@ -1,6 +1,6 @@
 "use client"
+import YouTubeEmbed from '@/app/(home)/_components/YoutubeEmbed';
 import { articleAPI } from '@/app/_functions/article';
-import YouTubeEmbed from '@/app/trend/_components/YoutubeEmbed';
 import { useAuth } from '@/hooks/useAuth';
 import { collectionDialogAtom, loginDialogAtom } from '@/stores/dialog';
 import { Article } from '@/types/model';

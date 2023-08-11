@@ -1,7 +1,7 @@
 "use client"
 import { useAuth } from '@/hooks/useAuth'
 import { loginDialogAtom, postDialogAtom } from '@/stores/dialog'
-import { BookmarkIcon, FireIcon, MagnifyingGlassIcon, NewspaperIcon, PlusCircleIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import { HomeIcon,BookmarkIcon, FireIcon, MagnifyingGlassIcon, NewspaperIcon, PlusCircleIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -12,8 +12,8 @@ const LeftSideVar = () => {
     const [__, openLoginDialog] = useAtom(loginDialogAtom)
     const { status, user } = useAuth()
     const SideVarList = [
-        { label: "トレンド", href: "/trend", icon: <FireIcon className='h-7 w-7' />, isLogin: false },
-        { label: "フィード", href: "/", icon: <NewspaperIcon className='h-7 w-7' />, isLogin: true },
+        { label: "ホーム", href: "/", icon: <HomeIcon className='h-7 w-7' />, isLogin: false },
+        { label: "フィード", href: "/feed", icon: <NewspaperIcon className='h-7 w-7' />, isLogin: true },
         { label: "保存リスト", href: `/accounts/${user.uid}/collections`, icon: <BookmarkIcon className='h-7 w-7' />, isLogin: true },
         { label: "検索", href: "/explore", icon: <MagnifyingGlassIcon className='h-7 w-7' />, isLogin: false },
     ]

@@ -1,4 +1,4 @@
-import YouTubeEmbed from '@/app/trend/_components/YoutubeEmbed';
+import YouTubeEmbed from '@/app/(home)/_components/YoutubeEmbed';
 import { Article } from '@/types/model';
 import { extractYoutubeID } from '@/utils/regex';
 import { Suspense } from 'react';
