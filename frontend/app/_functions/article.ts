@@ -1,5 +1,5 @@
 import { api } from '@/app/_functions/API';
-import { Article } from '@/types/model';
+import { Article, Comment } from '@/types/model';
 
 type MakeArticle=Pick<Article,"original_url">
 
@@ -37,5 +37,11 @@ export const articleAPI = {
         const{data,error}=await api.get<Article[]>(`/account/feeds?page=${page}`,"no-store",token)
         console.log(error)
         return data
+    },
+    async GetTopCommentForArticle(articleID: number){
+        return await api.get<Comment>(`/comment/${articleID}`,24*60*60)
+    },
+    async GetCommentsForArticle(articleID: number){
+        return await api.get<Comment[]>(`/comment/${articleID}`,"no-store")
     },
 }

@@ -20,7 +20,7 @@ const ModalContent = ({ article }: Props) => {
     return (
         <div>
             {article &&
-                <div className="z-40 fixed bg-white inset-0 rounded-md ring-1 ring-gray-200
+                <div className="z-30 fixed bg-white inset-0 rounded-md ring-1 ring-gray-200
             sm:top-[100px] lg:left-[100px] lg:right-[100px] 
             overflow-y-scroll divide-x flex flex-col sm:flex-row">
                     <div className="flex flex-col p-5 lg:p-7 w-full space-y-3">
@@ -41,7 +41,7 @@ const ModalContent = ({ article }: Props) => {
                         </div>
                         <ArticlePreviewSection article={article} />
                         <ActionSection articleId={article?.id} />
-                        <CommnentSection />
+                        <CommnentSection articleID={article?.id} />
                         <div className="w-full flex flex-wrap gap-3">{article.topics.map((topic) => (
                 <div key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</div>
             ))}</div>

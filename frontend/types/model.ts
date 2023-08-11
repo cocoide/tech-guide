@@ -42,6 +42,14 @@ export type Contribution={
     points: number
 }
 
+export type Comment={
+    id: number
+    account_id: number
+    article_id: number
+    account: Account
+    content: string
+}
+
 export type UserSession={
     is_setup_done: boolean
 }
