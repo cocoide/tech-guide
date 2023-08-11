@@ -73,13 +73,18 @@ func (tr *topicRepo) UnfollowTopic(accountID, topicID int) error {
 }
 
 func (tr *topicRepo) GetFollowingTopics(accountId int) ([]model.Topic, error) {
-	account := &model.Account{}
-	err := tr.db.Preload("FollowTopics").
-		First(account, accountId).Error
+	var topics []model.Topic
+
+	err := tr.db.
+		Joins("JOIN follow_topics ON topics.id = follow_topics.topic_id").
+		Where("follow_topics.account_id = ?", accountId).
+		Find(&topics).Error
+
 	if err != nil {
 		return nil, err
 	}
-	return account.FollowTopics, nil
+
+	return topics, nil
 }
 
 func (tr *topicRepo) CreateTopics(topics []model.Topic) error {

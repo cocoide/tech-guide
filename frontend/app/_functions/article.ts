@@ -33,4 +33,9 @@ export const articleAPI = {
         const{data}=await api.get<Article[]>(`/article?page=${page}`,"no-store")
         return data
     },
+    async GetFeedsByPagination(page: number,token?: string){
+        const{data,error}=await api.get<Article[]>(`/account/feeds?page=${page}`,"no-store",token)
+        console.log(error)
+        return data
+    },
 }

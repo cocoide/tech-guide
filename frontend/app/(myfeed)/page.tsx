@@ -1,4 +1,5 @@
 "use client"
+import { useAuth } from '@/hooks/useAuth'
 import { NewspaperIcon } from '@heroicons/react/24/outline'
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
@@ -9,13 +10,13 @@ import { articleAPI } from '../_functions/article'
 import ArticleCard from '../trend/_components/ArticleCard'
 
 export default function ArticlePage() {
+    const { token } = useAuth()
     const myRef = useRef(null)
-    const { data: articles, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
-        ['feed_query'],
-        async ({ pageParam = 1 }) => await articleAPI.GetArticlesByPagination(pageParam),
-        {
-            getNextPageParam: (_, pages) => pages.length + 1
-        }
+    const { data: articles, fetchNextPage, isFetchingNextPage} = useInfiniteQuery({
+        queryKey: ['feeds_query'],
+        queryFn: async ({ pageParam = 1 }) => await articleAPI.GetFeedsByPagination(pageParam, token),
+        enabled: token !== undefined
+    }
     )
     useEffect(() => {
         const observer = new IntersectionObserver(

@@ -10,7 +10,7 @@ import ArticleCard from './_components/ArticleCard'
 export default function ArticlePage() {
     const myRef = useRef(null)
     const { data: articles, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
-        ['query'],
+        ['trend_query'],
         async ({ pageParam = 1 }) => await articleAPI.GetArticlesByPagination(pageParam),
         {
             getNextPageParam: (_, pages) => pages.length + 1

@@ -22,9 +22,6 @@ const ArticleCard = ({ article, origin }: Props) => {
                     <div className="flex flex-row space-x-3">
                         <div className='text-slate-700 mt-[12px] ml-10 mb-7'>{article.title}</div>
                     </div>
-                    <div className="text-slate-500 mr-auto">{article.topics?.slice(0, 1).map(topic =>
-                        (<div key={topic.id} className='flex flex-row items-center text-[10px] ring-1 rounded-md ring-slate-300 p-[2px]'>{topic.name}</div>)
-                    )}</div>
 
                     <div className='flex flex-row justify-between'>
                         <div className='flex flex-row space-x-3'>
