@@ -15,6 +15,7 @@ export default function CommentSection({ articleID }: { articleID: number }) {
     const { data: comments } = useQuery({
         queryFn: async () => (await articleAPI.GetCommentsForArticle(articleID)).data,
         queryKey: ["comments_query"],
+        enabled: isViewOpen
     })
     function handleOpenDialog() {
         if (status === "unauthenticated") {
