@@ -1,5 +1,5 @@
 "use client"
-import { BarsArrowUpIcon } from '@heroicons/react/24/outline'
+import { BarsArrowUpIcon, FireIcon } from '@heroicons/react/24/outline'
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
 import CircleLoading from '../_components/animations/CircleLoading'
@@ -29,7 +29,11 @@ export default function ArticlePage() {
 
     return (
         <div className="flex flex-col w-full pb-10">
-            <SectionHeader title={"トレンド"} rightItem={<BarsArrowUpIcon className='h-7 w-7 text-gray-500' />} />
+            <div className="sticky top-0 h-10 bg-white/80 backdrop-blur-[5px] z-10">
+                <SectionHeader
+                    titleItem={<div className='custom-badge text-gray-500'><FireIcon className='h-5 w-5' /><div>トレンド</div></div>}
+                    rightItem={<BarsArrowUpIcon className='h-7 w-7 text-gray-500' />} />
+            </div>
             <div className="min-h-screen w-full divide-y-[0.5px]">
                 {articles?.pages.map(page => (
                     page?.map((article, index) => (

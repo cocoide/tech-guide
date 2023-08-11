@@ -1,18 +1,17 @@
 import { topicAPI } from '@/app/(dashboard)/settings/_functions/topic';
-import { useAuth } from '@/hooks/useAuth';
 import { Topic } from '@/types/model';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
 interface Props {
+    token?: string
     followingTopics?: Topic[]
     existingTopics?: Topic[]
 }
+const TopicFollowSection = ({ token, followingTopics, existingTopics }: Props) => {
 
-const TopicFollowSection = ({ followingTopics, existingTopics }: Props) => {
     const [topicMap, setTopicMap] = useState<{ [topic_id: number]: boolean }>({});
-    const { token } = useAuth()
     useEffect(() => {
         const initialFollowStatus: { [topic_id: number]: boolean } = {};
         existingTopics?.forEach(topic => {
@@ -59,7 +58,7 @@ const TopicFollowSection = ({ followingTopics, existingTopics }: Props) => {
                             <button onClick={() => handleDoFollow(topic.id)}
                                 className="flex flex-row items-center space-x-[3px] text-gray-700 ring-1 ring-gray-200 rounded-full p-[6px]">
                                 <div className="text-sm"> {topic.name}</div>
-                                <PlusIcon className='h-4 w-4 text-gray-400' />
+                                <XMarkIcon className='h-4 w-4 text-gray-400' />
                             </button>
                         }
                     </div>

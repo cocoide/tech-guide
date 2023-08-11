@@ -9,15 +9,15 @@ interface CustomQueryResult<T> {
 
 function useCustomQuery<T>(
     fetchFunction: Promise<ApiResponse<T>>,
-    shouldFetch: boolean,
-    dependencies: DependencyList = []
+    dependencies: DependencyList = []||undefined
 ): CustomQueryResult<T> {
     const [data, setData] = useState<T>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<ApiErrorResponse>();
-
+    if (dependencies===undefined){
+        dependencies=[]
+    }
     useEffect(() => {
-        if (shouldFetch) { 
             (async () => {
                 setLoading(true);
                 const { data, error, ok } = await fetchFunction;
@@ -28,9 +28,8 @@ function useCustomQuery<T>(
                 }
                 setLoading(false);
             })()
-        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [shouldFetch, ...dependencies]);
+    }, dependencies);
 
     return { data, loading, error };
 }

@@ -1,7 +1,7 @@
 "use client"
 import { useAuth } from '@/hooks/useAuth'
 import { loginDialogAtom, postDialogAtom } from '@/stores/dialog'
-import { BookmarkIcon, FireIcon, NewspaperIcon, PlusCircleIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import { BookmarkIcon, FireIcon, MagnifyingGlassIcon, NewspaperIcon, PlusCircleIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,6 +15,7 @@ const LeftSideVar = () => {
         { label: "トレンド", href: "/trend", icon: <FireIcon className='h-7 w-7' />, isLogin: false },
         { label: "フィード", href: "/", icon: <NewspaperIcon className='h-7 w-7' />, isLogin: true },
         { label: "保存リスト", href: `/accounts/${user.uid}/collections`, icon: <BookmarkIcon className='h-7 w-7' />, isLogin: true },
+        { label: "検索", href: "/explore", icon: <MagnifyingGlassIcon className='h-7 w-7' />, isLogin: false },
     ]
     return (
         <div className="hidden md:flex flex-col p-5 w-[220px] lg:w-[250px] justify-between  items-center h-[100%]">
