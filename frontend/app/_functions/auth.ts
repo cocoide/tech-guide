@@ -48,7 +48,7 @@ export const authAPI ={
                 uid: session?.user?.uid,
                 name: session?.user?.name,
                 image: session?.user?.image,
-            }
+            },
         }
     }
 }
