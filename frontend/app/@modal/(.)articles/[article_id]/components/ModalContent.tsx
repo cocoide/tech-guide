@@ -48,7 +48,7 @@ const ModalContent = ({ article }: Props) => {
                                 <div className="flex sm:hidden">
                                     <CloseButton />
                                 </div>
-                                I</div>
+                            </div>
                         </div>
                         <ArticlePreviewSection article={article} />
                         <ActionSection articleId={article?.id} />
