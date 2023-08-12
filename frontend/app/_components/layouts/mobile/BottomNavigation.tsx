@@ -1,7 +1,7 @@
 'use client'
 import { useAuth } from '@/hooks/useAuth'
 import { loginDialogAtom, postDialogAtom } from '@/stores/dialog'
-import { FireIcon, HomeIcon,MagnifyingGlassIcon, NewspaperIcon, PlusCircleIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import { HomeIcon, MagnifyingGlassIcon, NewspaperIcon, PlusCircleIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -28,7 +28,7 @@ export default function BottomNavigation() {
   return (
     <div className="w-full flex flex-row items-center justify-between px-[10%] py-2 bg-white/80 backdrop-blur-[5px] text-slate-500">
       <Link href={"/"} ><HomeIcon className='h-7 w-7' /></Link>
-      <Link href={"/feed"} ><NewspaperIcon className='h-7 w-7' /></Link>
+      <Link href={"/feed"} ><NewspaperIcon className='h-7 w-7' onClick={handleAuth} /></Link>
       <button onClick={handlePost}><PlusCircleIcon className='h-7 w-7' /></button>
       <Link href={"/explore"} ><MagnifyingGlassIcon className='h-7 w-7' /></Link>
       <Link href={AccountURL} onClick={handleAuth}>
