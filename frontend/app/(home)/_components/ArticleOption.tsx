@@ -40,10 +40,10 @@ const ArticleOption = ({ article }: Props) => {
       text-slate-400 hover:text-pink-300  hover:bg-pink-50 duration-500' onClick={handleCollectionDialog}>
         <HandThumbUpIcon className='h-5 w-5' />
       </button>
-      <button className='absolute bottom-[10px] left-[70px] p-1 rounded-full
-      text-slate-400 hover:text-blue-300  hover:bg-blue-50 duration-500' onClick={handleCollectionDialog}>
+      <Link href={`articles/${article.id}?comment=true`} className='absolute bottom-[10px] left-[70px] p-1 rounded-full
+      text-slate-400 hover:text-blue-300  hover:bg-blue-50 duration-500'>
         <ChatBubbleOvalLeftEllipsisIcon className='h-5 w-5' />
-      </button>
+      </Link>
       <button className='absolute bottom-[10px] left-[100px] p-1 rounded-full 
       text-slate-400 hover:text-green-300 hover:bg-green-50  duration-500' onClick={handleCollectionDialog}>
         <BookmarkIcon className='h-5 w-5' />

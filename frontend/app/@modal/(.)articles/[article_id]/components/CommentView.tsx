@@ -3,10 +3,16 @@ import { api } from '@/app/_functions/API';
 import { useAuth } from '@/hooks/useAuth';
 import { Comment } from '@/types/model';
 import Image from 'next/image';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, RefObject, useState } from 'react';
 import toast from 'react-hot-toast';
 
-const CommentView = ({ articleID, comments }: { articleID: number, comments?: Comment[] }) => {
+
+interface Props {
+    articleID: number
+    comments?: Comment[]
+    inputRef: RefObject<HTMLInputElement>
+}
+const CommentView = ({ articleID, comments, inputRef }: Props) => {
     const { user, token } = useAuth()
     const [comment, setComment] = useState("")
     function handleCommentChange(e: ChangeEvent<HTMLInputElement>) {
@@ -31,7 +37,7 @@ const CommentView = ({ articleID, comments }: { articleID: number, comments?: Co
         <div className='flex flex-col space-y-2 w-full'>
             <div className="flex flex-row items-center w-full space-x-3">
                 <Image src={user?.image as string} width={70} height={70} alt={user?.name as string} className="h-7 w-7 rounded-full bg-shadow" />
-                <input onChange={handleCommentChange} className="ring-none border-none w-full p-1 text-sm text-gray-500 focus:ring-transparent " placeholder="コメントを入力" />
+                <input ref={inputRef} onChange={handleCommentChange} className="ring-none border-none w-full p-1 text-sm text-gray-500 focus:ring-transparent " placeholder="コメントを入力" />
                 <button onClick={handleSubmit} className="text-sm bg-cyan-300 w-20 h-auto text-white p-1 rounded-md">投稿</button>
             </div>
             {comments&&comments?.length>0&&

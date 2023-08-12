@@ -3,7 +3,7 @@ import { collectionAPI } from '@/app/(dashboard)/accounts/[account_id]/_function
 import { api } from '@/app/_functions/API'
 import { collectionDialogAtom } from '@/stores/dialog'
 import { Collection } from '@/types/model'
-import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import { ChevronLeftIcon, NewspaperIcon } from '@heroicons/react/24/outline'
 import { PlusCircleIcon } from '@heroicons/react/24/solid'
 import { useAtom } from 'jotai'
 import { useSession } from 'next-auth/react'
@@ -101,15 +101,19 @@ const CollectionDialog = () => {
                                 key={c.id} className="flex flex-row items-center space-x-5">
                                 {c.articles[0]?.thumbnail_url ?
                                     // eslint-disable-next-line @next/next/no-img-element
-                                    <img src={c.articles[0].thumbnail_url} alt={c.articles[0].title} width={200} className='rounded-md w-[200px] h-[100px] shadow-md' />
+                                    <img src={c.articles[0].thumbnail_url} alt={c.articles[0].title} width={200}
+                                        className='rounded-md w-[50%] h-[100px] shadow-md overflow-hidden' />
                                     :
-                                    <div className="rounded-md w-[100px] h-[60px] bg-slate-200 shadow-[3px]"></div>
+                                    <div className="flex items-center justify-center rounded-md w-[50%] h-[100px] bg-gray-100 shadow-[3px]">
+                                        <NewspaperIcon className="h-7 w-7 text-gray-500" />
+                                    </div>
                                 }
                                 <div className="">{c.name}</div>
                             </button>
                     )))}
                     </div>
-                            <button onClick={() => setIsNewCollection(true)} className="flex flex-row items-center space-x-2 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-md justify-center
+                            <button onClick={() => setIsNewCollection(true)} className="flex flex-row items-center space-x-2
+                            custom-border rounded-md justify-center
                              w-full p-[3px]">
                                 <PlusCircleIcon className='h-7 w-7 text-cyan-300' /><div>新しいコレクションを作成</div></button>
                         </>

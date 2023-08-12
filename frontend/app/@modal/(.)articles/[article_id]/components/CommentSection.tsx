@@ -5,10 +5,15 @@ import { loginDialogAtom } from '@/stores/dialog';
 import { ChatBubbleOvalLeftEllipsisIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
-import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import CommentView from './CommentView';
 
+
 export default function CommentSection({ articleID }: { articleID: number }) {
+    const searchParams = useSearchParams()
+    const inputRef = useRef<HTMLInputElement>(null);
+    const isComment = searchParams.get('comment')
     const { status } = useAuth()
     const [isViewOpen, setViewOpen] = useState(false)
     const [__, setLoginOpen] = useAtom(loginDialogAtom)
@@ -24,6 +29,15 @@ export default function CommentSection({ articleID }: { articleID: number }) {
         }
         setViewOpen(!isViewOpen)
     }
+    useEffect(() => {
+        if (isComment == "true") {
+            setViewOpen(true)
+            if (inputRef.current) {
+                inputRef.current.focus()
+                inputRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, [isComment, isViewOpen])
     return (
         <>
             <div className="flex flex-col space-y-2 w-full p-2 border-y">
@@ -35,7 +49,7 @@ export default function CommentSection({ articleID }: { articleID: number }) {
             <ChevronUpDownIcon className='h-7 w-7' />
                 </button>
                 {isViewOpen &&
-                    <CommentView articleID={articleID}comments={comments} />
+                    <CommentView articleID={articleID} comments={comments} inputRef={inputRef} />
                 }
             </div >
         </>
