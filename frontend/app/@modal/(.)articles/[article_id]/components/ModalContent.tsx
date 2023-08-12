@@ -1,7 +1,10 @@
 "use client"
 
+import { articleAPI } from '@/app/_functions/article'
+import { useAuth } from '@/hooks/useAuth'
 import { Article } from '@/types/model'
-import { ArrowTopRightOnSquareIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import OutlineLoader from '../loader/OutlineLoader'
@@ -15,8 +18,14 @@ interface Props {
     article?: Article
 }
 const ModalContent = ({ article }: Props) => {
+    const { token } = useAuth()
     const domain = article?.source.domain
     const unShownOutline = domain === "youtube.com" || domain === "speakerdeck.com";
+    async function handleOnRead(article_id: number) {
+        if (token) {
+            const { ok } = await articleAPI.ReadArticle(article_id, token)
+        }
+    }
     return (
         <div>
             {article &&
@@ -25,19 +34,21 @@ const ModalContent = ({ article }: Props) => {
             overflow-y-scroll divide-x flex flex-col sm:flex-row">
                     <div className="flex flex-col p-5 lg:p-7 w-full space-y-3">
                         <div className="flex flex-row items-center justify-between text-gray-500">
-                            <div className="flex flex-row items-center space-x-5">
+                            {/* <div className="flex flex-row items-center space-x-5">
                                 <ChevronLeftIcon className='w-7 h-7 p-[3px] hover:bg-gray-200 duration-500 rounded-md' />
                                 <ChevronRightIcon className='w-7 h-7 p-[3px] hover:bg-gray-200 duration-500 rounded-md' />
-                            </div>
+                            </div> */}
+                            <Link href={`/sources/${article.source.id}`}>
+                                <Image src={article.source.icon_url} alt={article.source.name} width={200} height={200} className='h-7 w-7 rounded-full' />
+                            </Link>
                             <div className="flex flex-row items-center space-x-5">
-                                <Link href={article.original_url}>
+                                <Link href={article.original_url} onClick={() => handleOnRead(article.id)}>
                                     <ArrowTopRightOnSquareIcon className='w-7 h-7 sm:hidden  p-[3px] hover:bg-gray-200 duration-500 rounded-md' />
                                 </Link>
-                                <EllipsisVerticalIcon className='w-7 h-7 sm:hidden  p-[3px] hover:bg-gray-200 duration-500 rounded-md' />
                                 <div className="flex sm:hidden">
                                     <CloseButton />
                                 </div>
-                            </div>
+                                I</div>
                         </div>
                         <ArticlePreviewSection article={article} />
                         <ActionSection articleId={article?.id} />
