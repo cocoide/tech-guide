@@ -26,6 +26,9 @@ const ModalContent = ({ article }: Props) => {
             const { ok } = await articleAPI.ReadArticle(article_id, token)
         }
     }
+    function reload() {
+        window.location.reload()
+    }
     return (
         <div>
             {article &&
@@ -38,7 +41,7 @@ const ModalContent = ({ article }: Props) => {
                                 <ChevronLeftIcon className='w-7 h-7 p-[3px] hover:bg-gray-200 duration-500 rounded-md' />
                                 <ChevronRightIcon className='w-7 h-7 p-[3px] hover:bg-gray-200 duration-500 rounded-md' />
                             </div> */}
-                            <Link href={`/sources/${article.source.id}`}>
+                            <Link href={`/sources/${article.source.id}`} onClick={reload}>
                                 <Image src={article.source.icon_url} alt={article.source.name} width={200} height={200} className='h-7 w-7 rounded-full' />
                             </Link>
                             <div className="flex flex-row items-center space-x-5">
@@ -54,7 +57,7 @@ const ModalContent = ({ article }: Props) => {
                         <ActionSection articleId={article?.id} />
                         <CommnentSection articleID={article?.id} />
                         <div className="w-full flex flex-wrap gap-3">{article.topics.map((topic) => (
-                            <Link href={`/topics/${topic.id}`} key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</Link>
+                            <Link href={`/topics/${topic.id}`} onClick={reload} key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</Link>
             ))}</div>
                         <div className="sm:hidden">
                             {!unShownOutline &&
