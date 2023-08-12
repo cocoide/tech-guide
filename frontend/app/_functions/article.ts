@@ -44,4 +44,10 @@ export const articleAPI = {
     async GetCommentsForArticle(articleID: number){
         return await api.get<Comment[]>(`/comment/${articleID}`,"no-store")
     },
+    async GetrArticlesBySourceID(sourceID: number, page: number){
+        return await api.get<Article[]>(`/article/source/${sourceID}?page=${page}`,"no-store")
+    },
+    async GetrArticlesByTopicID(topicID: number, page: number){
+        return await api.get<Article[]>(`/article/topic/${topicID}?page=${page}`,"no-store")
+    },
 }
