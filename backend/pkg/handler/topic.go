@@ -23,6 +23,7 @@ func (h *Handler) GetFollowingTopics(c echo.Context) error {
 	}
 	return c.JSON(200, topics)
 }
+
 func (h *Handler) DoFollowTopic(c echo.Context) error {
 	topicId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -62,4 +63,23 @@ func (h *Handler) CreateTopics(c echo.Context) error {
 		return c.JSON(400, err.Error())
 	}
 	return c.JSON(200, "topics created")
+}
+
+func (h *Handler) GetTopicData(c echo.Context) error {
+	topicId, err := strconv.Atoi(c.Param("id"))
+	topic, err := h.tr.GetTopicData(topicId)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, topic)
+}
+
+func (h *Handler) CheckTopicFollow(c echo.Context) error {
+	accountId := int(c.Get("account_id").(float64))
+	topicId, err := strconv.Atoi(c.Param("id"))
+	souce, err := h.tr.IsFollowingTopic(accountId, topicId)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, souce)
 }

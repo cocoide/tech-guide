@@ -17,14 +17,14 @@ func NewOGPGateway() OGPGateway {
 	return OGPGateway{client: &http.Client{Timeout: 10 * time.Second}}
 }
 
-type OGP struct {
+type OGPResponse struct {
 	Title       string `json:"title"`
 	Thumbnail   string `json:"thumbnail"`
 	Sitename    string `json:"sitename"`
 	Description string `json:"description"`
 }
 
-func (g *OGPGateway) GetOGPByURL(url string) (*OGP, error) {
+func (g *OGPGateway) GetOGPByURL(url string) (*OGPResponse, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (g *OGPGateway) GetOGPByURL(url string) (*OGP, error) {
 			break
 		}
 	}
-	result := &OGP{
+	result := &OGPResponse{
 		Title:       ogp.Title,
 		Thumbnail:   thumbnail,
 		Sitename:    ogp.SiteName,

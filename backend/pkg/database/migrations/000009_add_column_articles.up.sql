@@ -1,0 +1,2 @@
+ALTER TABLE articles
+ADD summary VARCHAR(1000);

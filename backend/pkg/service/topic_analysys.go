@@ -92,7 +92,7 @@ func (ts *topicAnalysisService) ExtractTopicsWithWeightFromArticleTitle(title st
 		existingTopicsName += t.Name
 	}
 	prompt := fmt.Sprintf(conf.SelectTopicsPrompt, title, existingTopicsName)
-	answer, err := ts.og.GetAnswerFromPrompt(prompt, 0)
+	answer, err := ts.og.GetAnswerFromPrompt(prompt, 0.01)
 	if err != nil {
 		return nil, err
 	}

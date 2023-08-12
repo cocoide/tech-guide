@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -50,6 +51,27 @@ func (h *Handler) GetRSS(c echo.Context) error {
 	}
 	return c.JSON(200, result)
 }
+func (h *Handler) GetDomainID(c echo.Context) error {
+	URL := c.QueryParam("url")
+	domain, err := util.ExtractDomainNameFromURL(URL)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	id, err := h.sr.FindIDByDomain(domain)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, id)
+}
+
+func (h *Handler) GetOverview(c echo.Context) error {
+	URL := c.QueryParam("url")
+	content, err := util.GetMarkdownByURL(URL)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, content)
+}
 
 func (h *Handler) GetOGP(c echo.Context) error {
 	ctx := context.Background()
@@ -60,7 +82,7 @@ func (h *Handler) GetOGP(c echo.Context) error {
 		if err != nil {
 			return c.JSON(400, err.Error())
 		}
-		if len(ogp.Thumbnail) > 500 {
+		if len(ogp.Thumbnail) > 700 {
 			ogp.Thumbnail = ""
 		}
 		return c.JSON(200, ogp)
@@ -69,9 +91,37 @@ func (h *Handler) GetOGP(c echo.Context) error {
 	}
 	return nil
 }
+func (h *Handler) GetSpeakerDeckID(c echo.Context) error {
+	var result string
+	URL := c.QueryParam("url")
+	type Response struct {
+		HTML string `json:"html"`
+	}
+	params := map[string]string{"url": URL}
+	res, err := util.FetchJSON[Response]("https://speakerdeck.com/oembed.json", params)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	pattern := `src="//speakerdeck.com/player/([^"]+)"`
+	re := regexp.MustCompile(pattern)
+	matches := re.FindStringSubmatch(res.HTML)
+	if len(matches) > 1 {
+		result = matches[1]
+	} else {
+		return c.JSON(400, "not found id")
+	}
+	return c.JSON(200, result)
+}
 
 func (h *Handler) GetArticles(c echo.Context) error {
-	articles, err := h.ar.GetLatestArticleByLimit(50)
+	strPageIndex := c.QueryParam("page")
+	var pageIndex int
+	if strPageIndex == "" {
+		pageIndex = 1
+	} else {
+		pageIndex, _ = strconv.Atoi(strPageIndex)
+	}
+	articles, err := h.ar.GetLatestArticleByLimitWithSourceData(pageIndex, 20)
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
@@ -83,7 +133,7 @@ func (h *Handler) GetArticleDetail(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	articles, err := h.ar.GetArticleByID(articleID)
+	articles, err := h.ar.GetArticleWithRelatedDataByID(articleID)
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
@@ -162,4 +212,36 @@ func (h *Handler) CreateArticle(c echo.Context) error {
 		}
 	}()
 	return c.JSON(200, article)
+}
+
+func (h *Handler) GetArticlesBySourceID(c echo.Context) error {
+	sourceID, err := strconv.Atoi(c.Param("sourceId"))
+	pageIndex := getPageIndexFromQuery(c, 1)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	articles, err := h.ar.GetArticlesBySourceID(sourceID, pageIndex, 10)
+	return c.JSON(200, articles)
+}
+
+func (h *Handler) GetArticlesByTopicID(c echo.Context) error {
+	topicID, err := strconv.Atoi(c.Param("topicId"))
+	pageIndex := getPageIndexFromQuery(c, 1)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	articles, err := h.ar.GetArticlesByTopicID(topicID, pageIndex, 10)
+	return c.JSON(200, articles)
+}
+
+func getPageIndexFromQuery(c echo.Context, defaultPage int) int {
+	strPageIndex := c.QueryParam("page")
+	if strPageIndex == "" {
+		return defaultPage
+	}
+	pageIndex, err := strconv.Atoi(strPageIndex)
+	if err != nil {
+		return defaultPage
+	}
+	return pageIndex
 }

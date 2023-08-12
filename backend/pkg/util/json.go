@@ -2,7 +2,7 @@ package util
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 )
@@ -24,10 +24,10 @@ func Deserialize[T any](data string) (T, error) {
 	return result, nil
 }
 
-func FetchJSON[T any](url string, timeout time.Duration) (T, error) {
+func FetchJSON[T any](url string, params map[string]string) (T, error) {
 	var result T
 	client := http.Client{
-		Timeout: timeout,
+		Timeout: 5 * time.Second,
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -35,13 +35,19 @@ func FetchJSON[T any](url string, timeout time.Duration) (T, error) {
 		return result, err
 	}
 
+	query := req.URL.Query()
+	for key, value := range params {
+		query.Add(key, value)
+	}
+	req.URL.RawQuery = query.Encode()
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return result, err
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return result, err
 	}

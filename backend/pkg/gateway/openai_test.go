@@ -12,7 +12,7 @@ func Test_OpenAIGateway(t *testing.T) {
 	conf.NewEnv()
 	ctx := context.Background()
 	og := gateway.NewOpenAIGateway(ctx)
-	res, err := og.GetAnswerFromPrompt("[Title: Tailwind CSSはCSS設計に何をもたらすか], Select tags related to the title from [Frontend, SRE, Golang, Ruby, 個人開発, Businness, Markeging, 設計] with weights ranging from 1 to 5. Output only the tags with a weight of 3 or higher in the format `<TagName>: <Weight>,`(do not output anything for tags with weights below 3)", 0)
+	res, err := og.GetAnswerFromPrompt("[要約: Terraformを使用してDatadogのモニタリング監視を構築・改善した話。構築前の状況や目的、Datadogタグの目的、エージェント導入、コンテナ環境変数追加などの手順を紹介。特にCPU監視のモニター設定の例も示し、Queryの設定方法について説明。], 以下のTagの中から要約内容に関連するものを選んで[Observation,Datadog,Frontend, SRE, Golang, Ruby, 個人開発, Businness, Marketing, IAC] Weightの範囲は1~5。 ただし、Weightが3以上のもので、かつ、 `<TagName>: <Weight>このフォーマットの値だけを出力して", 0.01)
 	if err != nil {
 		t.Errorf("func error: %v", err)
 	}

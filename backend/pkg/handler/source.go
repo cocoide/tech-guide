@@ -60,3 +60,20 @@ func (h *Handler) GetFollowingSources(c echo.Context) error {
 	}
 	return c.JSON(200, souces)
 }
+func (h *Handler) GetSourceData(c echo.Context) error {
+	sourceId, err := strconv.Atoi(c.Param("id"))
+	souce, err := h.sr.GetSourceData(sourceId)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, souce)
+}
+func (h *Handler) CheckSourceFollow(c echo.Context) error {
+	accountId := int(c.Get("account_id").(float64))
+	sourceId, err := strconv.Atoi(c.Param("id"))
+	souce, err := h.sr.IsFollowingSource(accountId, sourceId)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, souce)
+}

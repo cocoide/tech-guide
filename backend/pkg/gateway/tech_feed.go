@@ -21,7 +21,7 @@ func NewTechFeedGateway() TechFeedGateway {
 
 func (g *techFeedGateway) GetQiitaTrendFeed(limit, save int, start string) ([]*dto.QiitaArticleAPI, error) {
 	url := fmt.Sprintf("https://qiita.com/api/v2/items?page=1&per_page=%d&query=created:>%s+stocks:>%d", limit, start, save)
-	res, err := util.FetchJSON[[]*dto.QiitaArticleAPI](url, 5*time.Second)
+	res, err := util.FetchJSON[[]*dto.QiitaArticleAPI](url, nil)
 	if err != nil {
 		return nil, err
 	}

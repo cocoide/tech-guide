@@ -110,3 +110,12 @@ func (h *Handler) DoBookmark(c echo.Context) error {
 	}
 	return c.JSON(200, bookmark)
 }
+
+func (h *Handler) GetTopicsForCollection(c echo.Context) error {
+	collectionId, err := strconv.Atoi(c.Param("id"))
+	topics, err := h.tr.GetTopicsByCollectionID(collectionId)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, topics)
+}

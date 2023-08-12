@@ -1,14 +1,35 @@
 package handler
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
+	"github.com/cocoide/tech-guide/key"
 	"github.com/cocoide/tech-guide/pkg/model"
+	"github.com/cocoide/tech-guide/pkg/model/dto"
 	"github.com/cocoide/tech-guide/pkg/util"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo"
 )
+
+func (h *Handler) Session(c echo.Context) error {
+	accountId := int(c.Get("account_id").(float64))
+	key := fmt.Sprintf(key.UserSession, accountId)
+	strSession, err := h.rr.Get(key)
+	if err != nil {
+		return c.JSON(400, "cache error")
+	}
+	if strSession == "" {
+		// Sessionが存在しない場合は何も返さない
+		return c.JSON(200, "")
+	}
+	session, err := util.Deserialize[dto.UserSession](strSession)
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, session)
+}
 
 func (h *Handler) Login(c echo.Context) error {
 	type REQ struct {
@@ -27,7 +48,7 @@ func (h *Handler) Login(c echo.Context) error {
 		Name:         account.DisplayName,
 		Image:        account.AvatarURL,
 		Token:        token,
-		TokenExpires: time.Now().Add(1 * time.Hour).Unix(),
+		TokenExpires: time.Now().Add(30 * 24 * time.Hour).Unix(),
 	}
 	return c.JSON(200, res)
 }
@@ -90,6 +111,13 @@ func (h *Handler) SignUp(c echo.Context) error {
 	account, err := h.uu.SignUp(account)
 	if err != nil {
 		return c.JSON(403, err.Error())
+	}
+	// Sessionの設定
+	session := dto.UserSession{IsSetupDone: false}
+	strSession, err := util.Serialize(session)
+	key := fmt.Sprintf(key.UserSession, account.ID)
+	if err := h.rr.Set(key, strSession, 2*24*time.Hour); err != nil {
+		return c.JSON(400, err.Error())
 	}
 	if err := h.cr.CreateCollection(&model.Collection{
 		AccountID:  account.ID,

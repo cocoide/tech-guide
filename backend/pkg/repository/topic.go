@@ -18,6 +18,9 @@ type TopicRepo interface {
 	GetTopicToArticleArrayByArticleIDs(articleIDs []int) ([]model.TopicsToArticles, error)
 	GetRecentPopularArticleIDs(duration time.Duration, limit int) ([]int, error)
 	GetPopularTopics(limit int) ([]model.Topic, error)
+	GetTopicsByCollectionID(collectionID int) ([]model.Topic, error)
+	GetTopicData(topicID int) (*model.Topic, error)
+	IsFollowingTopic(accountID, topicID int) (bool, error)
 }
 
 type topicRepo struct {
@@ -137,4 +140,46 @@ func (r *topicRepo) GetRecentPopularArticleIDs(duration time.Duration, limit int
 		return nil, err
 	}
 	return articleIDs, nil
+}
+
+func (r *topicRepo) GetTopicsByCollectionID(collectionID int) ([]model.Topic, error) {
+	var collection model.Collection
+	err := r.db.Preload("Articles.Topics").First(&collection, collectionID).Error
+	if err != nil {
+		return nil, err
+	}
+	var topics []model.Topic
+	for _, article := range collection.Articles {
+		topics = append(topics, article.Topics...)
+	}
+
+	topicMap := make(map[int]model.Topic)
+	for _, topic := range topics {
+		topicMap[topic.ID] = topic
+	}
+
+	var uniqueTopics []model.Topic
+	for _, topic := range topicMap {
+		uniqueTopics = append(uniqueTopics, topic)
+	}
+
+	return uniqueTopics, nil
+}
+
+func (r *topicRepo) GetTopicData(topicID int) (*model.Topic, error) {
+	var topic model.Topic
+	if err := r.db.First(&topic, topicID).Error; err != nil {
+		return nil, err
+	}
+	return &topic, nil
+}
+
+func (r *topicRepo) IsFollowingTopic(accountID, topicID int) (bool, error) {
+	var count int64
+	if err := r.db.Model(&model.FollowTopic{}).
+		Where("account_id = ? AND topic_id = ?", accountID, topicID).
+		Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }

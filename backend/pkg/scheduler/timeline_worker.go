@@ -10,6 +10,7 @@ import (
 	"github.com/cocoide/tech-guide/key"
 	"github.com/cocoide/tech-guide/pkg/gateway"
 	"github.com/cocoide/tech-guide/pkg/model"
+	"github.com/cocoide/tech-guide/pkg/model/object"
 	repo "github.com/cocoide/tech-guide/pkg/repository"
 	"github.com/cocoide/tech-guide/pkg/service"
 	"github.com/cocoide/tech-guide/pkg/util"
@@ -25,6 +26,7 @@ type TimelineWorker interface {
 type timelineWorker struct {
 	ur repo.AccountRepo
 	ar repo.ArticleRepo
+	sr repo.SourceRepo
 	cr repo.CacheRepo
 	tr repo.TopicRepo
 	vr repo.ActivityRepo
@@ -33,8 +35,8 @@ type timelineWorker struct {
 	ps service.PersonalizeService
 }
 
-func NewTimelineWorker(ur repo.AccountRepo, ar repo.ArticleRepo, vr repo.ActivityRepo, vs service.ActivityService, cr repo.CacheRepo, tr repo.TopicRepo, ps service.PersonalizeService, tg gateway.TechFeedGateway) TimelineWorker {
-	return &timelineWorker{ur: ur, ar: ar, cr: cr, vr: vr, vs: vs, tr: tr, ps: ps, tg: tg}
+func NewTimelineWorker(ur repo.AccountRepo, ar repo.ArticleRepo, sr repo.SourceRepo, vr repo.ActivityRepo, vs service.ActivityService, cr repo.CacheRepo, tr repo.TopicRepo, ps service.PersonalizeService, tg gateway.TechFeedGateway) TimelineWorker {
+	return &timelineWorker{ur: ur, ar: ar, sr: sr, cr: cr, vr: vr, vs: vs, tr: tr, ps: ps, tg: tg}
 }
 
 func (w *timelineWorker) RegisterQiitaTendsWorker() {
@@ -52,8 +54,12 @@ func (w *timelineWorker) RegisterQiitaTendsWorker() {
 			log.Println(err)
 		}
 		if !exists {
+			sourceID, err := w.sr.FindIDByDomain(object.QiitaDomain)
+			if err != nil {
+				log.Panicln(err)
+			}
 			articles = append(articles,
-				&model.Article{Title: v.Title, OriginalURL: v.URL})
+				&model.Article{Title: v.Title, OriginalURL: v.URL, SourceID: sourceID})
 		}
 	}
 	createdIDs, err := w.ar.BatchCreate(articles)
