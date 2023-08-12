@@ -43,7 +43,7 @@ const ModalContent = ({ article }: Props) => {
                         <ActionSection articleId={article?.id} />
                         <CommnentSection articleID={article?.id} />
                         <div className="w-full flex flex-wrap gap-3">{article.topics.map((topic) => (
-                <div key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</div>
+                            <Link href={`/topics/${topic.id}`} key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</Link>
             ))}</div>
                         <div className="sm:hidden">
                             {!unShownOutline &&

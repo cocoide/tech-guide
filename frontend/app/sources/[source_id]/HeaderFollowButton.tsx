@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 interface Props {
-    doFollowFunc: () => void
-    unFollowFunc: () => void
+    doFollowFunc: () => Promise<void>;
+    unFollowFunc: () => Promise<void>;
     isFollowing: boolean | undefined
 }
 const HeaderFollowButton = ({ isFollowing, doFollowFunc, unFollowFunc }: Props) => {
@@ -17,11 +17,21 @@ const HeaderFollowButton = ({ isFollowing, doFollowFunc, unFollowFunc }: Props) 
     return (
         <>
             {onClicked ?
-                <button onClick={()=>{unFollowFunc;setOnClicked(false)}} className='text-sm custom-badge p-2 bg-gray-400 text-white rounded-xl'>
+                <button
+                    onClick={async () => {
+                        await unFollowFunc();
+                        setOnClicked(false);
+                    }}
+                    className='text-sm custom-badge p-2 bg-gray-400 text-white rounded-xl'>
                     フォロー中
                 </button>
                 :
-                <button onClick={()=>{doFollowFunc;setOnClicked(true)}} className="text-sm custom-badge p-2 ring-1 bg-cyan-50/50 ring-cyan-300 text-cyan-300 rounded-xl">
+                <button
+                    onClick={async () => {
+                        await doFollowFunc();
+                        setOnClicked(true);
+                    }}
+                    className="text-sm custom-badge p-2 ring-1 bg-cyan-50/50 ring-cyan-300 text-cyan-300 rounded-xl">
                     フォローする
                 </button>
             }
