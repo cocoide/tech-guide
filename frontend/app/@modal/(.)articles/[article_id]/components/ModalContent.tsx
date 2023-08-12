@@ -6,6 +6,7 @@ import { Article } from '@/types/model'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Suspense } from 'react'
 import OutlineLoader from '../loader/OutlineLoader'
 import ActionSection from './ActionSection'
@@ -19,15 +20,13 @@ interface Props {
 }
 const ModalContent = ({ article }: Props) => {
     const { token } = useAuth()
+    const router = useRouter()
     const domain = article?.source.domain
     const unShownOutline = domain === "youtube.com" || domain === "speakerdeck.com";
     async function handleOnRead(article_id: number) {
         if (token) {
             const { ok } = await articleAPI.ReadArticle(article_id, token)
         }
-    }
-    function reload() {
-        window.location.reload()
     }
     return (
         <div>
@@ -41,9 +40,9 @@ const ModalContent = ({ article }: Props) => {
                                 <ChevronLeftIcon className='w-7 h-7 p-[3px] hover:bg-gray-200 duration-500 rounded-md' />
                                 <ChevronRightIcon className='w-7 h-7 p-[3px] hover:bg-gray-200 duration-500 rounded-md' />
                             </div> */}
-                            <Link href={`/sources/${article.source.id}`} onClick={reload}>
+                            <button onClick={() => router.push(`/sources/${article.source.id}`)}>
                                 <Image src={article.source.icon_url} alt={article.source.name} width={200} height={200} className='h-7 w-7 rounded-full' />
-                            </Link>
+                            </button>
                             <div className="flex flex-row items-center space-x-5">
                                 <Link href={article.original_url} onClick={() => handleOnRead(article.id)}>
                                     <ArrowTopRightOnSquareIcon className='w-7 h-7 sm:hidden  p-[3px] hover:bg-gray-200 duration-500 rounded-md' />
@@ -57,7 +56,7 @@ const ModalContent = ({ article }: Props) => {
                         <ActionSection articleId={article?.id} />
                         <CommnentSection articleID={article?.id} />
                         <div className="w-full flex flex-wrap gap-3">{article.topics.map((topic) => (
-                            <Link href={`/topics/${topic.id}`} onClick={reload} key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</Link>
+                            <button onClick={() => router.push(`/topics/${topic.id}`)} key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</button>
             ))}</div>
                         <div className="sm:hidden">
                             {!unShownOutline &&
