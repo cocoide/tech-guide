@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewGORMDatabase() *gorm.DB {
+func NewGormDatabase() *gorm.DB {
 	env := os.Getenv("APP_ENV")
 	var DSN string
 	switch env {
