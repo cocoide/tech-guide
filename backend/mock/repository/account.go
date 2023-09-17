@@ -7,7 +7,7 @@ package mock_repository
 import (
 	reflect "reflect"
 
-	model "github.com/cocoide/tech-guide/pkg/model"
+	model "github.com/cocoide/tech-guide/pkg/domain/model"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -49,19 +49,19 @@ func (mr *MockAccountRepoMockRecorder) CheckExistByEmail(email interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckExistByEmail", reflect.TypeOf((*MockAccountRepo)(nil).CheckExistByEmail), email)
 }
 
-// Create mocks base method.
-func (m *MockAccountRepo) Create(account *model.Account) (*model.Account, error) {
+// CreateAccount mocks base method.
+func (m *MockAccountRepo) CreateAccount(account *model.Account) (*model.Account, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", account)
+	ret := m.ctrl.Call(m, "CreateAccount", account)
 	ret0, _ := ret[0].(*model.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Create indicates an expected call of Create.
-func (mr *MockAccountRepoMockRecorder) Create(account interface{}) *gomock.Call {
+// CreateAccount indicates an expected call of CreateAccount.
+func (mr *MockAccountRepoMockRecorder) CreateAccount(account interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAccountRepo)(nil).Create), account)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccount", reflect.TypeOf((*MockAccountRepo)(nil).CreateAccount), account)
 }
 
 // GetAccountProfile mocks base method.

@@ -7,7 +7,7 @@ package mock_repository
 import (
 	reflect "reflect"
 
-	model "github.com/cocoide/tech-guide/pkg/model"
+	model "github.com/cocoide/tech-guide/pkg/domain/model"
 	gomock "github.com/golang/mock/gomock"
 )
 

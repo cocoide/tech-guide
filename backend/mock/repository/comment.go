@@ -7,7 +7,7 @@ package mock_repository
 import (
 	reflect "reflect"
 
-	model "github.com/cocoide/tech-guide/pkg/model"
+	model "github.com/cocoide/tech-guide/pkg/domain/model"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -34,18 +34,18 @@ func (m *MockCommentRepo) EXPECT() *MockCommentRepoMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
-func (m *MockCommentRepo) Create(comment *model.Comment) error {
+// CreateComment mocks base method.
+func (m *MockCommentRepo) CreateComment(comment *model.Comment) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", comment)
+	ret := m.ctrl.Call(m, "CreateComment", comment)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Create indicates an expected call of Create.
-func (mr *MockCommentRepoMockRecorder) Create(comment interface{}) *gomock.Call {
+// CreateComment indicates an expected call of CreateComment.
+func (mr *MockCommentRepoMockRecorder) CreateComment(comment interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCommentRepo)(nil).Create), comment)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateComment", reflect.TypeOf((*MockCommentRepo)(nil).CreateComment), comment)
 }
 
 // GetComments mocks base method.

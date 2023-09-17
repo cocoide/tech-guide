@@ -7,7 +7,7 @@ package mock_repository
 import (
 	reflect "reflect"
 
-	model "github.com/cocoide/tech-guide/pkg/model"
+	model "github.com/cocoide/tech-guide/pkg/domain/model"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -79,19 +79,19 @@ func (mr *MockArticleRepoMockRecorder) CheckArticleExistsByURL(url interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckArticleExistsByURL", reflect.TypeOf((*MockArticleRepo)(nil).CheckArticleExistsByURL), url)
 }
 
-// Create mocks base method.
-func (m *MockArticleRepo) Create(article *model.Article) (int, error) {
+// CreateArticle mocks base method.
+func (m *MockArticleRepo) CreateArticle(article *model.Article) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", article)
+	ret := m.ctrl.Call(m, "CreateArticle", article)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Create indicates an expected call of Create.
-func (mr *MockArticleRepoMockRecorder) Create(article interface{}) *gomock.Call {
+// CreateArticle indicates an expected call of CreateArticle.
+func (mr *MockArticleRepoMockRecorder) CreateArticle(article interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockArticleRepo)(nil).Create), article)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateArticle", reflect.TypeOf((*MockArticleRepo)(nil).CreateArticle), article)
 }
 
 // CreateTopicToArticle mocks base method.

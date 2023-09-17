@@ -3,44 +3,40 @@ package usecase
 import (
 	"errors"
 
-	"github.com/cocoide/tech-guide/pkg/model"
-	repo "github.com/cocoide/tech-guide/pkg/repository"
-	"github.com/cocoide/tech-guide/pkg/util"
+	"github.com/cocoide/tech-guide/pkg/domain/model"
+	"github.com/cocoide/tech-guide/pkg/domain/repository"
+	"github.com/cocoide/tech-guide/pkg/utils"
 )
 
-type AccountUseCase interface {
-	Login(email string) (*model.Account, string, error)
-	SignUp(account *model.Account) (*model.Account, error)
-}
-type accountUseCase struct {
-	ur repo.AccountRepo
+type AccountUsecase struct {
+	repo repository.Repository
 }
 
-func NewAccountUseCase(ur repo.AccountRepo) AccountUseCase {
-	return &accountUseCase{ur: ur}
+func NewAccountUsecase(repo repository.Repository) *AccountUsecase {
+	return &AccountUsecase{repo: repo}
 }
 
-func (au *accountUseCase) Login(email string) (*model.Account, string, error) {
-	account, err := au.ur.GetByEmail(email)
+func (au *AccountUsecase) Login(email string) (*model.Account, string, error) {
+	account, err := au.repo.GetByEmail(email)
 	if err != nil {
 		return nil, "", err
 	}
-	token, err := util.GenerateToken(account.ID)
+	token, err := utils.GenerateToken(account.ID)
 	if err != nil {
 		return nil, "", err
 	}
 	return account, token, nil
 }
 
-func (au *accountUseCase) SignUp(account *model.Account) (*model.Account, error) {
-	isEmailUsed, err := au.ur.CheckExistByEmail(account.Email)
+func (au *AccountUsecase) SignUp(account *model.Account) (*model.Account, error) {
+	isEmailUsed, err := au.repo.CheckExistByEmail(account.Email)
 	if err != nil {
 		return nil, err
 	}
 	if isEmailUsed {
 		return nil, errors.New("email is already used")
 	}
-	account, err = au.ur.Create(account)
+	account, err = au.repo.CreateAccount(account)
 	if err != nil {
 		return nil, err
 	}

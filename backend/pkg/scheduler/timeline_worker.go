@@ -7,13 +7,15 @@ import (
 	"sync"
 	"time"
 
+	"github.com/cocoide/tech-guide/pkg/domain/model"
+	"github.com/cocoide/tech-guide/pkg/domain/model/object"
+	"github.com/cocoide/tech-guide/pkg/domain/repository"
+	"github.com/cocoide/tech-guide/pkg/domain/service"
+	"github.com/cocoide/tech-guide/pkg/usecase"
+
 	"github.com/cocoide/tech-guide/key"
-	"github.com/cocoide/tech-guide/pkg/gateway"
-	"github.com/cocoide/tech-guide/pkg/model"
-	"github.com/cocoide/tech-guide/pkg/model/object"
-	repo "github.com/cocoide/tech-guide/pkg/repository"
-	"github.com/cocoide/tech-guide/pkg/service"
-	"github.com/cocoide/tech-guide/pkg/util"
+
+	"github.com/cocoide/tech-guide/pkg/utils"
 )
 
 type TimelineWorker interface {
@@ -24,37 +26,33 @@ type TimelineWorker interface {
 }
 
 type timelineWorker struct {
-	ur repo.AccountRepo
-	ar repo.ArticleRepo
-	sr repo.SourceRepo
-	cr repo.CacheRepo
-	tr repo.TopicRepo
-	vr repo.ActivityRepo
-	vs service.ActivityService
-	tg gateway.TechFeedGateway
-	ps service.PersonalizeService
+	repo  repository.Repository
+	cache repository.CacheRepo
+	activity   *usecase.ActivityUsecase
+	feed  service.TechFeedService
+	personalize  *usecase.PersonalizeUsecase
 }
 
-func NewTimelineWorker(ur repo.AccountRepo, ar repo.ArticleRepo, sr repo.SourceRepo, vr repo.ActivityRepo, vs service.ActivityService, cr repo.CacheRepo, tr repo.TopicRepo, ps service.PersonalizeService, tg gateway.TechFeedGateway) TimelineWorker {
-	return &timelineWorker{ur: ur, ar: ar, sr: sr, cr: cr, vr: vr, vs: vs, tr: tr, ps: ps, tg: tg}
+func NewTimelineWorker(repo repository.Repository, cache repository.CacheRepo, activity *usecase.ActivityUsecase, feed service.TechFeedService, personalize  *usecase.PersonalizeUsecase) TimelineWorker {
+	return &timelineWorker{repo: repo, cache: cache, feed: feed, activity: activity, personalize: personalize}
 }
 
 func (w *timelineWorker) RegisterQiitaTendsWorker() {
 	oneWeekAgo := time.Now().AddDate(0, 0, -7)
 	oneWeekAgoString := oneWeekAgo.Format("2006-01-02")
 	bookmarkThreshold := 50
-	trends, err := w.tg.GetQiitaTrendFeed(5, bookmarkThreshold, oneWeekAgoString)
+	trends, err := w.feed.GetQiitaTrendFeed(5, bookmarkThreshold, oneWeekAgoString)
 	if err != nil {
 		log.Panicln(err)
 	}
 	var articles []*model.Article
 	for _, v := range trends {
-		exists, err := w.ar.CheckArticleExistsByURL(v.URL)
+		exists, err := w.repo.CheckArticleExistsByURL(v.URL)
 		if err != nil {
 			log.Println(err)
 		}
 		if !exists {
-			sourceID, err := w.sr.FindIDByDomain(object.QiitaDomain)
+			sourceID, err := w.repo.FindIDByDomain(object.QiitaDomain)
 			if err != nil {
 				log.Panicln(err)
 			}
@@ -62,12 +60,12 @@ func (w *timelineWorker) RegisterQiitaTendsWorker() {
 				&model.Article{Title: v.Title, OriginalURL: v.URL, SourceID: sourceID})
 		}
 	}
-	createdIDs, err := w.ar.BatchCreate(articles)
-	strArticleIDs, err := w.cr.Get(key.PopularArticleIDs)
+	createdIDs, err := w.repo.BatchCreate(articles)
+	strArticleIDs, err := w.cache.Get(key.PopularArticleIDs)
 	if err != nil {
 		log.Panicln(err)
 	}
-	articleIDs, err := util.Deserialize[[]int](strArticleIDs)
+	articleIDs, err := utils.Deserialize[[]int](strArticleIDs)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -81,14 +79,14 @@ func (w *timelineWorker) RegisterQiitaTendsWorker() {
 			uniqueIDs = append(uniqueIDs, createdID)
 		}
 	}
-	strUniqueIDs, err := util.Serialize(uniqueIDs)
-	if err := w.cr.Set(key.PopularArticleIDs, strUniqueIDs, 24*time.Hour); err != nil {
+	strUniqueIDs, err := utils.Serialize(uniqueIDs)
+	if err := w.cache.Set(key.PopularArticleIDs, strUniqueIDs, 24*time.Hour); err != nil {
 		log.Println(err)
 	}
 }
 
 func (w *timelineWorker) CachePersonalizedArticlesWorker() {
-	accountIDs, err := w.ur.GetAllAccountIDs()
+	accountIDs, err := w.repo.GetAllAccountIDs()
 	if err != nil {
 		log.Println(err)
 		return
@@ -97,18 +95,18 @@ func (w *timelineWorker) CachePersonalizedArticlesWorker() {
 	wg.Add(len(accountIDs))
 	for _, accountId := range accountIDs {
 		go func(id int) {
-			articleIDs, err := w.ps.GetRecommendArticleIDs(id)
+			articleIDs, err := w.personalize.GetRecommendArticleIDs(id)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 			if len(articleIDs) > 0 {
-				strArticleIDs, err := util.Serialize(articleIDs)
+				strArticleIDs, err := utils.Serialize(articleIDs)
 				if err != nil {
 					log.Println(err)
 					return
 				}
-				if err := w.cr.Set(fmt.Sprintf(key.PersonalizedArticleIDs, id), strArticleIDs, 24*time.Hour); err != nil {
+				if err := w.cache.Set(fmt.Sprintf(key.PersonalizedArticleIDs, id), strArticleIDs, 24*time.Hour); err != nil {
 					log.Println(err)
 				}
 			}
@@ -120,13 +118,13 @@ func (w *timelineWorker) CachePersonalizedArticlesWorker() {
 func (w *timelineWorker) CacheTredingArticlesWorker() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	cr := w.cr.WithCtx(ctx)
+	cr := w.cache.WithCtx(ctx)
 
-	selectArticleIDs, err := w.tr.GetRecentPopularArticleIDs(30*24*time.Hour, 50)
+	selectArticleIDs, err := w.repo.GetRecentPopularArticleIDs(30*24*time.Hour, 50)
 	if err != nil {
 		log.Println(err)
 	}
-	serializedIDs, err := util.Serialize(selectArticleIDs)
+	serializedIDs, err := utils.Serialize(selectArticleIDs)
 	if err != nil {
 		log.Println(err)
 	}
@@ -136,11 +134,11 @@ func (w *timelineWorker) CacheTredingArticlesWorker() {
 }
 
 func (w *timelineWorker) ContributionWorker() {
-	contributions, err := w.vs.GetContributionsFromCache()
+	contributions, err := w.activity.GetContributionsFromCache()
 	if err != nil {
 		log.Println(err)
 	}
-	if err := w.vr.BatchCreateContributions(contributions); err != nil {
+	if err := w.repo.BatchCreateContributions(contributions); err != nil {
 		log.Println(err)
 	}
 }
