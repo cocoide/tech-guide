@@ -2,22 +2,28 @@ package scheduler
 
 import (
 	"time"
-
-	"github.com/cocoide/tech-guide/key"
 )
+
+const (
+	personalizedArticlesWorker = "personalizedArticlesWorker"
+	trendingArticlesWorker     = "trendingArticlesWorker"
+	qiitaTrendsWorker          = "qiitaTrendsWorker"
+	contributioinWorker        = "contributionWorker"
+)
+
 
 func NewAsyncJobRunner(sp *SchedulerPool, tw TimelineWorker){
 	go func() {
-		sp.AddScheduler(key.TrendingArticlesWorker, 24*time.Hour, tw.CacheTredingArticlesWorker)
-		sp.AddScheduler(key.PersonalizedArticlesWorker, 24*time.Hour, tw.CachePersonalizedArticlesWorker)
-		sp.AddScheduler(key.QiitaTrendsWorker, 24*time.Hour, tw.RegisterQiitaTendsWorker)
-		sp.AddScheduler(key.ContributioinWorker, 24*time.Hour, tw.ContributionWorker)
-		sp.StartScheduler(key.TrendingArticlesWorker)
+		sp.AddScheduler(trendingArticlesWorker, 24*time.Hour, tw.CacheTredingArticlesWorker)
+		sp.AddScheduler(personalizedArticlesWorker, 24*time.Hour, tw.CachePersonalizedArticlesWorker)
+		sp.AddScheduler(qiitaTrendsWorker, 24*time.Hour, tw.RegisterQiitaTendsWorker)
+		sp.AddScheduler(contributioinWorker, 24*time.Hour, tw.ContributionWorker)
+		sp.StartScheduler(trendingArticlesWorker)
 		time.Sleep(60 * time.Second)
-		sp.StartScheduler(key.PersonalizedArticlesWorker)
+		sp.StartScheduler(personalizedArticlesWorker)
 		time.Sleep(60 * time.Second)
-		sp.StartScheduler(key.QiitaTrendsWorker)
+		sp.StartScheduler(qiitaTrendsWorker)
 		time.Sleep(60 * time.Second)
-		sp.StartScheduler(key.ContributioinWorker)
+		sp.StartScheduler(contributioinWorker)
 	}()
 }
