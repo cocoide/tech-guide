@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=article.go -destination=../../mock/repository/article.go
 type ArticleRepo interface {
 	Create(article *model.Article) (int, error)
 	GetArticleIDByURL(url string) (int, error)

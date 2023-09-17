@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=collection.go -destination=../../mock/repository/collection.go
 type CollectionRepo interface {
 	CreateCollection(collection *model.Collection) error
 	CreateCollectionWithBookmark(collectino *model.Collection, articleId int) error

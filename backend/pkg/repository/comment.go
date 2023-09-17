@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=comment.go -destination=../../mock/repository/comment.go
 type CommentRepo interface {
 	Create(comment *model.Comment) error
 	GetComments(articleID int) ([]model.Comment, error)

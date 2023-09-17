@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=topic.go -destination=../../mock/repository/topic.go
 type TopicRepo interface {
 	DoFollowTopic(accountID, topicID int) error
 	UnfollowTopic(accountID, topicID int) error

@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=activity.go -destination=../../mock/repository/activity.go
 type ActivityRepo interface {
 	BatchCreateContributions(contribute []*model.Contribution) error
 	CreateContribution(contribute *model.Contribution) error

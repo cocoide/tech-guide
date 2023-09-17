@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=account.go -destination=../../mock/repository/account.go
 type AccountRepo interface {
 	GetAllAccountIDs() ([]int, error)
 	Create(account *model.Account) (*model.Account, error)

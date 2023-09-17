@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=source.go -destination=../../mock/repository/source.go
 type SourceRepo interface {
 	// 存在しない場合は0を返す
 	FindIDByDomain(domain string) (int, error)

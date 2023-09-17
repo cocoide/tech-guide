@@ -9,6 +9,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+//go:generate mockgen -source=cache.go -destination=../../mock/repository/cache.go
 type CacheRepo interface {
 	WithCtx(ctx context.Context) CacheRepo
 	Get(key string) (string, error)
