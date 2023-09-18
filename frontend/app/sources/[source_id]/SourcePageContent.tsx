@@ -76,7 +76,7 @@ export default function SourcePageContent({ params, source, isFollowing }: Props
                             isFollowing={isFollowing}
                         />} />
             </div>
-            <div className="min-h-screen w-full sm:grid-cols-2  xl:grid-cols-3 gap-2 p-3">
+            <div className="min-h-screen w-full grid sm:grid-cols-2  xl:grid-cols-3 gap-2 p-3">
                 {articles?.pages.map(page => (
                     page?.map((article, index) => (
                         <ArticleCard key={article.title + index} article={article} />
