@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
-func NewRouter(e *echo.Echo, h *handler.Handler) {
+func NewRootRouter(e *echo.Echo, h *handler.Handler) {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{os.Getenv("BACKEDN_URL"), os.Getenv("FRONTNED_URL")},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
@@ -16,8 +16,8 @@ func NewRouter(e *echo.Echo, h *handler.Handler) {
 	}))
 
 	account := e.Group("/account", h.AuthMiddleware)
-	newSecureRouterGroup(account,h)
-	
+	newSecureRouterGroup(account, h)
+ 
 	e.GET("/account/profile/:id", h.GetAccountProfile)
 	e.GET("/account/collection/:id", h.GetCollections)
 

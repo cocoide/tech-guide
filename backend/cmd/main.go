@@ -34,17 +34,17 @@ func main() {
 	feed := integration.NewTechFeedService()
 
 	account := usecase.NewAccountUsecase(repo)
-	activity :=usecase.NewActivityUsecase(cache)
-	article:=usecase.NewArticleUsecase(openai, repo)
+	activity := usecase.NewActivityUsecase(cache)
+	article := usecase.NewArticleUsecase(openai, repo)
 	personalize := usecase.NewPersonalizeUsecase(repo, cache)
-	scraping:=usecase.NewScrapingUsecase(openai, ogp)
+	scraping := usecase.NewScrapingUsecase(openai, ogp)
 
-	handler := handler.NewHandler(repo, cache, openai, ogp, feed, account, article, personalize, activity, scraping)
-	router.NewRouter(e, handler)
-	
+	rootHandler := handler.NewHandler(repo, cache, openai, ogp, feed, account, article, personalize, activity, scraping)
+	router.NewRootRouter(e, rootHandler)
+
 	sp := scheduler.NewSchedulerPool()
 	tw := scheduler.NewTimelineWorker(repo, cache, activity, feed, personalize)
-	scheduler.NewAsyncJobRunner(sp,tw)
-	
+	scheduler.NewAsyncJobRunner(sp, tw)
+
 	e.Logger.Fatal(e.Start(":8080"))
 }

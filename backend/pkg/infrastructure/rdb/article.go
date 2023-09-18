@@ -157,8 +157,8 @@ func (r *Repository) BatchGetArticlesByTopicIDsAndSourceID(topicIDs, sourceIDs [
 }
 func (r *Repository) GetArticlesBySourceID(sourceID, pageIndex, pageSize int) ([]model.Article, error) {
 	var articles []model.Article
-
 	err := r.db.
+		Joins("JOIN topics_to_articles ON topics_to_articles.article_id = articles.id").
 		Preload("Source").
 		Where("source_id = ?", sourceID).
 		Offset((pageIndex - 1) * pageSize).
@@ -171,18 +171,37 @@ func (r *Repository) GetArticlesBySourceID(sourceID, pageIndex, pageSize int) ([
 }
 
 func (r *Repository) GetArticlesByTopicID(topicID, pageIndex, pageSize int) ([]model.Article, error) {
-	var topicsToArticles []model.TopicsToArticles
 	var articles []model.Article
 
-	err := r.db.Preload("Article").
-		Where("topic_id = ?", topicID).
-		Offset((pageIndex - 1) * pageSize).
-		Find(&topicsToArticles).Error
+	offset := (pageIndex - 1) * pageSize
+
+	err := r.db.
+		Joins("JOIN topics_to_articles ON topics_to_articles.article_id = articles.id").
+		Preload("Source").
+		Where("topics_to_articles.topic_id = ?", topicID).
+		Offset(offset).
+		Limit(pageSize).
+		Find(&articles).Error
 	if err != nil {
 		return nil, err
 	}
-	for _, ta := range topicsToArticles {
-		articles = append(articles, ta.Article)
-	}
+
 	return articles, nil
 }
+
+//func (r *Repository) GetArticlesByTopicID(topicID, pageIndex, pageSize int) ([]model.Article, error) {
+//	var topicsToArticles []model.TopicsToArticles
+//	var articles []model.Article
+//
+//	err := r.db.Preload("Article").
+//		Where("topic_id = ?", topicID).
+//		Offset((pageIndex - 1) * pageSize).
+//		Find(&topicsToArticles).Error
+//	if err != nil {
+//		return nil, err
+//	}
+//	for _, ta := range topicsToArticles {
+//		articles = append(articles, ta.Article)
+//	}
+//	return articles, nil
+//}
