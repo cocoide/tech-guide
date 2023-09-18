@@ -18,8 +18,8 @@ const LeftSideVar = () => {
         { label: "検索", href: "/explore", icon: <MagnifyingGlassIcon className='h-7 w-7' />, isLogin: false },
     ]
     return (
-        <div className="hidden md:flex flex-col p-5 w-[200px] lg:w-[200px] justify-between  items-center h-[100%]">
-            <Link href={"/"} className="text-3xl font-bold text-slate-700 w-full"
+        <div className="hidden md:flex flex-col p-5 w-[190px] lg:w-[200px] justify-between  items-center h-[100%]">
+            <Link href={"/"} className="text-2xl lg:text-3xl font-bold text-slate-700 w-full"
             >TechGuide</Link>
             <div className="flex flex-col space-y-5 text-slate-400 mt-10 w-full">{
                 SideVarList.map((item => (

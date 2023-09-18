@@ -34,7 +34,7 @@ export default function ArticlePage() {
                     titleItem={<div className='custom-badge text-gray-500'><HomeIcon className='h-5 w-5' /><div>最新の投稿</div></div>}
                     rightItem={<BarsArrowUpIcon className='h-7 w-7 text-gray-500' />} />
             </div>
-            <div className="min-h-screen w-full grid lg:grid-cols-2 gap-2 p-3">
+            <div className="min-h-screen w-full grid sm:grid-cols-2 xl:grid-cols-3 gap-2 p-3">
                 {articles?.pages.map(page => (
                     page?.map((article, index) => (
                         <ArticleCard key={article.title + index} article={article} />
