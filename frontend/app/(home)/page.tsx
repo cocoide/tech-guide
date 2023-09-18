@@ -1,5 +1,5 @@
 "use client"
-import { BarsArrowUpIcon, FireIcon,HomeIcon } from '@heroicons/react/24/outline'
+import { BarsArrowUpIcon, HomeIcon } from '@heroicons/react/24/outline'
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
 import CircleLoading from '../_components/animations/CircleLoading'
@@ -34,7 +34,7 @@ export default function ArticlePage() {
                     titleItem={<div className='custom-badge text-gray-500'><HomeIcon className='h-5 w-5' /><div>最新の投稿</div></div>}
                     rightItem={<BarsArrowUpIcon className='h-7 w-7 text-gray-500' />} />
             </div>
-            <div className="min-h-screen w-full divide-y-[0.5px]">
+            <div className="min-h-screen w-full grid lg:grid-cols-2 gap-2 p-3">
                 {articles?.pages.map(page => (
                     page?.map((article, index) => (
                         <ArticleCard key={article.title + index} article={article} />
