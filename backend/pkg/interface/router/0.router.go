@@ -15,20 +15,14 @@ func NewRouter(e *echo.Echo, h *handler.Handler) {
 		AllowCredentials: true,
 	}))
 
-	private := e.Group("/account", h.AuthMiddleware)
-	private.GET("/private/profile/:id", h.GetAccountProfile)
-	e.GET("account/profile/:id", h.GetAccountProfile)
-	e.GET("account/collection/:id", h.GetCollections)
+	account := e.Group("/account", h.AuthMiddleware)
+	newSecureRouterGroup(account,h)
+	
+	e.GET("/account/profile/:id", h.GetAccountProfile)
+	e.GET("/account/collection/:id", h.GetCollections)
 
 	e.GET("/comment/:articleId", h.GetComments)
-	private.POST("/comment", h.CreateComment)
-	private.POST("/comment/:articleId", h.AddComment)
-	private.POST("/bookmark", h.DoBookmark)
-	private.POST("/collection", h.CreateCollection)
-	private.GET("/collection", h.GetCollectionForBookmark)
-	private.PUT("/article/read", h.SetReadArticle)
-	private.GET("/article/read", h.GetReadArticle)
-	private.GET("/session", h.Session)
+
 	e.POST("/login", h.Login)
 	e.POST("/signup", h.SignUp)
 	e.POST("/refresh", h.RefreshToken)
@@ -58,23 +52,9 @@ func NewRouter(e *echo.Echo, h *handler.Handler) {
 	e.GET("/collection/:id", h.GetCollectionData)
 	e.GET("/collection/:id/topics", h.GetTopicsForCollection)
 
-	private.POST("/article/favorite/:id", h.DoFavoriteArticle)
-	private.DELETE("/article/favorite/:id", h.UnFavoriteArticle)
-
 	e.GET("/topic/:id", h.GetTopicData)
-	private.GET("/topic/follow/:id", h.CheckTopicFollow)
-	private.GET("/topic/follow", h.GetFollowingTopics)
-	private.PUT("/topic/follow/:id", h.DoFollowTopic)
-	private.DELETE("/topic/follow/:id", h.UnFollowTopic)
 
 	e.GET("/source/:id", h.GetSourceData)
-	private.GET("/source/follow/:id", h.CheckSourceFollow)
-	private.GET("/source/follow", h.GetFollowingSources)
-	private.PUT("/source/follow/:id", h.DoFollowSource)
-	private.DELETE("/source/follow/:id", h.UnFollowSource)
-
-	private.GET("/article/recommend", h.GetRecommendArticles)
-	private.GET("/feeds", h.GetFeeds)
 
 	e.GET("/trend/qiita", h.GetQiitaTrend)
 	e.GET("/trend/zenn", h.GetZennTrend)
