@@ -22,7 +22,7 @@ const ModalContent = ({ article }: Props) => {
     const { token } = useAuth()
     const router = useRouter()
     const domain = article?.source.domain
-    const unShownOutline = domain === "youtube.com" || domain === "speakerdeck.com";
+    const unShownOutline = domain === "youtube.com" || domain === "speakerdeck.com"||domain === "github.com"||domain==="producthunt.com/";
     async function handleOnRead(article_id: number) {
         if (token) {
             const { ok } = await articleAPI.ReadArticle(article_id, token)
