@@ -21,7 +21,7 @@ interface Props {
 export default function RootLayout({ children, modal }: Props) {
   return (
     <html lang="ja">
-      <body >
+      <body className="bg-white dark:bg-black">
         <Providers>
           <div className="flex md:w-[770px] lg:w-[1050px] xl:w-[1250px]  mx-auto relative">
             <div className="sticky top-0 h-screen">
@@ -32,7 +32,7 @@ export default function RootLayout({ children, modal }: Props) {
               <Header />
             </div>
             <Suspense fallback={<CircleLoader />}>
-                <div className="md:border-x-[0.5px] min-h-screen">
+                <div className="md:border-x-[0.5px] custom-border-color min-h-screen">
             {children}
                 </div>
             </Suspense>

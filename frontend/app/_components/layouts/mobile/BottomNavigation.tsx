@@ -36,7 +36,8 @@ export default function BottomNavigation() {
     }
   }
   return (
-    <div className="w-full flex flex-row items-center justify-between px-[10%] py-2 bg-white/80 backdrop-blur-[5px] text-slate-500">
+    <div className="w-full flex flex-row items-center justify-between px-[10%] py-2 
+    bg-white/80 dark:bg-black/30 backdrop-blur-[5px] text-slate-500 dark:text-slate-300">
       <Link href={"/"} ><HomeIcon className='h-7 w-7' /></Link>
       <button onClick={handleOnFeedPage} ><NewspaperIcon className='h-7 w-7' onClick={handleAuth} /></button>
       <button onClick={handlePost}><PlusCircleIcon className='h-7 w-7' /></button>

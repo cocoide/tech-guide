@@ -19,7 +19,7 @@ const LeftSideVar = () => {
     ]
     return (
         <div className="hidden md:flex flex-col p-5 w-[190px] lg:w-[200px] justify-between  items-center h-[100%]">
-            <Link href={"/"} className="text-2xl lg:text-3xl font-bold text-slate-700 w-full"
+            <Link href={"/"} className="text-2xl lg:text-3xl font-bold text-slate-700 dark:text-white w-full"
             >TechGuide</Link>
             <div className="flex flex-col space-y-5 text-slate-400 mt-10 w-full">{
                 SideVarList.map((item => (
@@ -39,7 +39,8 @@ const LeftSideVar = () => {
                 </button>
                     :
                     <button onClick={() => openLoginDialog(true)}
-                        className="animate-appear bg-white  text-cyan-300 ring-1 ring-cyan-300 py-2 w-[150px] rounded-xl shadow-sm flex flex-row items-center justify-center space-x-1"
+                        className="animate-appear bg-white dark:bg-inherit
+                          text-cyan-300 ring-1 ring-gray-200 dark:ring-gray-500 py-2 w-[150px] rounded-xl shadow-sm flex flex-row items-center justify-center space-x-1"
                     ><UserCircleIcon className='h-5 w-5' />
                         <div className="">ログイン</div>
                     </button>

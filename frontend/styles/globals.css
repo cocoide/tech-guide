@@ -16,7 +16,11 @@ body {
 }
 
 .custom-border {
-  @apply border-[0.5px] border-gray-300;
+  @apply border-[0.5px] border-gray-300 dark:border-gray-500;
+}
+
+.custom-border-color {
+  @apply border-gray-300 dark:border-gray-500;
 }
 
 .custom-badge {

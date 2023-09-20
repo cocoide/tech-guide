@@ -8,7 +8,7 @@ import { NewspaperIcon } from '@heroicons/react/24/outline'
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from "react"
-import TopicDialogButton from '../../_components/layouts/components/FeedFileterDialogButton'
+import TopicDialogButton from '../../_components/layouts/button/FeedFileterDialogButton'
 interface Props {
     token?: string
 }

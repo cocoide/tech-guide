@@ -11,7 +11,8 @@ interface Props {
 const ArticleCard = ({ article, origin }: Props) => {
     const queryParam = origin ? `?origin=${origin}` : ""
     return (
-        <div className='relative rounded-md shadow-sm custom-border min-h-[40px]'>
+        <div className='bg-white dark:bg-gray-900
+        relative rounded-md shadow-sm custom-border min-h-[40px]'>
             {article.source.icon_url &&
                 <Link href={`/sources/${article.source.id}`} className=''>
                 <Image src={article.source.icon_url} alt={article.source.name} width={100} height={100}
@@ -21,7 +22,7 @@ const ArticleCard = ({ article, origin }: Props) => {
             <Link href={`/articles/${article.id}${queryParam}`} className='hover:bg-slate-100 h-full w-full duaration-500'>
                 <div className='flex flex-col space-y-[5px]'>
                     <div className="flex flex-row space-x-3">
-                        <div className='text-slate-700 mt-[12px] ml-10 mb-7 pr-5'>{article.title}</div>
+                        <div className='text-slate-700 dark:text-white  mt-[12px] ml-10 mb-7 pr-5'>{article.title}</div>
                     </div>
 
                     <div className='flex flex-row justify-between'>
