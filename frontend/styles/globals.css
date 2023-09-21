@@ -26,9 +26,8 @@ body {
 .custom-badge {
   @apply flex flex-row items-center space-x-1
 }
-
 .custom-shadow {
-  @apply  shadow-[0_0_30px_rgb(0,0,0,0.8)] 
+  @apply  shadow-[0_8px_15px_rgb(0,0,0,0.0.8)] 
 }
 
 .markdown ol {

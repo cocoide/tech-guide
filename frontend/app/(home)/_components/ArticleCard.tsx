@@ -11,7 +11,7 @@ const ArticleCard = ({ article, origin }: Props) => {
     const queryParam = origin ? `?origin=${origin}` : ""
     return (
         <div className='bg-white dark:bg-black
-        relative rounded-xl custom-shadow dark:shadow-gray-700 min-h-[30px]'>
+        relative rounded-xl custom-shadow dark:shadow-slate-600 min-h-[30px]'>
             <Link href={`/articles/${article.id}${queryParam}`} className='hover:bg-slate-100 h-full w-full duaration-500'>
                 <div className='flex flex-col space-y-[5px]'>
                     <div className="flex flex-row space-x-3">
