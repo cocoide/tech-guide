@@ -27,6 +27,10 @@ body {
   @apply flex flex-row items-center space-x-1
 }
 
+.custom-shadow {
+  @apply  shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
+}
+
 .markdown ol {
   @apply list-decimal pl-5 text-gray-700;
 }
