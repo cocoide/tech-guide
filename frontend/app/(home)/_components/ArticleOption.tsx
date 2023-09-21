@@ -32,17 +32,17 @@ const ArticleOption = ({ article }: Props) => {
     }
   }
   return (
-    <div className='flex flex-row items-center bottom-[7px] justify-between w-full'>
-      <Link href={`/sources/${article.source.id}`} className="text-gray-600 text-sm dark:text-gray-400">
+    <div className='flex flex-row items-center absolute bottom-[7px] justify-between w-full'>
+      <Link href={`/sources/${article.source.id}`} className="text-gray-600 text-sm dark:text-gray-400 mr-[7px]">
         {article.source.name}
       </Link>
-      <div className="text-slate-400 dark:bg-slate-200 flex flex-row items-center 
+      <div className="text-slate-400 dark:text-slate-200 flex flex-row items-center 
       space-x-[5px]">
         <button className='p-1 rounded-full
       hover:text-pink-300  hover:bg-pink-50 duration-500' onClick={handleCollectionDialog}>
         <HandThumbUpIcon className='h-5 w-5' />
       </button>
-      <Link href={`/articles/${article.id}?comment=true`} className='absolute bottom-[10px] left-[70px] p-1 rounded-full
+        <Link href={`/articles/${article.id}?comment=true`} className='absolute p-1 rounded-full
       hover:text-blue-300  hover:bg-blue-50'>
         <ChatBubbleOvalLeftEllipsisIcon className='h-5 w-5' />
       </Link>
