@@ -29,8 +29,8 @@ export default function ArticlePage() {
     }, [myRef])
 
     return (
-        <div className="flex flex-col w-full pb-10 bg-gray-50 dark:bg-black">
-            <div className="sticky top-0 h-10 bg-white/80 dark:bg-gray-900 dark:text-slate-300
+        <div className="flex flex-col w-full pb-10 bg-gray-50 dark:bg-gray-900">
+            <div className="sticky top-0 h-10 bg-white/80 dark:bg-black/30 dark:text-slate-300
              backdrop-blur-[5px] z-10">
                 <SectionHeader
                     titleItem={<div className='custom-badge text-gray-500 dark:text-white'>

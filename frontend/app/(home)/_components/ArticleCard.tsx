@@ -12,7 +12,7 @@ const ArticleCard = ({ article, origin }: Props) => {
     const queryParam = origin ? `?origin=${origin}` : ""
     return (
         <div className='bg-white dark:bg-black
-        relative rounded-md shadow-sm custom-border min-h-[40px]'>
+        relative rounded-md shadow-sm dark:shadow-gray-500 custom-border min-h-[40px]'>
             {article.source.icon_url &&
                 <Link href={`/sources/${article.source.id}`} className=''>
                 <Image src={article.source.icon_url} alt={article.source.name} width={100} height={100}
