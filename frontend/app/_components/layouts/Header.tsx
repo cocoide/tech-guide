@@ -11,7 +11,7 @@ export function Header() {
     const [_, setLoginDialogOpen] = useAtom(loginDialogAtom)
     return (
         <div className="w-full p-[12px] bg-white/70  dark:bg-black
-        backdrop-blur-[3px] flex flex-row items-center justify-between min-h-19">
+        backdrop-blur-[3px] flex flex-row items-center justify-between min-h-19 border-b-[0.5px] custom-border-color">
             <Link href={'/'} className="text-xl font-bold dark:text-white">Tech Guide</Link>
             {status != "loading" && !session?.user &&
                 <button onClick={() => setLoginDialogOpen(true)}

@@ -11,7 +11,7 @@ interface Props {
 export default function SectionHeader({ titleItem, rightItem }: Props) {
     const router = useRouter()
     return (
-        <div className="flex flex-row justify-between items-center p-2 w-full custom-border">
+        <div className="flex flex-row justify-between items-center p-2 w-full border-b-[0.5px] custom-border-color">
             <div className="flex flex-row items-center text-gray-500 space-x-1">
                 <button onClick={() => router.back()} className="">
                     <ChevronLeftIcon className='h-5 w-5' />
