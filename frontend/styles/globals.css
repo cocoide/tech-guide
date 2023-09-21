@@ -28,7 +28,7 @@ body {
 }
 
 .custom-shadow {
-  @apply  shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
+  @apply  shadow-[0_0_30px_rgb(0,0,0,0.8)] 
 }
 
 .markdown ol {
