@@ -13,13 +13,13 @@ import (
 	"github.com/cocoide/tech-guide/pkg/domain/service"
 )
 
-type ArticleUsecase  struct {
-	openai service.OpenAIService
-	repo   repository.Repository
+type ArticleUsecase struct {
+	nlp  service.NLPService
+	repo repository.Repository
 }
 
-func NewArticleUsecase(openai service.OpenAIService, repo repository.Repository) *ArticleUsecase {
-	return &ArticleUsecase{openai: openai, repo: repo}
+func NewArticleUsecase(nlp service.NLPService, repo repository.Repository) *ArticleUsecase {
+	return &ArticleUsecase{nlp: nlp, repo: repo}
 }
 
 func (ts *ArticleUsecase) GetRelatedArticlesByOriginTopicToArticleArray(origin []model.TopicsToArticles, excludeID int) ([]model.Article, error) {
@@ -86,7 +86,7 @@ func (ts *ArticleUsecase) ExtractTopicsWithWeightFromArticleTitle(title string) 
 		existingTopicsName += t.Name
 	}
 	prompt := fmt.Sprintf(conf.SelectTopicsPrompt, title, existingTopicsName)
-	answer, err := ts.openai.GetAnswerFromPrompt(prompt, 0.01)
+	answer, err := ts.nlp.GetAnswerFromPrompt(prompt, 0.01)
 	if err != nil {
 		return nil, err
 	}

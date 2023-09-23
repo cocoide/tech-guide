@@ -29,17 +29,18 @@ func main() {
 	cache := cacheRepo.NewRepository(redis, ctx)
 	repo := rdbRepo.NewRepository(gorm)
 
-	openai := integration.NewOpenAIService(ctx)
+	nlp := integration.NewNLPService()
 	ogp := integration.NewOGPService()
 	feed := integration.NewTechFeedService()
+	git := integration.NewGithubService()
 
 	account := usecase.NewAccountUsecase(repo)
 	activity := usecase.NewActivityUsecase(cache)
-	article := usecase.NewArticleUsecase(openai, repo)
+	article := usecase.NewArticleUsecase(nlp, repo)
 	personalize := usecase.NewPersonalizeUsecase(repo, cache)
-	scraping := usecase.NewScrapingUsecase(openai, ogp)
+	scraping := usecase.NewScrapingUsecase(nlp, ogp)
 
-	rootHandler := handler.NewHandler(repo, cache, openai, ogp, feed, account, article, personalize, activity, scraping)
+	rootHandler := handler.NewHandler(repo, cache, nlp, ogp, feed, git, account, article, personalize, activity, scraping)
 	router.NewRootRouter(e, rootHandler)
 
 	sp := scheduler.NewSchedulerPool()

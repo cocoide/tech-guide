@@ -158,7 +158,6 @@ func (r *Repository) BatchGetArticlesByTopicIDsAndSourceID(topicIDs, sourceIDs [
 func (r *Repository) GetArticlesBySourceID(sourceID, pageIndex, pageSize int) ([]model.Article, error) {
 	var articles []model.Article
 	err := r.db.
-		Joins("JOIN topics_to_articles ON topics_to_articles.article_id = articles.id").
 		Preload("Source").
 		Where("source_id = ?", sourceID).
 		Offset((pageIndex - 1) * pageSize).

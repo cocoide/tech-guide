@@ -7,24 +7,26 @@ import (
 )
 
 type Handler struct {
-	repo   repository.Repository
-	cache  repository.CacheRepo
-	openai service.OpenAIService
-	ogp    service.OGPService
-	feed   service.TechFeedService
-	account *usecase.AccountUsecase
-	article *usecase.ArticleUsecase
+	repo        repository.Repository
+	cache       repository.CacheRepo
+	openai      service.NLPService
+	ogp         service.OGPService
+	feed        service.TechFeedService
+	git         service.GithubService
+	account     *usecase.AccountUsecase
+	article     *usecase.ArticleUsecase
 	personalize *usecase.PersonalizeUsecase
 	activity    *usecase.ActivityUsecase
-	scraping *usecase.ScrapingUsecase
+	scraping    *usecase.ScrapingUsecase
 }
 
 func NewHandler(
 	repo repository.Repository,
 	cache repository.CacheRepo,
-	openai service.OpenAIService,
+	openai service.NLPService,
 	ogp service.OGPService,
 	feed service.TechFeedService,
+	git service.GithubService,
 	account *usecase.AccountUsecase,
 	article *usecase.ArticleUsecase,
 	personalize *usecase.PersonalizeUsecase,
@@ -32,15 +34,16 @@ func NewHandler(
 	scraping *usecase.ScrapingUsecase,
 ) *Handler {
 	return &Handler{
-		repo:   repo,
-		cache:  cache,
-		openai: openai,
-		ogp:    ogp,
-		feed:   feed,
-		account: account,
-		article: article,
+		repo:        repo,
+		cache:       cache,
+		openai:      openai,
+		ogp:         ogp,
+		feed:        feed,
+		git:         git,
+		account:     account,
+		article:     article,
 		personalize: personalize,
-		activity: activity,
-	scraping:    scraping,
+		activity:    activity,
+		scraping:    scraping,
 	}
 }

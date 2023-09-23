@@ -1,13 +1,22 @@
 package integration
 
 import (
+	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
+	"github.com/cocoide/tech-guide/pkg/domain/service"
+	"github.com/dyatlov/go-opengraph/opengraph"
 	"io"
 	"net/http"
 	"strings"
-
-	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
-	"github.com/dyatlov/go-opengraph/opengraph"
 )
+
+type ogpService struct {
+	client *http.Client
+}
+
+func NewOGPService() service.OGPService {
+	httpClient := NewHttpClient()
+	return &ogpService{client: httpClient.Client}
+}
 
 func (s *ogpService) GetOGPByURL(url string) (*dto.OGPResponse, error) {
 	req, err := http.NewRequest("GET", url, nil)

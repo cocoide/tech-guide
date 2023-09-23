@@ -1,7 +1,6 @@
 package usecase_test
 
 import (
-	"context"
 	"testing"
 
 	"github.com/cocoide/tech-guide/conf"
@@ -11,9 +10,8 @@ import (
 
 func TestSummarizeArticle(t *testing.T) {
 	conf.NewEnv()
-	ctx:=context.Background()
 	ogp := integration.NewOGPService()
-	openai :=integration.NewOpenAIService(ctx)
+	openai := integration.NewNLPService()
 	ss := usecase.NewScrapingUsecase(openai, ogp)
 	url := "https://www.catapultsuplex.com/entry/producthunt-knowhow"
 	result, err := ss.SummarizeArticle(url)

@@ -1,8 +1,24 @@
 package integration
 
-import "github.com/sashabaranov/go-openai"
+import (
+	"context"
+	"github.com/cocoide/tech-guide/pkg/domain/service"
+	"github.com/sashabaranov/go-openai"
+	"os"
+)
+
+type openAIService struct {
+	client *openai.Client
+}
+
+func NewNLPService() service.NLPService {
+	OPENAI_SECRET := os.Getenv("OPENAI_SECRET")
+	client := openai.NewClient(OPENAI_SECRET)
+	return &openAIService{client: client}
+}
 
 func (s *openAIService) GetAnswerFromPrompt(prompt string, variability float32) (string, error) {
+	ctx := context.Background()
 	req := openai.ChatCompletionRequest{
 		Model: openai.GPT3Dot5Turbo,
 		Messages: []openai.ChatCompletionMessage{
@@ -13,7 +29,7 @@ func (s *openAIService) GetAnswerFromPrompt(prompt string, variability float32) 
 		},
 		Temperature: variability,
 	}
-	res, err := s.client.CreateChatCompletion(s.ctx, req)
+	res, err := s.client.CreateChatCompletion(ctx, req)
 	if err != nil {
 		return "", err
 	}

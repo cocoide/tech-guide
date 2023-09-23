@@ -3,32 +3,26 @@ module github.com/cocoide/tech-guide
 go 1.19
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/dyatlov/go-opengraph/opengraph v0.0.0-20220524092352-606d7b1e5f8a
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo v3.3.10+incompatible
-	golang.org/x/crypto v0.9.0
+	github.com/shurcooL/graphql v0.0.0-20230722043721-ed46e5a46466
+	golang.org/x/crypto v0.13.0
+	golang.org/x/oauth2 v0.12.0
 	golang.org/x/time v0.3.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.1
 )
 
 require (
-	github.com/PuerkitoBio/goquery v1.8.1 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
-	github.com/antchfx/htmlquery v1.3.0 // indirect
-	github.com/antchfx/xmlquery v1.3.17 // indirect
-	github.com/antchfx/xpath v1.2.4 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/gobwas/glob v0.2.3 // indirect
-	github.com/gocolly/colly v1.2.0 // indirect
-	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/golang/protobuf v1.3.1 // indirect
-	github.com/kennygrant/sanitize v1.2.4 // indirect
-	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
-	github.com/temoto/robotstxt v1.1.2 // indirect
-	google.golang.org/appengine v1.6.7 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
+	google.golang.org/appengine v1.6.8 // indirect
+	google.golang.org/protobuf v1.31.0 // indirect
 )
 
 require (
@@ -44,7 +38,7 @@ require (
 	github.com/sashabaranov/go-openai v1.12.0
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
-	golang.org/x/net v0.10.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/net v0.15.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 )

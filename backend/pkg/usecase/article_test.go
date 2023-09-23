@@ -1,7 +1,6 @@
 package usecase_test
 
 import (
-	"context"
 	"testing"
 
 	"github.com/cocoide/tech-guide/conf"
@@ -33,9 +32,8 @@ func Test_ExtractTopicIDFromArticleTitle(t *testing.T) {
 		GetAllTopics().
 		Return(topics, nil)
 
-	ctx := context.Background()
-	openai :=integration.NewOpenAIService(ctx)
-	ts := usecase.NewArticleUsecase(openai,tr)
+	openai := integration.NewNLPService()
+	ts := usecase.NewArticleUsecase(openai, tr)
 	topicWeights, err := ts.ExtractTopicsWithWeightFromArticleTitle("Tailwind CSSはCSS設計に何をもたらすか")
 	if err != nil {
 		t.Error(err)

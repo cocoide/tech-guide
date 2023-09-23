@@ -8,12 +8,12 @@ import (
 )
 
 type ScrapingUsecase struct {
-	openai service.OpenAIService
-	ogp    service.OGPService
+	nlp service.NLPService
+	ogp service.OGPService
 }
 
-func NewScrapingUsecase(openai service.OpenAIService, ogp service.OGPService) *ScrapingUsecase {
-	return &ScrapingUsecase{openai: openai, ogp: ogp}
+func NewScrapingUsecase(nlp service.NLPService, ogp service.OGPService) *ScrapingUsecase {
+	return &ScrapingUsecase{nlp: nlp, ogp: ogp}
 }
 
 func (s ScrapingUsecase) SummarizeArticle(url string) (string, error) {
@@ -30,7 +30,7 @@ func (s ScrapingUsecase) SummarizeArticle(url string) (string, error) {
 	}
 	articleInfo := fmt.Sprintf("[title: %s][description%s][content: %s]", ogp.Title, ogp.Description, markdown)
 	prompt := fmt.Sprintf("[%s] 以上の内容を200文字以内で要点を絞って日本語でまとめて", articleInfo)
-	summary, err := s.openai.GetAnswerFromPrompt(prompt, 0.01)
+	summary, err := s.nlp.GetAnswerFromPrompt(prompt, 0.01)
 	if err != nil {
 		return "", err
 	}

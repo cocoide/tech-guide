@@ -1,32 +1,58 @@
 package integration
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"fmt"
-	"time"
-
 	"github.com/cocoide/tech-guide/pkg/domain/model"
 	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
-	"github.com/cocoide/tech-guide/pkg/utils"
+	"github.com/cocoide/tech-guide/pkg/domain/service"
 )
 
+type techFeedService struct {
+	client *HttpClient
+}
+
+func NewTechFeedService() service.TechFeedService {
+	client := NewHttpClient()
+	return &techFeedService{client: client}
+}
+
 func (s *techFeedService) GetQiitaTrendFeed(limit, save int, start string) ([]*dto.QiitaArticleAPI, error) {
-	url := fmt.Sprintf("https://qiita.com/api/v2/items?page=1&per_page=%d&query=created:>%s+stocks:>%d", limit, start, save)
-	res, err := utils.FetchJSON[[]*dto.QiitaArticleAPI](url, nil)
+	var result []*dto.QiitaArticleAPI
+
+	s.client.WithBaseURL("https://qiita.com/api/v2/items")
+	s.client.WithParam("page", 1)
+	s.client.WithParam("per_page", limit)
+	s.client.WithParam("query", fmt.Sprintf("created:>%s", start)) //+stocks:>%d error
+
+	b, err := s.client.GetAPI()
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+
+	if err := json.Unmarshal(b, &result); err != nil {
+		return nil, fmt.Errorf("Failted to unmarshal: %v", err)
+	}
+	return result, nil
 }
 
 func (s *techFeedService) GetZennTrendFeed() ([]model.Article, error) {
-	url := "https://zenn.dev/feed"
-	res, err := utils.FetchXML[dto.RSSFeed](url, 5*time.Second)
+	s.client.WithBaseURL("https://zenn.dev/feed")
+
+	b, err := s.client.GetAPI()
+	if err != nil {
+		return nil, fmt.Errorf("Failed to fetch :%v", err)
+	}
+
+	var feed dto.RSSFeed
+	if err := xml.Unmarshal(b, &feed); err != nil {
+		return nil, fmt.Errorf("Failted to unmarshal: %v", err)
+	}
+	artcles, err := feed.GetArticles()
 	if err != nil {
 		return nil, err
 	}
-	artcles, err := res.GetArticles()
-	if err != nil {
-		return nil, err
-	}
+
 	return artcles, err
 }
