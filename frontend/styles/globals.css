@@ -27,8 +27,9 @@ body {
   @apply flex flex-row items-center space-x-1
 }
 .custom-shadow {
-  @apply  shadow-[rgba(7,_65,_210,_0.1)_0px_9px_30px]
+  @apply  shadow-[0_8px_30px_rgb(0,0,0,0.12)]
 }
+
 
 .markdown ol {
   @apply list-decimal pl-5 text-gray-700;
@@ -39,25 +40,25 @@ body {
 }
 
 .markdown h5 {
-  @apply text-[11px] border-l-2 border-gray-300 my-2 pl-2;
+  @apply text-[11px]  text-slate-500 my-1 pl-[20px];
 }
 
 .markdown h4 {
-  @apply text-[12px] border-l-2 border-gray-300 my-2 pl-2;
+  @apply text-[12px]  text-slate-500 my-1 pl-[15px];
 }
 
 .markdown h3 {
-  @apply text-[13px] border-l-2 border-gray-300 my-2 pl-2;
+  @apply text-[13px]  text-slate-500 my-1 pl-[10px];
 }
 
 .markdown h2 {
-  @apply text-[14x] border-l-2 border-gray-400 my-2 pl-2;
+  @apply text-[14x] text-slate-600 my-1 pl-[5px];
 }
 
 .markdown h1 {
-  @apply text-[15px] border-l-2 border-gray-500 my-2 pl-2;
+  @apply text-[15px] text-slate-700  my-1;
 }
 
 .markdown p {
-  @apply text-[13px] text-gray-700 my-2;
+  @apply text-[13px] text-gray-600 my-2;
 }

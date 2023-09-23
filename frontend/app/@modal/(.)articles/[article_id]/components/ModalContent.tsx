@@ -32,7 +32,7 @@ const ModalContent = ({ article }: Props) => {
         <div>
             {article &&
                 <div className="z-30 fixed bg-white inset-0 rounded-md ring-1 ring-gray-200
-            sm:top-[100px] lg:left-[100px] lg:right-[100px] 
+            sm:top-[100px] lg:left-[120px] lg:right-[120px] 
             overflow-y-scroll divide-x flex flex-col sm:flex-row">
                     <div className="flex flex-col p-5 lg:p-7 w-full space-y-3">
                         <div className="flex flex-row items-center justify-between text-gray-500">
