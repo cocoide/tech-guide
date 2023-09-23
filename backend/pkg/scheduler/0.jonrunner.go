@@ -4,15 +4,16 @@ import (
 	"time"
 )
 
+type WorkerID int
+
 const (
-	personalizedArticlesWorker = "personalizedArticlesWorker"
-	trendingArticlesWorker     = "trendingArticlesWorker"
-	qiitaTrendsWorker          = "qiitaTrendsWorker"
-	contributioinWorker        = "contributionWorker"
+	personalizedArticlesWorker WorkerID = iota + 1
+	trendingArticlesWorker
+	qiitaTrendsWorker
+	contributioinWorker
 )
 
-
-func NewAsyncJobRunner(sp *SchedulerPool, tw TimelineWorker){
+func NewAsyncJobRunner(sp *SchedulerPool, tw TimelineWorker) {
 	go func() {
 		sp.AddScheduler(trendingArticlesWorker, 24*time.Hour, tw.CacheTredingArticlesWorker)
 		sp.AddScheduler(personalizedArticlesWorker, 24*time.Hour, tw.CachePersonalizedArticlesWorker)
