@@ -2,7 +2,7 @@
 import { useAuth } from '@/hooks/useAuth'
 import { collectionDialogAtom, loginDialogAtom } from '@/stores/dialog'
 import { Article } from '@/types/model'
-import { ArrowTopRightOnSquareIcon, BookmarkIcon, ChatBubbleOvalLeftEllipsisIcon, HandThumbUpIcon } from '@heroicons/react/24/outline'
+import { BookmarkIcon, ChatBubbleOvalLeftEllipsisIcon, StarIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -40,7 +40,7 @@ const ArticleOption = ({ article }: Props) => {
       space-x-[5px]">
         <button className='p-1 rounded-full
       hover:text-pink-300  hover:bg-pink-50 duration-500' onClick={handleCollectionDialog}>
-        <HandThumbUpIcon className='h-5 w-5' />
+          <StarIcon className='h-5 w-5' />
       </button>
         <Link href={`/articles/${article.id}?comment=true`} className='p-1 rounded-full
       hover:text-blue-300  hover:bg-blue-50'>
@@ -49,11 +49,7 @@ const ArticleOption = ({ article }: Props) => {
         <button className='p-1 rounded-full 
       hover:text-green-300 hover:bg-green-50' onClick={handleCollectionDialog}>
         <BookmarkIcon className='h-5 w-5' />
-      </button>
-        <Link className='rounded-full p-1
-      hover:text-cyan-300 hover:bg-cyan-50' onClick={() => handleOnRead(article.id)} href={article.original_url} passHref>
-        <ArrowTopRightOnSquareIcon className='h-5 w-5' />
-      </Link>
+        </button>
       </div>
     </div>
   )

@@ -40,25 +40,25 @@ body {
 }
 
 .markdown h5 {
-  @apply text-[11px]  text-slate-500 my-1 pl-[20px];
+  @apply text-[11px]  text-slate-500 dark:text-slate-300 my-1 pl-[20px];
 }
 
 .markdown h4 {
-  @apply text-[12px]  text-slate-500 my-1 pl-[15px];
+  @apply text-[12px]  text-slate-500 dark:text-slate-300 my-1 pl-[15px];
 }
 
 .markdown h3 {
-  @apply text-[13px]  text-slate-500 my-1 pl-[10px];
+  @apply text-[13px]  text-slate-500 dark:text-slate-300 my-1 pl-[10px];
 }
 
 .markdown h2 {
-  @apply text-[14x] text-slate-600 my-1 pl-[5px];
+  @apply text-[14x] text-slate-600 dark:text-slate-200 my-1 pl-[5px];
 }
 
 .markdown h1 {
-  @apply text-[15px] text-slate-700  my-1;
+  @apply text-[15px] text-slate-700 dark:text-slate-100  my-1;
 }
 
 .markdown p {
-  @apply text-[13px] text-gray-600 my-2;
+  @apply text-[13px] text-gray-600 dark:text-slate-300 my-1;
 }
