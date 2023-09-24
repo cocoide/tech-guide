@@ -39,9 +39,10 @@ const ModalContent = ({ article }: Props) => {
                         </button>
                         <div className="flex flex-row items-center justify-end space-x-3">
                             <StarIcon className="h-7 w-7 text-slate-600 dark:text-slate-300" />
-                            <button onClick={() => router.push(`/sources/${article.source.id}`)}>
+                            <a href={`/sources/${article.source.id}`} target="_blank" >
                                 <Image src={article.source.icon_url} alt={article.source.name} width={200} height={200} className='h-7 w-7 rounded-full' />
-                            </button>
+                            </a>
+
                             <a href={article.original_url} target="_blank" onClick={() => handleOnRead(article.id)}
                                 className="bg-slate-400/60 backdrop-blur-[5px] cutom-outline
                         text-white p-[3px] rounded-xl shadow-sm">元記事を読む</a>
@@ -59,7 +60,7 @@ const ModalContent = ({ article }: Props) => {
                         {/* <ActionSection articleId={article?.id} /> */}
                         {/* <CommnentSection articleID={article?.id} /> */}
                         <div className="w-full flex flex-wrap gap-3">{article.topics.map((topic) => (
-                            <button onClick={() => router.push(`/topics/${topic.id}`)} key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</button>
+                            <a href={`/topics/${topic.id}`} target="_blank" key={topic.name} className="text-gray-400 ring-1 ring-gray-300 p-1 rounded-xl"># {topic.name}</a>
                         ))}</div>
                         {!unShownOutline &&
                             <Suspense fallback={<OutlineLoader />}>
