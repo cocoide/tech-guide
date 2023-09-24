@@ -64,7 +64,7 @@ export default function TopicPageContent({ params, topic, isFollowing }: Props) 
     }
     return (
         <div className="flex flex-col w-full pb-10">
-            <div className="sticky top-0 h-12 bg-white/80 backdrop-blur-[5px] z-10">
+            <div className="sticky top-0 h-15 bg-white/70 dark:bg-black/30 dark:text-slate-300 z-20">
                 <SectionHeader
                     titleItem={<div className='custom-badge text-gray-500'>
                         <HashtagIcon className="h-5 w-5"></HashtagIcon>
@@ -77,7 +77,7 @@ export default function TopicPageContent({ params, topic, isFollowing }: Props) 
                             isFollowing={isFollowing}
                         />} />
             </div>
-            <div className="w-full grid sm:grid-cols-2  xl:grid-cols-3 gap-2 p-3">
+            <div className="w-full grid sm:grid-cols-2  xl:grid-cols-3 gap-2 p-[20px]">
                 {articles?.pages.map(page => (
                     page?.map((article, index) => (
                         <ArticleCard key={article.title + index} article={article} />
