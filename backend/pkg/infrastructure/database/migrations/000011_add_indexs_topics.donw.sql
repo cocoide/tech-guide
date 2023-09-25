@@ -1,0 +1,1 @@
+ALTER TABLE topics_to_articles DROP INDEX weight_idx;
