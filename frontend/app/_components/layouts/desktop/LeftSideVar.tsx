@@ -20,7 +20,7 @@ const LeftSideVar = () => {
     return (
         <div className="hidden md:flex flex-col p-5 w-[190px] lg:w-[200px] justify-between  items-center h-[100%]">
             <div className="flex flex-row items-center space-x-3">
-                <Image src="/logo.svg" alt="" width={100} height={100} className='h-7 w-7 lg:h-10 lg:w-10' />
+                <Image src="/logo.svg" alt="" width={100} height={100} className='h-7 w-7 lg:h-10 lg:w-10/12' />
             <Link href={"/"} className="text-2xl lg:text-3xl font-bold text-slate-700 dark:text-white w-full"
             >TechGuide</Link>
             </div>
