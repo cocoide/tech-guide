@@ -1,5 +1,6 @@
 import { api } from '@/app/_functions/API';
 import { Article, Comment } from '@/types/model';
+import { Header } from '../@modal/(.)articles/[article_id]/components/DynamicOutlineSection';
 
 type MakeArticle=Pick<Article,"original_url">
 
@@ -28,6 +29,9 @@ export const articleAPI = {
     },
     async GetOverview(url?: string){
         return await api.get<string>(`/overview?url=${url}`,"reload")
+    },
+    async GetHeaders(url?: string) {
+        return await api.get<Header[]>(`/scraper/header`, "reload")
     },
     async GetArticlesByPagination(page: number){
         const{data}=await api.get<Article[]>(`/article?page=${page}`,"no-store")
