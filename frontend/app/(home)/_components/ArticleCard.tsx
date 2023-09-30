@@ -12,7 +12,7 @@ const ArticleCard = ({ article, origin }: Props) => {
     const queryParam = origin ? `?origin=${origin}` : ""
     return (
         <div className='bg-white dark:bg-black overflow-hidden
-        relative rounded-xl custom-shadow dark:shadow-slate-600 min-h-[20px]'>
+        relative rounded-xl custom-shadow dark:shadow-slate-600 min-h-[30px]'>
             <a href={article.original_url} target="_blank" className="bg-slate-400/60 backdrop-blur-[5px] absolute top-3 right-3 cutom-outline
                         text-white p-[3px] rounded-xl shadow-sm z-10">元記事を読む</a>
             <Link href={`/articles/${article.id}${queryParam}`} className='hover:bg-slate-100 h-full w-full duaration-500'>
