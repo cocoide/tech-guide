@@ -18,18 +18,18 @@ const LeftSideVar = () => {
         { label: "検索", href: "/explore", icon: <MagnifyingGlassIcon className='h-7 w-7' />, isLogin: false },
     ]
     return (
-        <div className="hidden md:flex flex-col p-5 w-[190px] lg:w-[200px] justify-between  items-center h-[100%]">
-            <div className="flex flex-row items-center  space-x-1">
+        <div className="hidden md:flex flex-col p-5 w-[100px] lg:w-[200px] justify-between  items-center h-[100%]">
+            <Link href={"/"} className="flex flex-row items-center  space-x-1">
                 <Image src="/logo.svg" alt="" width={100} height={100} className='h-7 w-7' />
-                <Link href={"/"} className="text-2xl font-bold text-slate-700 dark:text-white w-full"
-            >TechGuide</Link>
-            </div>
+                <div className="hidden lg:flex text-2xl font-bold text-slate-700 dark:text-white w-full"
+            >TechGuide</div>
+            </Link>
             <div className="flex flex-col space-y-5 text-slate-400 mt-10 w-full">{
                 SideVarList.map((item => (
                     (!item.isLogin || (item.isLogin && status === 'authenticated')) &&
                     <Link href={item.href} key={item.label} className="flex flex-row items-center space-x-2 animate-appear">
                         {item.icon}
-                        <div className="">{item.label}</div>
+                        <div className="hidden lg:flex">{item.label}</div>
                         </Link>
                 )))
             }</div>
