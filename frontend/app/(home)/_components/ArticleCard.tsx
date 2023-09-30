@@ -12,7 +12,7 @@ const ArticleCard = ({ article, origin }: Props) => {
     const queryParam = origin ? `?origin=${origin}` : ""
     return (
         <div className='bg-white dark:bg-black overflow-hidden
-        relative rounded-xl custom-shadow dark:shadow-slate-600 min-h-[30px]'>
+        relative rounded-xl custom-shadow dark:shadow-slate-600 min-h-[20px]'>
             <a href={article.original_url} target="_blank" className="bg-slate-400/60 backdrop-blur-[5px] absolute top-3 right-3 cutom-outline
                         text-white p-[3px] rounded-xl shadow-sm z-10">元記事を読む</a>
             <Link href={`/articles/${article.id}${queryParam}`} className='hover:bg-slate-100 h-full w-full duaration-500'>
@@ -23,7 +23,7 @@ const ArticleCard = ({ article, origin }: Props) => {
                             <img src={article.thumbnail_url} className='h-50 w-100' />
                             :
                             <div className="flex items-center justify-center h-full w-full bg-slate-200 dark:slate-800"
-                            ><NewspaperIcon className='h-10 w-10' /> </div>
+                            ><NewspaperIcon className='h-10 w-10' /></div>
                         }
                     </div>
                     <div className="flex flex-row space-x-3">
