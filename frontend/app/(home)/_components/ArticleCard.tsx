@@ -16,7 +16,7 @@ const ArticleCard = ({ article, origin }: Props) => {
             <a href={article.original_url} target="_blank" className="bg-slate-400/60 backdrop-blur-[5px] absolute top-3 right-3 cutom-outline
                         text-white p-[3px] rounded-xl shadow-sm z-10">元記事を読む</a>
             <Link href={`/articles/${article.id}${queryParam}`} className='hover:bg-slate-100 h-full w-full duaration-500'>
-                <div className='flex flex-col space-y-[5px]'>
+                <div className='flex flex-col'>
                     <div className="overflow-y-hidden h-[200px] relative">
                         {article.thumbnail_url ?
                             // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
@@ -28,11 +28,6 @@ const ArticleCard = ({ article, origin }: Props) => {
                     </div>
                     <div className="flex flex-row space-x-3">
                         <div className='text-slate-700 dark:text-white  mt-[12px] mx-[12px] mb-8'>{article.title}</div>
-                    </div>
-
-                    <div className='flex flex-row justify-between'>
-                        <div className='flex flex-row space-x-3'>
-                        </div>
                     </div>
                 </div>
             </Link>
