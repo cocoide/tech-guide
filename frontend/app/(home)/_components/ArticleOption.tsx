@@ -7,6 +7,7 @@ import { useAtom } from 'jotai'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { articleAPI } from '../../_functions/article'
+import { RatingBadge } from './RatingBadge'
 
 interface Props {
   article: Article
@@ -36,9 +37,9 @@ const ArticleOption = ({ article }: Props) => {
   return (
     <div className='flex flex-row items-center absolute bottom-[7px] px-[7px] justify-between w-full'>
       <div className="text-slate-400 dark:text-slate-200 flex flex-row items-center
-      space-x-[5px]">
+      space-x-[7px]">
         {count != 0 &&
-          <div className="text-slate-500 dark:text-slate-100 font-bold">{count}</div>
+          <RatingBadge count={count} />
         }
       <Link href={`/sources/${article.source.id}`} className="text-gray-400 text-sm">
         {article.source.name}
