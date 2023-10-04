@@ -8,15 +8,12 @@ export const RatingBadge = ({ count }: { count: number }) => {
 
     switch (true) {
         case count >= 1000:
-            text_style = "text-yellow-300  dark:text-yellow-100 font-bold"
+            text_style = "text-yellow-400  dark:text-yellow-300 font-bold"
             icon = <TrophyIcon className='h-5 w-5' />
             break;
         case 999 >= count && count >= 100:
-            text_style = "text-red-300 dark:text-red-200 font-bold"
+            text_style = "text-red-400 dark:text-red-300 font-bold"
             icon = <FireIcon className='h-5 w-5' />
-            break;
-        case 99 >= count && count >= 50:
-            text_style = "text-slate-300 dark:text-slate-100 font-bold"
             break;
         default:
             text_style = "text-slate-300 dark:text-slate-100 font-bold"
