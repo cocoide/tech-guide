@@ -17,7 +17,7 @@ const ArticleCard = ({ article, origin }: Props) => {
                         text-white p-[3px] rounded-xl shadow-sm z-10">元記事を読む</a>
             <Link href={`/articles/${article.id}${queryParam}`} className='hover:bg-slate-100 h-full w-full duaration-500'>
                 <div className='flex flex-col'>
-                    <div className="overflow-y-hidden h-[200px] relative">
+                    <div className="overflow-y-hidden h-[200px] xl:h-[180px] relative">
                         {article.thumbnail_url ?
                             // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
                             <img src={article.thumbnail_url} className='h-50 w-100' />
