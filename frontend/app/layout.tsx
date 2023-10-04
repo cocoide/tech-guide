@@ -23,7 +23,7 @@ export default function RootLayout({ children, modal }: Props) {
     <html lang="ja">
       <body className="bg-white dark:bg-black">
         <Providers>
-          <div className="flex md:w-[770px] lg:w-[1050px] xl:w-[1250px]  mx-auto relative">
+          <div className="flex md:w-[770px] lg:w-[1050px] xl:w-[1300px]  mx-auto relative">
             <div className="sticky top-0 h-screen">
               <LeftSideVar />
             </div>
