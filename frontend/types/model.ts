@@ -16,6 +16,14 @@ export type Article={
     created_at: string
     topics: Topic[]
     source: Source
+    rating: ArticleRating
+}
+
+export type ArticleRating={
+    owned_stocks: number
+    origin_stocks: number
+    pocket_stocks: number
+    hatena_stocks: number
 }
 
 export type Topic={

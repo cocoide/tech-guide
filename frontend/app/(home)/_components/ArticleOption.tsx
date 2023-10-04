@@ -31,12 +31,20 @@ const ArticleOption = ({ article }: Props) => {
       }
     }
   }
+  const rating = article.rating
+  const count = rating.hatena_stocks + rating.origin_stocks + rating.owned_stocks + rating.pocket_stocks
   return (
     <div className='flex flex-row items-center absolute bottom-[7px] px-[7px] justify-between w-full'>
+      <div className="text-slate-400 dark:text-slate-200 flex flex-row items-center
+      space-x-[5px]">
+        {count != 0 &&
+          <div className="text-slate-500 dark:text-slate-100 font-bold">{count}</div>
+        }
       <Link href={`/sources/${article.source.id}`} className="text-gray-400 text-sm">
         {article.source.name}
       </Link>
-      <div className="text-slate-400 dark:text-slate-200 flex flex-row items-center 
+      </div>
+      <div className="text-slate-400 dark:text-slate-200 flex flex-row items-center
       space-x-[5px]">
         <button className='p-1 rounded-full
       hover:text-pink-300  hover:bg-pink-50 duration-500' onClick={handleCollectionDialog}>
