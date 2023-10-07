@@ -18,26 +18,20 @@ import (
 	"github.com/cocoide/tech-guide/pkg/utils"
 )
 
-type TimelineWorker interface {
-	CacheTredingArticlesWorker()
-	CachePersonalizedArticlesWorker()
-	RegisterQiitaTendsWorker()
-	ContributionWorker()
+type TimelineWorker struct {
+	repo        repository.Repository
+	cache       repository.CacheRepo
+	activity    *usecase.ActivityUsecase
+	feed        service.TechFeedService
+	ogp         service.OGPService
+	personalize *usecase.PersonalizeUsecase
 }
 
-type timelineWorker struct {
-	repo  repository.Repository
-	cache repository.CacheRepo
-	activity   *usecase.ActivityUsecase
-	feed  service.TechFeedService
-	personalize  *usecase.PersonalizeUsecase
+func NewTimelineWorker(repo repository.Repository, cache repository.CacheRepo, activity *usecase.ActivityUsecase, feed service.TechFeedService, ogp service.OGPService, personalize *usecase.PersonalizeUsecase) *TimelineWorker {
+	return &TimelineWorker{repo: repo, cache: cache, feed: feed, activity: activity, ogp: ogp, personalize: personalize}
 }
 
-func NewTimelineWorker(repo repository.Repository, cache repository.CacheRepo, activity *usecase.ActivityUsecase, feed service.TechFeedService, personalize  *usecase.PersonalizeUsecase) TimelineWorker {
-	return &timelineWorker{repo: repo, cache: cache, feed: feed, activity: activity, personalize: personalize}
-}
-
-func (w *timelineWorker) RegisterQiitaTendsWorker() {
+func (w *TimelineWorker) RegisterQiitaTendsWorker() {
 	oneWeekAgo := time.Now().AddDate(0, 0, -7)
 	oneWeekAgoString := oneWeekAgo.Format("2006-01-02")
 	bookmarkThreshold := 50
@@ -56,12 +50,16 @@ func (w *timelineWorker) RegisterQiitaTendsWorker() {
 			if err != nil {
 				log.Panicln(err)
 			}
+			ogpResponse, err := w.ogp.GetOGPByURL(v.URL)
+			if err != nil {
+				log.Panicln(err)
+			}
 			articles = append(articles,
-				&model.Article{Title: v.Title, OriginalURL: v.URL, SourceID: sourceID})
+				&model.Article{Title: v.Title, OriginalURL: v.URL, SourceID: sourceID, ThumbnailURL: ogpResponse.Thumbnail})
 		}
 	}
 	createdIDs, err := w.repo.BatchCreate(articles)
-	strArticleIDs, err := w.cache.Get(key.PopularArticleIDs)
+	strArticleIDs, _, err := w.cache.Get(key.PopularArticleIDs)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -85,7 +83,7 @@ func (w *timelineWorker) RegisterQiitaTendsWorker() {
 	}
 }
 
-func (w *timelineWorker) CachePersonalizedArticlesWorker() {
+func (w *TimelineWorker) CachePersonalizedArticlesWorker() {
 	accountIDs, err := w.repo.GetAllAccountIDs()
 	if err != nil {
 		log.Println(err)
@@ -115,7 +113,7 @@ func (w *timelineWorker) CachePersonalizedArticlesWorker() {
 	wg.Wait()
 }
 
-func (w *timelineWorker) CacheTredingArticlesWorker() {
+func (w *TimelineWorker) CacheTredingArticlesWorker() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	cr := w.cache.WithCtx(ctx)
@@ -133,7 +131,7 @@ func (w *timelineWorker) CacheTredingArticlesWorker() {
 	}
 }
 
-func (w *timelineWorker) ContributionWorker() {
+func (w *TimelineWorker) ContributionWorker() {
 	contributions, err := w.activity.GetContributionsFromCache()
 	if err != nil {
 		log.Println(err)

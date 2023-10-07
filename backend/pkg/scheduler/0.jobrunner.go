@@ -13,7 +13,7 @@ const (
 	contributioinWorker
 )
 
-func NewAsyncJobRunner(sp *SchedulerPool, tw TimelineWorker) {
+func NewAsyncJobRunner(sp *SchedulerPool, tw *TimelineWorker) {
 	go func() {
 		sp.AddScheduler(trendingArticlesWorker, 24*time.Hour, tw.CacheTredingArticlesWorker)
 		sp.AddScheduler(personalizedArticlesWorker, 24*time.Hour, tw.CachePersonalizedArticlesWorker)
