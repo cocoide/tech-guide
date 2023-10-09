@@ -5,7 +5,7 @@ import { FireIcon, TrophyIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 
-export const RatingBadge = ({ rating }: { rating: ArticleRating }) => {
+export const RatingBadge = ({ rating, domain }: { rating: ArticleRating, domain: string }) => {
     const [isOpen, setIsOpen] = useState(false)
     function handleOpen() {
         setIsOpen(!isOpen)
@@ -38,7 +38,7 @@ export const RatingBadge = ({ rating }: { rating: ArticleRating }) => {
             }
             {isOpen &&
                 <div className="absolute -bottom-8 left-0 z-40 p-2 rounded-xl bg-white/80 backdrop-blur-sm
-                flex flex-row items-center space-x-7 w-[150px]">
+                flex flex-row items-center space-x-7 w-[200px]">
                     <UnitRateBadge
                         icon={<Image src={"/pocket.png"} width={50} height={50} alt='pocket' className='h-5 w-5' />}
                         count={pocket}
@@ -51,6 +51,18 @@ export const RatingBadge = ({ rating }: { rating: ArticleRating }) => {
                         icon={<Image src={"/logo.svg"} width={50} height={50} alt='origin' className='h-6 w-6' />}
                         count={owned}
                     />
+                    {domain === "qiita.com" ?
+                        <UnitRateBadge
+                            icon={<Image src={"/source/qiita.png"} width={50} height={50} alt='origin' className='h-5 w-5' />}
+                            count={origin} />
+                        :
+                        domain === "github.com" ?
+                            <UnitRateBadge
+                                icon={<Image src={"/source/github.webp"} width={50} height={50} alt='origin' className='h-5 w-5' />}
+                                count={origin} />
+                            :
+                            <></>
+                    }
                 </div>
             }
         </button>

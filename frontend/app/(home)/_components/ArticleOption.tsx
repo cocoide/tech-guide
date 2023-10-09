@@ -39,7 +39,7 @@ const ArticleOption = ({ article }: Props) => {
       <div className="text-slate-400 dark:text-slate-200 flex flex-row items-center
       space-x-[8px]">
         {count != 0 &&
-          <RatingBadge rating={article.rating} />
+          <RatingBadge rating={article.rating} domain={article.source.domain} />
         }
       </div>
       <div className="text-slate-400 dark:text-slate-200 flex flex-row items-center
