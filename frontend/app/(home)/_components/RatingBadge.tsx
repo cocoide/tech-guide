@@ -1,11 +1,22 @@
+"use client"
+import { ArticleRating } from '@/types/model';
 import { clsx } from '@/utils/clsx';
 import { FireIcon, TrophyIcon } from '@heroicons/react/24/outline';
-import { ReactNode } from 'react';
+import Image from 'next/image';
+import { ReactNode, useState } from 'react';
 
-export const RatingBadge = ({ count }: { count: number }) => {
+export const RatingBadge = ({ rating }: { rating: ArticleRating }) => {
+    const [isOpen, setIsOpen] = useState(false)
+    function handleOpen() {
+        setIsOpen(!isOpen)
+    }
     var text_style: string
     var icon: ReactNode = null
-
+    const count = rating.hatena_stocks + rating.origin_stocks + rating.owned_stocks + rating.pocket_stocks
+    const hatena = rating.hatena_stocks
+    const origin = rating.origin_stocks
+    const owned = rating.owned_stocks
+    const pocket = rating.pocket_stocks
     switch (true) {
         case count >= 1000:
             text_style = "text-yellow-400  dark:text-yellow-300 font-bold"
@@ -19,9 +30,47 @@ export const RatingBadge = ({ count }: { count: number }) => {
             text_style = "text-slate-300 dark:text-slate-100 font-bold"
     }
     return (
-        <div className={clsx("flex flex-row items-center space-2 p-[2px]", text_style)}>
+        <button onClick={handleOpen} className={clsx("relative flex flex-row items-center space-2 p-[2px]", text_style)}>
             {icon != null && icon}
-            <div className=""> {count} pt</div>
-        </div>
+            <div className="">{count} pt</div>
+            {isOpen &&
+                <button onClick={handleOpen} className="z-30 bg-black/10  fixed inset-0"></button>
+            }
+            {isOpen &&
+                <div className="absolute -bottom-8 left-0 z-40 p-2 rounded-xl bg-white/80 backdrop-blur-sm
+                flex flex-row items-center space-x-7 w-[150px]">
+                    <UnitRateBadge
+                        icon={<Image src={"/pocket.png"} width={50} height={50} alt='pocket' className='h-5 w-5' />}
+                        count={pocket}
+                    />
+                    <UnitRateBadge
+                        icon={<Image src={"/hatena.png"} width={50} height={50} alt='hatena' className='h-5 w-5' />}
+                        count={hatena}
+                    />
+                    <UnitRateBadge
+                        icon={<Image src={"/logo.svg"} width={50} height={50} alt='origin' className='h-6 w-6' />}
+                        count={owned}
+                    />
+                </div>
+            }
+        </button>
+    )
+}
+
+interface UnitRateBadgeProps {
+    icon: ReactNode
+    count: number
+}
+
+const UnitRateBadge = ({ icon, count }: UnitRateBadgeProps) => {
+    return (
+        <>
+            {count !== 0 &&
+                <div className="custom-badge text-gray-500">
+                    {icon}
+                    <div className="text-sm">{count}</div>
+                </div>
+}
+        </>
     )
 }

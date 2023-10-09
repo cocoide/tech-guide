@@ -24,6 +24,7 @@ export type ArticleRating={
     origin_stocks: number
     pocket_stocks: number
     hatena_stocks: number
+    updated_at: string
 }
 
 export type Topic={
