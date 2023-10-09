@@ -12,8 +12,8 @@ interface Props {
 const ArticleCard = ({ article, origin }: Props) => {
     const queryParam = origin ? `?origin=${origin}` : ""
     return (
-        <div className='group bg-white dark:bg-black overflow-hidden
-        relative rounded-2xl custom-shadow dark:shadow-slate-600 min-h-[25px] cutom-outline '>
+        <div className='group bg-white dark:bg-gray-900
+        relative rounded-2xl custom-shadow min-h-[25px] custom-border'>
             <Link href={`/articles/${article.id}${queryParam}`} className='hover:bg-slate-100 h-full w-full duaration-500'>
                 <div className='flex flex-col p-4 space-y-2'>
                     <div className="flex  flex-row items-center justify-between">
