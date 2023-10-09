@@ -28,9 +28,9 @@ const ArticleCard = ({ article, origin }: Props) => {
                     <div className="overflow-hidden h-[200px] relative flex flex-row justify-center">
                         {article.thumbnail_url ?
                             // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-                            <img src={article.thumbnail_url} className='h-40 w-100 rounded-xl' />
+                            <img src={article.thumbnail_url} className='h-40 w-70 lg:w-100 rounded-xl' />
                             :
-                            <div className="flex items-center justify-center h-[160px] w-[400px] bg-slate-200 dark:slate-800 rounded-xl"
+                            <div className="flex items-center justify-center h-[160px] w-[280px] lg:w-[400px] bg-slate-200 dark:slate-800 rounded-xl"
                             ><NewspaperIcon className='h-10 w-10' /></div>
                         }
                     </div>
