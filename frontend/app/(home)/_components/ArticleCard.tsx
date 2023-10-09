@@ -1,5 +1,6 @@
 import { Article } from '@/types/model'
 import { NewspaperIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import Link from 'next/link'
 import ArticleOption from './ArticleOption'
 
@@ -11,23 +12,27 @@ interface Props {
 const ArticleCard = ({ article, origin }: Props) => {
     const queryParam = origin ? `?origin=${origin}` : ""
     return (
-        <div className='bg-white dark:bg-black overflow-hidden
-        relative rounded-xl custom-shadow dark:shadow-slate-600 min-h-[30px]'>
-            <a href={article.original_url} target="_blank" className="bg-slate-400/60 backdrop-blur-[5px] absolute top-3 right-3 cutom-outline
-                        text-white p-[3px] rounded-xl shadow-sm z-10">元記事を読む</a>
+        <div className='group bg-white dark:bg-black overflow-hidden
+        relative rounded-2xl custom-shadow dark:shadow-slate-600 min-h-[25px] cutom-outline '>
             <Link href={`/articles/${article.id}${queryParam}`} className='hover:bg-slate-100 h-full w-full duaration-500'>
-                <div className='flex flex-col'>
-                    <div className="overflow-y-hidden h-[200px] xl:h-[180px] relative">
+                <div className='flex flex-col p-4 space-y-2'>
+                    <div className="flex  flex-row items-center justify-between">
+                        <Link href={`/sources/${article.source.id}`} target="_blank">
+                            <Image src={article.source.icon_url} alt={article.source.name} width={200} height={200} className='h-7 w-7 rounded-full z-10' />
+                        </Link>
+
+                        <a href={article.original_url} target="_blank" className="hidden group-hover:flex bg-slate-700  cutom-outline
+                        text-white  rounded-xl shadow-sm p-[3px] text-sm animate-appear duration-100 z-10">元記事を読む</a>
+                    </div>
+                    <div className='text-slate-800 dark:text-white  font-bold text-md min-h-[60px]'>{article.title}</div>
+                    <div className="overflow-hidden h-[200px] relative flex flex-row justify-center">
                         {article.thumbnail_url ?
                             // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-                            <img src={article.thumbnail_url} className='h-50 w-100' />
+                            <img src={article.thumbnail_url} className='h-40 w-100 rounded-xl' />
                             :
-                            <div className="flex items-center justify-center h-full w-full bg-slate-200 dark:slate-800"
+                            <div className="flex items-center justify-center h-[160px] w-[400px] bg-slate-200 dark:slate-800 rounded-xl"
                             ><NewspaperIcon className='h-10 w-10' /></div>
                         }
-                    </div>
-                    <div className="flex flex-row space-x-3">
-                        <div className='text-slate-700 dark:text-white  mt-[12px] mx-[12px] mb-8'>{article.title}</div>
                     </div>
                 </div>
             </Link>

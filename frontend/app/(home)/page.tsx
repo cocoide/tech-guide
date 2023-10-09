@@ -35,11 +35,11 @@ export default function ArticlePage() {
              backdrop-blur-[5px] z-20">
                 <SectionHeader
                     titleItem={<div className='custom-badge text-gray-500 dark:text-white'>
-                        <HomeIcon className='h-5 w-5' /><div>最新の投稿</div>
+                        <HomeIcon className='h-5 w-5' /><div>ホーム</div>
                     </div>}
                     rightItem={<ToggleDarkModeButton />} />
             </div>
-            <div className="min-h-screen w-full grid sm:grid-cols-2 xl:grid-cols-3 gap-2 p-[20px]">
+            <div className="min-h-screen w-full grid sm:grid-cols-2 xl:grid-cols-3 gap-4 p-[30px]">
                 {isInitialLoading ?
                     <>
                         {Array(10).fill(null).map((_, index) => (

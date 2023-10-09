@@ -18,7 +18,7 @@ const LeftSideVar = () => {
         { label: "検索", href: "/explore", icon: <MagnifyingGlassIcon className='h-7 w-7' />, isLogin: false },
     ]
     return (
-        <div className="hidden md:flex flex-col p-5 w-[100px] lg:w-[200px] justify-between  items-center h-[100%]">
+        <div className="hidden md:flex flex-col p-5 w-[70px] lg:w-[200px] justify-between  items-center h-[100%]">
             <Link href={"/"} className="flex flex-row items-center  space-x-1">
                 <Image src="/logo.svg" alt="" width={100} height={100} className='h-7 w-7' />
                 <div className="hidden lg:flex text-2xl font-bold text-slate-700 dark:text-white w-full"
@@ -33,7 +33,8 @@ const LeftSideVar = () => {
                         </Link>
                 )))
             }</div>
-            <div className="flex flex-col space-y-3 w-full mt-auto">
+            <p></p>
+            <div className="hidden lg:flex flex-col space-y-3 w-full mt-auto">
                 {status === 'authenticated' ?
                     <button onClick={() => openPostDialog(true)}
                         className="animate-appear bg-cyan-300  text-white py-2 w-[150px] rounded-xl shadow-sm flex flex-row items-center justify-center space-x-1"
