@@ -38,7 +38,7 @@ export const RatingBadge = ({ rating, domain }: { rating: ArticleRating, domain:
             }
             {isOpen &&
                 <div className="absolute -bottom-8 left-0 z-40 p-2 rounded-xl bg-white/80 backdrop-blur-sm
-                flex flex-row items-center space-x-7 w-[200px]">
+                flex flex-row items-center space-x-7 w-[250px]">
                     <UnitRateBadge
                         icon={<Image src={"/pocket.png"} width={50} height={50} alt='pocket' className='h-5 w-5' />}
                         count={pocket}
@@ -76,13 +76,9 @@ interface UnitRateBadgeProps {
 
 const UnitRateBadge = ({ icon, count }: UnitRateBadgeProps) => {
     return (
-        <>
-            {count !== 0 &&
                 <div className="custom-badge text-gray-500">
                     {icon}
                     <div className="text-sm">{count}</div>
-                </div>
-}
-        </>
+        </div>
     )
 }
