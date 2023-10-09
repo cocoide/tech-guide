@@ -1,5 +1,5 @@
 import { Article } from '@/types/model'
-import { NewspaperIcon } from '@heroicons/react/24/outline'
+import { ArrowTopRightOnSquareIcon, NewspaperIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
 import ArticleOption from './ArticleOption'
@@ -11,19 +11,22 @@ interface Props {
 
 const ArticleCard = ({ article, origin }: Props) => {
     const queryParam = origin ? `?origin=${origin}` : ""
+    const domain = extractDomain(article.original_url)
     return (
         <div className='bg-white dark:bg-gray-900
         relative rounded-2xl custom-shadow min-h-[25px] custom-border'>
+            <Link href={`/sources/${article.source.id}`}>
+                <Image src={article.source.icon_url} alt={article.source.name} width={200} height={200} className='absolute top-3 left-3
+                            h-7 w-7 rounded-full z-10' />
+            </Link>
+            <a href={article.original_url} target="_blank" className="flex bg-gray-100 dark:bg-gray-700 cutom-outline absolute top-3 right-3
+                        text-gray-500 dark:text-gray-200  rounded-xl shadow-sm p-[4px] text-sm animate-appear duration-100 z-10 custom-badge">
+                <div className="text-sm">{domain}</div>
+                <ArrowTopRightOnSquareIcon className="h-4 w-4"></ArrowTopRightOnSquareIcon>
+            </a>
             <Link href={`/articles/${article.id}${queryParam}`} className='hover:bg-slate-100 h-full w-full duaration-500'>
                 <div className='flex flex-col p-4 space-y-2'>
-                    <div className="flex  flex-row items-center justify-between">
-                        <Link href={`/sources/${article.source.id}`} target="_blank">
-                            <Image src={article.source.icon_url} alt={article.source.name} width={200} height={200} className='h-7 w-7 rounded-full z-10' />
-                        </Link>
-
-                        <a href={article.original_url} target="_blank" className="flex bg-slate-700  cutom-outline
-                        text-white  rounded-xl shadow-sm p-[3px] text-sm animate-appear duration-100 z-10">元記事を読む</a>
-                    </div>
+                    <p className="w-[100%] h-6"></p>
                     <div className='text-slate-800 dark:text-white  font-bold text-md min-h-[60px]'>{article.title}</div>
                     <div className="overflow-hidden h-[200px] relative flex flex-row justify-center">
                         {article.thumbnail_url ?
@@ -41,3 +44,13 @@ const ArticleCard = ({ article, origin }: Props) => {
     )
 }
 export default ArticleCard
+
+function extractDomain(url: string): string | null {
+    try {
+        const parsedUrl = new URL(url);
+        return parsedUrl.hostname;
+    } catch (e) {
+        console.error("Invalid URL provided:", e);
+        return null;
+    }
+}
