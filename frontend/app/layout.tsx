@@ -2,6 +2,7 @@ import CircleLoader from '@/ui/CircleLoader'
 import { Suspense } from 'react'
 import '../styles/globals.css'
 import CollectionDialog from './_components/layouts/CollectionDialog'
+import CommentDialog from './_components/layouts/CommentDialog'
 import FeedFilterDialog from './_components/layouts/FeedFilterDialog'
 import { Header } from './_components/layouts/Header'
 import LoginDialog from './_components/layouts/LoginDialog'
@@ -41,6 +42,7 @@ export default function RootLayout({ children, modal }: Props) {
           <div className="fixed bottom-0 w-[100%] z-30 flex md:hidden">
             <BottomNavigation />
           </div>
+          <CommentDialog />
           <CollectionDialog />
           <LoginDialog />
           <PostDialog />

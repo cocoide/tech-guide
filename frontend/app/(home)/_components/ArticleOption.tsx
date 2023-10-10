@@ -1,10 +1,9 @@
 "use client"
 import { useAuth } from '@/hooks/useAuth'
-import { collectionDialogAtom, loginDialogAtom } from '@/stores/dialog'
+import { collectionDialogAtom, commentDialogAtom, loginDialogAtom } from '@/stores/dialog'
 import { Article } from '@/types/model'
 import { ArrowTopRightOnSquareIcon, ChatBubbleOvalLeftEllipsisIcon, StarIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
-import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { articleAPI } from '../../_functions/article'
 import PreviewButton from './PreviewButton'
@@ -16,6 +15,7 @@ interface Props {
 const ArticleOption = ({ article }: Props) => {
   const [_, setOpenCollectionDialog] = useAtom(collectionDialogAtom)
   const [__, setOpenLoginDialog] = useAtom(loginDialogAtom)
+  const [___, setOpenCommentDialog] = useAtom(commentDialogAtom)
   const { status, token } = useAuth()
   function handleCollectionDialog() {
     if (status === "authenticated") {
@@ -33,6 +33,14 @@ const ArticleOption = ({ article }: Props) => {
       }
     }
   }
+  function handleCommnetDialog(article: Article) {
+    if (status === "authenticated") {
+      setOpenCommentDialog(article)
+    }
+    if (status === "unauthenticated") {
+      setOpenLoginDialog(true)
+    }
+  }
   const rating = article.rating
   const count = rating.hatena_stocks + rating.origin_stocks + rating.owned_stocks + rating.pocket_stocks
   const domain = extractDomain(article.original_url)
@@ -41,10 +49,10 @@ const ArticleOption = ({ article }: Props) => {
       <div className="text-slate-400 dark:text-slate-200 flex flex-row items-center
       space-x-[10px]">
         <PreviewButton domain={article.source.domain} />
-        <Link href={`/articles/${article.id}?comment=true`} className='p-[5px] rounded-full
+        <button onClick={() => handleCommnetDialog(article)} className='p-[5px] rounded-full
       hover:text-blue-300  hover:bg-blue-50'>
           <ChatBubbleOvalLeftEllipsisIcon className='h-6 w-6' />
-        </Link>
+        </button>
         <button className='p-[5px] rounded-full 
       hover:text-green-300 hover:bg-green-50' onClick={handleCollectionDialog}>
           <StarIcon className='h-6 w-6' />
