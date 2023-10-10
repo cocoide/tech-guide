@@ -1,7 +1,7 @@
 "use client"
 import { ArticleRating } from '@/types/model';
 import { clsx } from '@/utils/clsx';
-import { FireIcon, TrophyIcon } from '@heroicons/react/24/outline';
+import { ArrowTrendingUpIcon, FireIcon, TrophyIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 
@@ -19,15 +19,19 @@ export const RatingBadge = ({ rating, domain }: { rating: ArticleRating, domain:
     const pocket = rating.pocket_stocks
     switch (true) {
         case count >= 1000:
-            text_style = "text-yellow-400  dark:text-yellow-300 font-bold"
+            text_style = "text-yellow-500  dark:text-yellow-300 font-bold"
             icon = <TrophyIcon className='h-5 w-5' />
             break;
-        case 999 >= count && count >= 100:
-            text_style = "text-red-400 dark:text-red-300 font-bold"
+        case 999 >= count && count >= 500:
+            text_style = "text-red-300 dark:text-red-300 font-bold"
             icon = <FireIcon className='h-5 w-5' />
             break;
+        case 499 >= count && count >= 100:
+            text_style = "text-gray-400 dark:text-gray-100 font-bold"
+            icon = <ArrowTrendingUpIcon className='h-5 w-5' />
+            break;
         default:
-            text_style = "text-slate-300 dark:text-slate-100 font-bold"
+            text_style = "text-gray-300 dark:text-slate-200 font-bold"
     }
     return (
         <button onClick={handleOpen} className={clsx("relative flex flex-row items-center space-2 p-[2px]", text_style)}>
@@ -37,7 +41,7 @@ export const RatingBadge = ({ rating, domain }: { rating: ArticleRating, domain:
                 <button onClick={handleOpen} className="z-30 bg-black/10  fixed inset-0"></button>
             }
             {isOpen &&
-                <div className="absolute -bottom-8 left-0 z-40 p-2 rounded-xl bg-white/80 backdrop-blur-sm
+                <div className="absolute -bottom-10 right-0 z-40 p-2 rounded-xl bg-white/80 backdrop-blur-sm
                 flex flex-row items-center space-x-7 w-[250px]">
                     <UnitRateBadge
                         icon={<Image src={"/pocket.png"} width={50} height={50} alt='pocket' className='h-5 w-5' />}
