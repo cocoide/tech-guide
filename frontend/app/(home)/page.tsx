@@ -39,7 +39,7 @@ export default function ArticlePage() {
                     </div>}
                     rightItem={<ToggleDarkModeButton />} />
             </div>
-            <div className="min-h-screen w-full grid sm:grid-cols-2 xl:grid-cols-3 gap-4 p-[30px]">
+            <div className="min-h-screen w-full grid sm:grid-cols-2 xl:grid-cols-3  gap-[20px] p-[20px]">
                 {isInitialLoading ?
                     <>
                         {Array(10).fill(null).map((_, index) => (
