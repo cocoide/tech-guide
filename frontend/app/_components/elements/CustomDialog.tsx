@@ -33,7 +33,7 @@ export default function CustomDialog<T>({ content, button, openAtom, layout, ope
                     <button onClick={handleClose}
                         className="z-40 bg-gray-500/30  fixed inset-0 backdrop-blur-[3px] animate-appear"></button>
                     <div className={clsx(layout ? layout : "",
-                        "z-50 fixed inset-0 sm:animate-scale animate-slideUp bg-white duration-700 shadow-[5px] flex items-center justify-center")}
+                        "z-50 fixed inset-0 sm:animate-scale animate-slideOverUp bg-white dark:bg-black duration-700 shadow-[5px] flex items-center justify-center")}
                     >{content}</div>
                 </>
                 :

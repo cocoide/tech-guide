@@ -38,17 +38,17 @@ const CommentDialog = () => {
             {typeof commentDialogValue !== 'boolean' &&
                 <CustomDialog
                     openAtom={commentDialogAtom}
-                    layout='mt-[120px] sm:my-[120px] bg-white z-50 sm:mx-[15%] md:mx-[20%] lg:mx-[25%] xl:mx-[27%] sm:rounded-xl'
+                layout='mt-[35%] sm:my-[120px] z-50 sm:mx-[15%] md:mx-[20%] lg:mx-[25%] xl:mx-[27%] sm:rounded-xl'
                     content={
                         <div className='p-7 flex flex-col items-center w-full space-y-3'>
                             <div className="flex items-start w-[100%] space-x-3">
-                                <Image src={user?.image as string} width={70} height={70} alt={user?.name as string} className="h-[50px] w-[50px] rounded-full bg-shadow" />
+                                <Image src={user?.image as string} width={70} height={70} alt={user?.name as string} className="custom-border h-[50px] w-[50px] rounded-full" />
                                 <div className="flex flex-col w-[100%] justify-center items-center">
                                     <textarea onChange={handleCommentChange} value={comment} rows={1}
-                                        className="w-[100%] min-h-auto   focus:ring-transparent ring-none border-none resize-none min-h-15" placeholder="学びを保存 / 共有"></textarea>
+                                        className="w-[100%] min-h-auto   focus:ring-transparent ring-none border-none resize-none min-h-15 bg-gray-50 dark:bg-gray-700 rounded-xl dark:text-white" ></textarea>
                                 </div>
                             </div>
-                            <div className="lg:min-w-[500px]">
+                            <div className="min-w-[350px] lg:min-w-[500px]">
                                 <ArticleCard article={commentDialogValue} />
                             </div>
                             <div className="flex flex-row justify-end w-[100%]">

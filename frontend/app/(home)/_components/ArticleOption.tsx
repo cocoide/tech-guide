@@ -45,7 +45,7 @@ const ArticleOption = ({ article }: Props) => {
   const count = rating.hatena_stocks + rating.origin_stocks + rating.owned_stocks + rating.pocket_stocks
   const domain = extractDomain(article.original_url)
   return (
-    <div className='flex flex-row items-center absolute bottom-[6px] px-[6px] justify-between w-full'>
+    <div className='flex flex-row items-center p-[6px] justify-between w-full'>
       <div className="text-slate-400 dark:text-slate-200 flex flex-row items-center
       space-x-[10px]">
         <PreviewButton domain={article.source.domain} />
