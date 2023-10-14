@@ -3,8 +3,7 @@ import { collectionAPI } from '@/app/(dashboard)/accounts/[account_id]/_function
 import { api } from '@/app/_functions/API'
 import { collectionDialogAtom } from '@/stores/dialog'
 import { Collection } from '@/types/model'
-import { ChevronLeftIcon, NewspaperIcon } from '@heroicons/react/24/outline'
-import { PlusCircleIcon } from '@heroicons/react/24/solid'
+import { ChevronLeftIcon,PlusIcon, NewspaperIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
@@ -70,16 +69,16 @@ const CollectionDialog = () => {
             closeFunc={() => setIsNewCollection(false)}
             layout='mt-[120px] sm:mb-[120px]  bg-white z-50 sm:mx-[15%] md:mx-[20%] lg:mx-[25%] rounded-xl'
             content={
-                <div className='flex flex-col h-full p-10 space-y-5 w-full text-slate-700'>
+                <div className='flex flex-col h-full p-10 space-y-5 w-full text-gray-600 dark:text-gray-100'>
                     {isNewCollection ?
                         <>
                             <div className="flex flex-row items-center w-full justify-center">
                                 <button onClick={() => setIsNewCollection(false)} className="absolute left-10">
-                                    <ChevronLeftIcon className='h-5 w-5 text-gray-600' />
+                                    <ChevronLeftIcon className='h-5 w-5' />
                                 </button>
                                 <div className="text-center">コレクションを作成</div>
                             </div>
-                            <form onSubmit={handleSubmit(handleNewCollectionSubmit)} className='flex flex-col p-5 space-y-5 h-full text-slate-500'>
+                            <form onSubmit={handleSubmit(handleNewCollectionSubmit)} className='flex flex-col p-5 space-y-5 h-full'>
                                 <div className="w-full">
                                     <div className="">コレクション名</div>
                                     <input {...register("name", { required: true })} className='p-1 appearance-none outline outline-slate-200 rounded-md w-full' />
@@ -94,28 +93,38 @@ const CollectionDialog = () => {
                         </>
                         :
                         <>
-                            <div className="text-center">保存先</div>
+                            <div className="text-center">コレクションを選ぶ</div>
                     <div className="overflow-y-auto h-full flex flex-col space-y-3">
                         {typeof dialogAtom == 'number' && collections?.map((c => (
-                            <button onClick={async () => handleBookmark(dialogAtom, c.id)}
-                                key={c.id} className="flex flex-row items-center space-x-5">
+                            <button onClick={async () => handleBookmark(dialogAtom, c.id)} key={c.name + c.id}
+                                className="rounded-md flex flex-row justify-between  custom-border
+                                             shadow-sm w-full h-[120px] p-2 items-center
+                                            ">
+                                <div className="flex flex-col space-y-3 w-full h-full p-2">
+                                    <div className="text-md  w-full custom-badge">
+                                        <div> {c.name}</div>
+                                        <div className="bg-cyan-50 text-cyan-300 border-cyan-300 border-[0.5px] rounded-full h-5 w-5 flex justify-center items-center"
+                                        >{collections.length}</div>
+                                    </div>
+                                </div>
+                                {/* image section */}
                                 {c.articles[0]?.thumbnail_url ?
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img src={c.articles[0].thumbnail_url} alt={c.articles[0].title} width={200}
                                         className='rounded-md w-[50%] h-[100px] shadow-md overflow-hidden' />
                                     :
-                                    <div className="flex items-center justify-center rounded-md w-[50%] h-[100px] bg-gray-100 shadow-[3px]">
+                                    <div className="flex items-center justify-center rounded-md w-[50%] h-[100px] bg-gray-100 shadow-[2px] custom-border">
                                         <NewspaperIcon className="h-7 w-7 text-gray-500" />
                                     </div>
                                 }
-                                <div className="">{c.name}</div>
                             </button>
+
                     )))}
                     </div>
                             <button onClick={() => setIsNewCollection(true)} className="flex flex-row items-center space-x-2
                             custom-border rounded-md justify-center
                              w-full p-[3px]">
-                                <PlusCircleIcon className='h-7 w-7 text-cyan-300' /><div>新しいコレクションを作成</div></button>
+                                <PlusIcon className='h-5 w-5' /><div>コレクションを作成</div></button>
                         </>
                     }
                 </div>
