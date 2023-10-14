@@ -27,7 +27,7 @@ const TopicFollowAccordionGroup = ({ categories, token, following_topics }: Prop
     });
     return (
         <Accordion.Root
-            className="w-[300px]"
+            className="w-full text-gray-500 dark:text-gray-200"
             type="single"
             collapsible
         >
@@ -57,7 +57,7 @@ interface AccordionItemProps {
 const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(({ children, className = '', ...props }, forwardedRef) => (
     <Accordion.Item
         className={clsx(
-            'mt-px overflow-hidden first:mt-0 first:rounded-t last:rounded-b focus-within:relative focus-within:z-10 focus-within:shadow-[0_0_0_2px]',
+            ' ring-0 ring-transparent mt-px overflow-hidden first:mt-0 first:rounded-t last:rounded-b focus-within:relative focus-within:z-10 focus-within:shadow-[0_0_0_2px]',
             className,
         )}
         {...props}
@@ -72,7 +72,7 @@ const AccordionTrigger = forwardRef<HTMLButtonElement, Omit<AccordionItemProps, 
     <Accordion.Header className="flex">
         <Accordion.Trigger
             className={clsx(
-                ' ring-transparent group flex h-[45px] flex-1 cursor-default items-center justify-between bg-white px-5 text-[15px] leading-none shadow-[0_1px_0] outline-none',
+                ' ring-transparent group flex h-[45px] flex-1 cursor-default items-center justify-between px-5 text-[15px] leading-none outline-none',
                 className,
             )}
             {...props}
@@ -80,7 +80,7 @@ const AccordionTrigger = forwardRef<HTMLButtonElement, Omit<AccordionItemProps, 
         >
             {children}
             <ChevronDownIcon
-                className="ease-[cubic-bezier(0.87,_0,_0.13,_1)] transition-transform duration-300 group-data-[state=open]:rotate-180"
+                className="ease-[cubic-bezier(0.87,_0,_0.13,_1)] transition-transform duration-300 group-data-[state=open]:rotate-180 h-5 w-5"
                 aria-hidden
             />
         </Accordion.Trigger>
