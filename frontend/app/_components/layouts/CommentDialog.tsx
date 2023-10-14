@@ -3,7 +3,7 @@ import ArticleCard from '@/app/(home)/_components/ArticleCard'
 import { api } from '@/app/_functions/API'
 import { useAuth } from '@/hooks/useAuth'
 import { commentDialogAtom } from '@/stores/dialog'
-import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline'
+import { ChatBubbleOvalLeftEllipsisIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Image from 'next/image'
 import { ChangeEvent, useState } from 'react'
@@ -38,15 +38,18 @@ const CommentDialog = () => {
             {typeof commentDialogValue !== 'boolean' &&
                 <CustomDialog
                     openAtom={commentDialogAtom}
-                layout='mt-[35%] sm:my-[120px] z-50 sm:mx-[15%] md:mx-[20%] lg:mx-[25%] xl:mx-[27%] sm:rounded-xl'
+                layout='mt-[150px] sm:my-[120px] z-50 sm:mx-[15%] md:mx-[20%] lg:mx-[25%] xl:mx-[27%] sm:rounded-xl'
                     content={
                         <div className='p-7 flex flex-col items-center w-full space-y-3'>
-                            <div className="flex items-start w-[100%] space-x-3">
+                            <div className="flex items-start w-[100%] space-x-3 justify-between">
                                 <Image src={user?.image as string} width={70} height={70} alt={user?.name as string} className="custom-border h-[50px] w-[50px] rounded-full" />
                                 <div className="flex flex-col w-[100%] justify-center items-center">
                                     <textarea onChange={handleCommentChange} value={comment} rows={1}
                                         className="w-[100%] min-h-auto   focus:ring-transparent ring-none border-none resize-none min-h-15 bg-gray-50 dark:bg-gray-700 rounded-xl dark:text-white" ></textarea>
                                 </div>
+                                <button onClick={() => setOpenCommentDialog(false)}>
+                                    <XMarkIcon className='h-8 w-8 text-gray-400 p-[3px]  duration-500 rounded-md' />
+                                </button>
                             </div>
                             <div className="min-w-[350px] lg:min-w-[500px]">
                                 <ArticleCard article={commentDialogValue} />

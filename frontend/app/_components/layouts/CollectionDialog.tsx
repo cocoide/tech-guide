@@ -3,7 +3,7 @@ import { collectionAPI } from '@/app/(dashboard)/accounts/[account_id]/_function
 import { api } from '@/app/_functions/API'
 import { collectionDialogAtom } from '@/stores/dialog'
 import { Collection } from '@/types/model'
-import { ChevronLeftIcon,PlusIcon, NewspaperIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
+import { ChevronLeftIcon, NewspaperIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
@@ -93,7 +93,12 @@ const CollectionDialog = () => {
                         </>
                         :
                         <>
+                            <div className="relative">
+                                <button onClick={() => setDialogAtom(false)}>
+                                    <XMarkIcon className='h-8 w-8 text-gray-400 p-[3px]  duration-500 rounded-md absolute right-0' />
+                                </button>
                             <div className="text-center">コレクションを選ぶ</div>
+                            </div>
                     <div className="overflow-y-auto h-full flex flex-col space-y-3">
                         {typeof dialogAtom == 'number' && collections?.map((c => (
                             <button onClick={async () => handleBookmark(dialogAtom, c.id)} key={c.name + c.id}
