@@ -34,7 +34,15 @@ const TopicFollowAccordionGroup = ({ categories, token, following_topics }: Prop
             {categories?.map((category, index) => (
                 <>
                     <AccordionItem value={`items-${index}`} >
-                        <AccordionTrigger>{category.name}</AccordionTrigger>
+                        <AccordionTrigger>
+                            <div className="flex flex-row justify-between items-center pr-2">
+                                <> {category.name}</>
+                                {following_topics && following_topics.length > 0 &&
+                                    <div className="h-5 w-5 bg-cyan-300 text-white rounded-full custom-badge justify-center"
+                                    >{following_topics.length}</div>
+                                }
+                            </div>
+                        </AccordionTrigger>
                         <AccordionContent>
                             <TopicFollowSection existingTopics={category.topics} token={token} followingTopics={categorizedFollowingTopics[category.id]} />
                         </AccordionContent>
@@ -57,7 +65,7 @@ interface AccordionItemProps {
 const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(({ children, className = '', ...props }, forwardedRef) => (
     <Accordion.Item
         className={clsx(
-            ' ring-0 ring-transparent outline-none mt-px overflow-hidden first:mt-0 first:rounded-t last:rounded-b focus-within:relative focus-within:z-10 focus-within:shadow-[0_0_0_2px]',
+            ' ring-0 ring-transparent outline-none mt-px overflow-hidden first:mt-0 first:rounded-t last:rounded-b focus-within:relative focus-within:z-10',
             className,
         )}
         {...props}

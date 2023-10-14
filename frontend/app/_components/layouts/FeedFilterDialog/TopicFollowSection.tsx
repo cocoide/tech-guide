@@ -52,13 +52,13 @@ const TopicFollowSection = ({ token, followingTopics, existingTopics }: Props) =
                             <button onClick={() => handleUnFollow(topic.id)}
                                 className="flex flex-row items-center space-x-[3px] text-white bg-gray-400 rounded-full p-[6px]">
                                 <div className="text-sm"> {topic.name}</div>
-                                <PlusIcon className='h-4 w-4' />
+                                <XMarkIcon className='h-4 w-4' />
                             </button>
                             :
                             <button onClick={() => handleDoFollow(topic.id)}
                                 className="flex flex-row items-center space-x-[3px] text-gray-700 ring-1 ring-gray-200 rounded-full p-[6px]">
                                 <div className="text-sm"> {topic.name}</div>
-                                <XMarkIcon className='h-4 w-4 text-gray-400' />
+                                <PlusIcon className='h-4 w-4 text-gray-400' />
                             </button>
                         }
                     </div>
