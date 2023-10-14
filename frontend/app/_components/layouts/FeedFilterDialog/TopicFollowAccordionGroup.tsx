@@ -27,7 +27,7 @@ const TopicFollowAccordionGroup = ({ categories, token, following_topics }: Prop
     });
     return (
         <Accordion.Root
-            className="w-full text-gray-500 dark:text-gray-200"
+            className="w-full text-gray-500 dark:text-gray-200 dark:bg-black"
             type="single"
             collapsible
         >
@@ -57,7 +57,7 @@ interface AccordionItemProps {
 const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(({ children, className = '', ...props }, forwardedRef) => (
     <Accordion.Item
         className={clsx(
-            ' ring-0 ring-transparent mt-px overflow-hidden first:mt-0 first:rounded-t last:rounded-b focus-within:relative focus-within:z-10 focus-within:shadow-[0_0_0_2px]',
+            ' ring-0 ring-transparent outline-none mt-px overflow-hidden first:mt-0 first:rounded-t last:rounded-b focus-within:relative focus-within:z-10 focus-within:shadow-[0_0_0_2px]',
             className,
         )}
         {...props}
@@ -97,6 +97,6 @@ const AccordionContent = forwardRef<HTMLDivElement, Omit<AccordionItemProps, 'va
         {...props}
         ref={forwardedRef}
     >
-        <div className="py-[15px] px-5">{children}</div>
+        <div className="py-[5px] px-[5px]">{children}</div>
     </Accordion.Content>
 ));
