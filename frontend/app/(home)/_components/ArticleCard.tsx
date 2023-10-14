@@ -21,13 +21,13 @@ const ArticleCard = ({ article, origin }: Props) => {
             <Link href={`/articles/${article.id}${queryParam}`} className='hover:bg-slate-100 h-full w-full duaration-500'>
                 <div className='flex flex-col p-4 space-y-2'>
                     <div className='text-slate-800 dark:text-white  font-bold min-h-[60px] pl-8'>{article.title}</div>
-                    <div className="overflow-y-hidden h-[200px] relative flex flex-row justify-center">
+                    <div className="overflow-y-hidden h-[160px] relative flex flex-row justify-center rounded-x custom-outline">
                         <> 
                         {article.thumbnail_url ?
                             // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-                                <img src={article.thumbnail_url} className='min-h-[160px] w-[280px] lg:w-[400px]rounded-xl' />
+                                <img src={article.thumbnail_url} className='min-h-[160px] w-[280px] lg:w-[400px]l' />
                             :
-                            <div className="flex items-center justify-center h-[160px] w-[280px] lg:w-[400px] bg-slate-200 dark:slate-800 rounded-xl"
+                                <div className="flex items-center justify-center h-[160px] w-[280px] lg:w-[400px] bg-slate-200 dark:slate-800"
                             ><NewspaperIcon className='h-10 w-10' /></div>
                         }
                         </>
