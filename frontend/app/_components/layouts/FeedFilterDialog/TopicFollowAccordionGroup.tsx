@@ -37,7 +37,7 @@ const TopicFollowAccordionGroup = ({ categories, token, following_topics }: Prop
                         <AccordionTrigger>
                             <div className="flex flex-row justify-between items-center pr-2 w-full">
                                 <> {category.name}</>
-                                {categorizedFollowingTopics[category.id].length > 0 &&
+                                {categorizedFollowingTopics[category.id]?.length > 0 &&
                                     <div className="h-5 w-5 bg-cyan-300 text-white rounded-full custom-badge justify-center"
                                     >{categorizedFollowingTopics[category.id].length}</div>
                                 }
