@@ -48,7 +48,7 @@ const ArticleOption = ({ article }: Props) => {
     <div className='flex flex-row items-center p-[6px] justify-between w-full'>
       <div className="text-slate-400 dark:text-slate-200 flex flex-row items-center
       space-x-[10px]">
-        <PreviewButton domain={article.source.domain} />
+        <PreviewButton url={article.original_url} domain={article.source.domain} summary={article.summary} />
         <button onClick={() => handleCommnetDialog(article)} className='p-[5px] rounded-full
       hover:text-blue-300  hover:bg-blue-50'>
           <ChatBubbleOvalLeftEllipsisIcon className='h-6 w-6' />
