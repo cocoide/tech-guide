@@ -26,11 +26,16 @@ export type ArticleRating={
     hatena_stocks: number
     updated_at: string
 }
-
 export type Topic={
     id: number
     name: string
     icon_url: string
+}
+export type Category = {
+    id: number
+    name: string
+    icon_url: string
+    topics: Topic[]
 }
 
 export type Account={

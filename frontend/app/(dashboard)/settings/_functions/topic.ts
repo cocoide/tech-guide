@@ -1,5 +1,5 @@
 import { api } from '@/app/_functions/API'
-import { Topic } from '@/types/model'
+import { Category, Topic } from '@/types/model'
 
 export const topicAPI ={
     async GetFollowingTopics(token?: string){
@@ -7,6 +7,9 @@ export const topicAPI ={
     },
     async GetAllTopics(){
         return await api.get<Topic[]>('/topic')
+    },
+    async GetAllCategories() {
+        return await api.get<Category[]>('/category')
     },
     async DoFollowTopic(topic_id: number, token?: string){
         return await api.put(`/account/topic/follow/${topic_id}`,undefined,token)

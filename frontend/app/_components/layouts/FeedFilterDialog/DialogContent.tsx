@@ -10,7 +10,7 @@ import { useState } from 'react'
 import DetailSettingSection from './DetailSettingSection'
 import DomainFollowSection from './DomainFollowSection'
 import SettingMenue from './SetttingMenue'
-import TopicFollowSection from './TopicFollowSection'
+import TopicFollowAccordionGroup from './TopicFollowAccordionGroup'
 
 export default function DialogContent() {
     function handleClose() {
@@ -25,9 +25,9 @@ export default function DialogContent() {
         queryKey: ["following_topics"],
         enabled: openSection === 1
     })
-    const { data: existingTopics } = useQuery({
-        queryFn: async () => (await topicAPI.GetAllTopics()).data,
-        queryKey: ["existing_topics"],
+    const { data: existingCategories } = useQuery({
+        queryFn: async () => (await topicAPI.GetAllCategories()).data,
+        queryKey: ["existing_categories"],
         enabled: openSection === 1
     })
     const { data: followingSources } = useQuery({
@@ -52,7 +52,7 @@ export default function DialogContent() {
                     openSection={openSection} />
             </div>
             {openSection === 1 ? (
-                <TopicFollowSection token={token} followingTopics={followingTopics} existingTopics={existingTopics} />
+                <TopicFollowAccordionGroup categories={existingCategories} following_topics={followingTopics} token={token} />
             ) : openSection === 2 ? (
                 <DomainFollowSection token={token} followingSources={followingSources} existingSources={existingSources} />
             ) : (
