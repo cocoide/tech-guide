@@ -14,11 +14,15 @@ type TopicRepo interface {
 	GetFollowingTopics(accountId int) ([]model.Topic, error)
 	CreateTopics(topics []model.Topic) error
 	GetAllTopics() ([]model.Topic, error)
+	GetTopicsByCategoryIDs(categoryIds []int) ([]model.Topic, error)
 	GetTopicToArticleArrayByArticleID(articleID int) ([]model.TopicsToArticles, error)
+	GetTopicsByIDs(IDs []int) ([]model.Topic, error)
 	GetTopicToArticleArrayByArticleIDs(articleIDs []int) ([]model.TopicsToArticles, error)
 	GetRecentPopularArticleIDs(duration time.Duration, limit int) ([]int, error)
 	GetPopularTopics(limit int) ([]model.Topic, error)
 	GetTopicsByCollectionID(collectionID int) ([]model.Topic, error)
 	GetTopicData(topicID int) (*model.Topic, error)
 	IsFollowingTopic(accountID, topicID int) (bool, error)
+	GetCategoriesWithTopics() ([]model.Category, error)
+	GetCategories() ([]model.Category, error)
 }

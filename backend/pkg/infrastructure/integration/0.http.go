@@ -1,12 +1,23 @@
 package integration
 
 import (
+	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
+)
+
+type HttpMethod int
+
+const (
+	GET HttpMethod = iota + 1
+	POST
+	DELTE
+	PUT
 )
 
 type HttpClient struct {
@@ -25,26 +36,70 @@ func NewHttpClient() *HttpClient {
 	}
 }
 
-func (h *HttpClient) WithHeader(key, value string) {
-	h.Headers[key] = value
+// defaultの10秒を上書きできる
+func (h *HttpClient) WithTimeout(duration time.Duration) *HttpClient {
+	h.Client.Timeout = duration
+	return h
 }
 
-func (h *HttpClient) WithParam(key string, value interface{}) {
-	h.Params[key] = value
+func (h *HttpClient) IsTimeoutError(err error) bool {
+	var urlErr *url.Error
+	if errors.As(err, &urlErr) {
+		return urlErr.Timeout()
+	}
+	return false
 }
 
-func (h *HttpClient) WithBaseURL(baseURL string) {
+func (h *HttpClient) WithBaseURL(baseURL string) *HttpClient {
 	h.Endpoint = baseURL
+	return h
 }
 
-func (h *HttpClient) WithPath(path string) {
-	h.Endpoint = h.Endpoint + path
+func (h *HttpClient) WithBearerToken(token string) *HttpClient {
+	h.Headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
+	return h
 }
 
-func (h *HttpClient) GetAPI() ([]byte, error) {
+func (h *HttpClient) WithPath(path string) *HttpClient {
+	h.Endpoint = h.Endpoint + "/" + path
+	return h
+}
+
+func (h *HttpClient) WithHeader(key, value string) *HttpClient {
+	h.Headers[key] = value
+	return h
+}
+
+func (h *HttpClient) WithParam(key string, value interface{}) *HttpClient {
+	h.Params[key] = value
+	return h
+}
+
+func (h *HttpClient) WithRawParams(rawQueryParams map[string]interface{}) *HttpClient {
+	var params []string
+	for key, value := range rawQueryParams {
+		params = append(params, fmt.Sprintf("%s=%v", key, value))
+	}
+	joinedParams := strings.Join(params, "&")
+	h.Endpoint = h.Endpoint + "?" + joinedParams
+	return h
+}
+
+func (h *HttpClient) ExecuteRequest(method HttpMethod) ([]byte, error) {
+	var methodName string
+	switch method {
+	case GET:
+		methodName = "GET"
+	case POST:
+		methodName = "POST"
+	case DELTE:
+		methodName = "DELETE"
+	case PUT:
+		methodName = "PUT"
+	}
 	client := h.Client
 
-	req, err := http.NewRequest("GET", h.Endpoint, nil)
+	req, err := http.NewRequest(methodName, h.Endpoint, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +110,6 @@ func (h *HttpClient) GetAPI() ([]byte, error) {
 
 	query := req.URL.Query()
 	for key, value := range h.Params {
-		log.Print(value)
 		switch v := value.(type) {
 		case string:
 			query.Add(key, v)
@@ -68,7 +122,6 @@ func (h *HttpClient) GetAPI() ([]byte, error) {
 		}
 	}
 	req.URL.RawQuery = query.Encode()
-
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err

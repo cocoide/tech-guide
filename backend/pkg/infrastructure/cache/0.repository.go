@@ -26,15 +26,15 @@ func (r *Repository) WithCtx(ctx context.Context) repository.CacheRepo {
 	}
 }
 
-func (r *Repository) Get(key string) (string, error) {
+func (r *Repository) Get(key string) (string, bool, error) {
 	value, err := r.redis.Get(r.ctx, key).Result()
 	if err != nil {
 		if err == redis.Nil {
-			return "", nil
+			return "", false, nil
 		}
-		return "", err
+		return "", false, err
 	}
-	return value, nil
+	return value, true, nil
 }
 
 func (r *Repository) Set(key string, value string, expire time.Duration) error {

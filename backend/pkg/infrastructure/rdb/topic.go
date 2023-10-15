@@ -1,20 +1,53 @@
 package rdb
 
 import (
+	"log"
 	"time"
 
 	"github.com/cocoide/tech-guide/pkg/domain/model"
 	"gorm.io/gorm"
 )
 
-//type Repository struct {
-//	db *gorm.DB
-//   }
-//
-//func NewRepositoryImpl(db *gorm.DB) repository.TopicRepo {
-//	return &Repository{db:db}
-//}
+func (r *Repository) GetCategoriesWithTopics() ([]model.Category, error) {
+	var categories []model.Category
+	if err := r.db.
+		Preload("Topics").
+		Find(&categories).Error; err != nil {
+		return nil, err
+	}
+	return categories, nil
+}
+func (r *Repository) GetCategories() ([]model.Category, error) {
+	var categories []model.Category
+	if err := r.db.
+		Find(&categories).Error; err != nil {
+		return nil, err
+	}
+	return categories, nil
+}
 
+func (r *Repository) GetTopicsByCategoryIDs(categoryIds []int) ([]model.Topic, error) {
+	var topics []model.Topic
+	var topicToCategories []model.TopicToCategory
+	if err := r.db.
+		Preload("Topic").
+		Where("category_id IN (?)", categoryIds).
+		Find(&topicToCategories).Error; err != nil {
+		return nil, err
+	}
+	topicMap := make(map[int]model.Topic) // topicID -> topic
+	for _, category := range topicToCategories {
+		if _, ok := topicMap[category.TopicID]; !ok {
+			topicMap[category.TopicID] = category.Topic
+		}
+	}
+	log.Print(topicMap)
+	for _, topic := range topicMap {
+		topics = append(topics, topic)
+	}
+	log.Print(topics)
+	return topics, nil
+}
 func (r *Repository) GetPopularTopics(limit int) ([]model.Topic, error) {
 	var popularTopics []model.Topic
 	err := r.db.
@@ -86,6 +119,20 @@ func (r *Repository) GetAllTopics() ([]model.Topic, error) {
 		return nil, result.Error
 	}
 	return topics, nil
+}
+
+func (r *Repository) GetTopicsByIDs(IDs []int) ([]model.Topic, error) {
+	var topics []model.Topic
+	result := r.db.
+		Where("id IN ?", IDs).Find(&topics)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return topics, nil
+}
+
+func (r *Repository) UpdateTopicToArticle(topicToArticles []model.TopicsToArticles) error {
+	return r.db.Updates(&topicToArticles).Error
 }
 
 func (r *Repository) GetTopicToArticleArrayByArticleID(articleID int) ([]model.TopicsToArticles, error) {

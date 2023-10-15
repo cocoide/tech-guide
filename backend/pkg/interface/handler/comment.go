@@ -1,14 +1,12 @@
 package handler
 
 import (
-	"log"
-	"strconv"
-
 	"github.com/cocoide/tech-guide/pkg/domain/model"
-	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
 	"github.com/cocoide/tech-guide/pkg/domain/model/object"
 	"github.com/cocoide/tech-guide/pkg/utils"
 	"github.com/labstack/echo"
+	"log"
+	"strconv"
 )
 
 func (h *Handler) AddComment(c echo.Context) error {
@@ -46,38 +44,6 @@ func (h *Handler) CreateComment(c echo.Context) error {
 	if err := c.Bind(req); err != nil {
 		return c.JSON(403, err.Error())
 	}
-	articleId, err := h.repo.GetArticleIDByURL(req.OriginalURL)
-	if err != nil {
-		return c.JSON(404, err.Error())
-	}
-	if articleId != 0 {
-		domain := "tech-guide.jp"
-		sourceID, err := h.repo.FindIDByDomain(domain)
-		if err != nil {
-			return c.JSON(400, err.Error())
-		}
-		ogpResponse, err := h.ogp.GetOGPByURL(req.OriginalURL)
-		if err != nil {
-			return c.JSON(404, err.Error())
-		}
-		thumbnailURL := ""
-		if len(dto.OGPResponse{}.Thumbnail) < 500 {
-			thumbnailURL = ogpResponse.Thumbnail
-		}
-		article := &model.Article{Title: dto.OGPResponse{}.Title, ThumbnailURL: thumbnailURL, OriginalURL: req.OriginalURL, SourceID: sourceID}
-		createdArticleID, err := h.repo.CreateArticle(article)
-		if len(req.Content) > 0 {
-			comment := &model.Comment{
-				AccountID: accountId,
-				ArticleID: createdArticleID,
-				Content:   req.Content,
-			}
-			if err := h.repo.CreateComment(comment); err != nil {
-				return c.JSON(400, err.Error())
-			}
-		}
-		return c.JSON(200, "community post created")
-	}
 
 	ogpResponse, err := h.ogp.GetOGPByURL(req.OriginalURL)
 	if err != nil {
@@ -96,7 +62,7 @@ func (h *Handler) CreateComment(c echo.Context) error {
 		}
 	}
 	thumbnailURL := ""
-	if len(ogpResponse.Thumbnail) < 500 {
+	if len(ogpResponse.Thumbnail) <= object.ThumbnailMaxLength {
 		thumbnailURL = ogpResponse.Thumbnail
 	}
 	createdArticleID, err := h.repo.CreateArticle(&model.Article{Title: ogpResponse.Title, ThumbnailURL: thumbnailURL, OriginalURL: req.OriginalURL, SourceID: sourceID})
@@ -114,46 +80,36 @@ func (h *Handler) CreateComment(c echo.Context) error {
 			return c.JSON(400, err.Error())
 		}
 	}
-	topicAssignErrCh := make(chan error)
-	go func() {
-		wholeTopicWeights, err := h.article.ExtractTopicsWithWeightFromArticleTitle(ogpResponse.Title)
-		if err != nil {
-			topicAssignErrCh <- err
-			return
-		}
-		topicWeights := dto.GetTopWeightedTopics(wholeTopicWeights, 3)
-		var topicToArticles []model.TopicsToArticles
-		for _, v := range topicWeights {
-			// 関連度5以上の記事だけを保存
-			if v.Weight >= 5 {
-				topicToArticles = append(topicToArticles,
-					model.TopicsToArticles{ArticleID: createdArticleID, TopicID: v.ID, Weight: v.Weight})
-			}
-		}
-		if len(topicToArticles) > 0 {
-			if err := h.repo.CreateTopicToArticle(topicToArticles); err != nil {
-				topicAssignErrCh <- err
-				return
-			}
-		}
-	}()
-	summaryErrCh := make(chan error)
+	summaryErrCh := make(chan error, 1)
+	topicAssignErrCh := make(chan error, 1)
+	summarizeDoneCh := make(chan bool)
+
 	go func() {
 		summary, err := h.scraping.SummarizeArticle(req.OriginalURL)
 		summaryErrCh <- err
 		if err := h.repo.UpdateSummaryByID(createdArticleID, summary); err != nil {
 			summaryErrCh <- err
 		}
+		summarizeDoneCh <- true
+		close(summarizeDoneCh)
 	}()
+
 	go func() {
-		for err := range topicAssignErrCh {
+		<-summarizeDoneCh
+		if err := h.topic.UpsertTopicsByArticleID(createdArticleID); err != nil {
+			topicAssignErrCh <- err
+		}
+	}()
+
+	go func() {
+		for err := range summaryErrCh {
 			if err != nil {
 				log.Print(err)
 			}
 		}
 	}()
 	go func() {
-		for err := range summaryErrCh {
+		for err := range topicAssignErrCh {
 			if err != nil {
 				log.Print(err)
 			}

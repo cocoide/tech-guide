@@ -21,12 +21,15 @@ func NewTechFeedService() service.TechFeedService {
 func (s *techFeedService) GetQiitaTrendFeed(limit, save int, start string) ([]*dto.QiitaArticleAPI, error) {
 	var result []*dto.QiitaArticleAPI
 
-	s.client.WithBaseURL("https://qiita.com/api/v2/items")
-	s.client.WithParam("page", 1)
-	s.client.WithParam("per_page", limit)
-	s.client.WithParam("query", fmt.Sprintf("created:>%s", start)) //+stocks:>%d error
+	params := make(map[string]interface{})
+	params["page"] = 1
+	params["per_page"] = limit
+	params["query"] = fmt.Sprintf("created:>%s+stocks:>%d", start, save)
 
-	b, err := s.client.GetAPI()
+	b, err := s.client.
+		WithBaseURL("https://qiita.com/api/v2/items").
+		WithRawParams(params).
+		ExecuteRequest(GET)
 	if err != nil {
 		return nil, err
 	}
@@ -38,9 +41,9 @@ func (s *techFeedService) GetQiitaTrendFeed(limit, save int, start string) ([]*d
 }
 
 func (s *techFeedService) GetZennTrendFeed() ([]model.Article, error) {
-	s.client.WithBaseURL("https://zenn.dev/feed")
-
-	b, err := s.client.GetAPI()
+	b, err := s.client.
+		WithBaseURL("https://zenn.dev/feed").
+		ExecuteRequest(GET)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to fetch :%v", err)
 	}

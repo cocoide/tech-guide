@@ -9,9 +9,10 @@ type ArticleRepo interface {
 	CheckArticleExistsByURL(url string) (bool, error)
 	BatchCreate(articles []*model.Article) ([]int, error)
 	CreateTopicToArticle(topicToArticles []model.TopicsToArticles) error
+	UpdateTopicToArticle(topicToArticles []model.TopicsToArticles) error
 	// summaryカラムはomit
 	GetLatestArticleByLimitWithSourceData(pageIndex, pageSize int) ([]*model.Article, error)
-	GetArticlesByIDs(articleIDs []int) ([]model.Article, error)
+	GetArticlesByIDs(articleIDs []int, preloadColumns []string) ([]model.Article, error)
 	GetArticleByID(articleID int) (*model.Article, error)
 	GetArticleWithRelatedDataByID(articleID int) (*model.Article, error)
 	GetTopicsByID(articleId int) ([]model.Topic, error)
@@ -22,4 +23,6 @@ type ArticleRepo interface {
 	BatchGetArticlesByTopicIDsAndSourceID(topicIDs, sourceIDs []int, pageIndex, pageSize int) ([]model.Article, error)
 	GetArticlesBySourceID(sourceID, pageIndex, pageSize int) ([]model.Article, error)
 	GetArticlesByTopicID(topicID, pageIndex, pageSize int) ([]model.Article, error)
+	FindArticlesByTitle(title string) ([]model.Article, error)
+	GetArticlesExcludingIDs(excludeIDs []int) ([]model.Article, error)
 }

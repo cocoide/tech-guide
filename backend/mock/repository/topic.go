@@ -78,6 +78,36 @@ func (mr *MockTopicRepoMockRecorder) GetAllTopics() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllTopics", reflect.TypeOf((*MockTopicRepo)(nil).GetAllTopics))
 }
 
+// GetCategories mocks base method.
+func (m *MockTopicRepo) GetCategories() ([]model.Category, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCategories")
+	ret0, _ := ret[0].([]model.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCategories indicates an expected call of GetCategories.
+func (mr *MockTopicRepoMockRecorder) GetCategories() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCategories", reflect.TypeOf((*MockTopicRepo)(nil).GetCategories))
+}
+
+// GetCategoriesWithTopics mocks base method.
+func (m *MockTopicRepo) GetCategoriesWithTopics() ([]model.Category, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCategoriesWithTopics")
+	ret0, _ := ret[0].([]model.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCategoriesWithTopics indicates an expected call of GetCategoriesWithTopics.
+func (mr *MockTopicRepoMockRecorder) GetCategoriesWithTopics() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCategoriesWithTopics", reflect.TypeOf((*MockTopicRepo)(nil).GetCategoriesWithTopics))
+}
+
 // GetFollowingTopicIDs mocks base method.
 func (m *MockTopicRepo) GetFollowingTopicIDs(accountID int) ([]int, error) {
 	m.ctrl.T.Helper()
@@ -183,6 +213,21 @@ func (mr *MockTopicRepoMockRecorder) GetTopicToArticleArrayByArticleIDs(articleI
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopicToArticleArrayByArticleIDs", reflect.TypeOf((*MockTopicRepo)(nil).GetTopicToArticleArrayByArticleIDs), articleIDs)
 }
 
+// GetTopicsByCategoryIDs mocks base method.
+func (m *MockTopicRepo) GetTopicsByCategoryIDs(categoryIds []int) ([]model.Topic, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTopicsByCategoryIDs", categoryIds)
+	ret0, _ := ret[0].([]model.Topic)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTopicsByCategoryIDs indicates an expected call of GetTopicsByCategoryIDs.
+func (mr *MockTopicRepoMockRecorder) GetTopicsByCategoryIDs(categoryIds interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopicsByCategoryIDs", reflect.TypeOf((*MockTopicRepo)(nil).GetTopicsByCategoryIDs), categoryIds)
+}
+
 // GetTopicsByCollectionID mocks base method.
 func (m *MockTopicRepo) GetTopicsByCollectionID(collectionID int) ([]model.Topic, error) {
 	m.ctrl.T.Helper()
@@ -196,6 +241,21 @@ func (m *MockTopicRepo) GetTopicsByCollectionID(collectionID int) ([]model.Topic
 func (mr *MockTopicRepoMockRecorder) GetTopicsByCollectionID(collectionID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopicsByCollectionID", reflect.TypeOf((*MockTopicRepo)(nil).GetTopicsByCollectionID), collectionID)
+}
+
+// GetTopicsByIDs mocks base method.
+func (m *MockTopicRepo) GetTopicsByIDs(IDs []int) ([]model.Topic, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTopicsByIDs", IDs)
+	ret0, _ := ret[0].([]model.Topic)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTopicsByIDs indicates an expected call of GetTopicsByIDs.
+func (mr *MockTopicRepoMockRecorder) GetTopicsByIDs(IDs interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopicsByIDs", reflect.TypeOf((*MockTopicRepo)(nil).GetTopicsByIDs), IDs)
 }
 
 // IsFollowingTopic mocks base method.

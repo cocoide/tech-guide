@@ -34,7 +34,7 @@ func NewTimelineWorker(repo repository.Repository, cache repository.CacheRepo, a
 func (w *TimelineWorker) RegisterQiitaTendsWorker() {
 	oneWeekAgo := time.Now().AddDate(0, 0, -7)
 	oneWeekAgoString := oneWeekAgo.Format("2006-01-02")
-	bookmarkThreshold := 50
+	bookmarkThreshold := 200
 	trends, err := w.feed.GetQiitaTrendFeed(5, bookmarkThreshold, oneWeekAgoString)
 	if err != nil {
 		log.Panicln(err)
