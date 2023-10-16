@@ -5,3 +5,6 @@
 
 
 <img width="1336" alt="スクリーンショット 2023-10-15 9 42 15" src="https://github.com/cocoide/tech-guide/assets/113165849/abc372db-e7f5-4b0c-83e6-354c9d4f26d9">
+
+### Backend Architecture
+![Architecture](https://github.com/cocoide/tech-guide/main/backend/docs/architecture.png)

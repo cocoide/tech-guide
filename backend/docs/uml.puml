@@ -1,0 +1,65 @@
+@startuml
+
+left to right direction
+
+package "domain" {
+  class Model {
+    +ドメインの制約
+    +コンバータ
+  }
+  class Repository {
+    +データベースの操作
+  }
+
+  class Service {
+    +外部APIとの通信
+    +データの変換
+  }
+}
+
+package "usecase" {
+  class Usecase {
+   +ビジネスロジック
+  }
+}
+
+package "interface" {
+
+  class Handler {
+    +HTTPリクエストの処理
+  }
+
+  class Scheduler {
+    +Workerの起動
+    +Jobの管理
+  }
+}
+
+
+package "infrastructure" {
+    interface NLPService {
+        +OpenAIのAPI
+    }
+    interface ScrapingService{
+        +スクレイピングの操作
+    }
+    interface RdbRepo {
+        +MySQLの操作
+    }
+    interface CacheRepo {
+        +Redisの操作
+    s
+}
+
+Model --> Repository
+Model --> Service
+Repository --> Usecase
+Repository --> RdbRepo
+Repository --> CacheRepo
+Service --> NLPService
+Service --> ScrapingService
+Service --> Usecase
+Usecase --> Handler
+Usecase --> Scheduler
+
+@enduml
