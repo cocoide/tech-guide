@@ -2,7 +2,6 @@
 import { HomeIcon } from '@heroicons/react/24/outline'
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
-import CircleLoading from '../_components/animations/CircleLoading'
 import ToggleDarkModeButton from '../_components/layouts/button/ToggleDarkModeButton'
 import SectionHeader from '../_components/layouts/desktop/SectionHeader'
 import { articleAPI } from '../_functions/article'
@@ -54,14 +53,15 @@ export default function ArticlePage() {
                             )
                             ))
                         )}
+                        {isFetchingNextPage &&
+                            Array(2).fill(null).map((_, index) => (
+                                <LoaderArticleCard key={index + "loader"} />
+                            ))
+                        }
                     </>
                 }
                 <span ref={myRef}></span>
             </div>
-            {isFetchingNextPage &&
-                <div className="flex flex-row items-center justify-center w-full h-[200px]"
-                ><CircleLoading /></div>
-            }
         </div>
     )
 }

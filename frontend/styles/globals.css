@@ -30,6 +30,9 @@ body {
   @apply  shadow-[0_8px_30px_rgb(0,0,0,0.12)]
 }
 
+.custom-loader {
+  @apply  animate-pulse bg-gray-200 dark:bg-gray-400
+}
 
 .markdown ol {
   @apply list-decimal pl-5 text-gray-700;

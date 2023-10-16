@@ -12,7 +12,7 @@ interface Props {
 const ArticleCard = ({ article, origin }: Props) => {
     const queryParam = origin ? `?origin=${origin}` : ""
     return (
-        <div className='bg-gray-white dark:bg-gray-900
+        <div className='bg-gray-50/50 dark:bg-gray-900
         relative rounded-2xl min-h-[25px] custom-border shadow-sm flex flex-col'>
             <Link href={`/sources/${article.source.id}`}>
                 <Image src={article.source.icon_url} alt={article.source.name} width={200} height={200} className='absolute top-3 left-3
