@@ -48,16 +48,15 @@ package "infrastructure" {
     }
     interface CacheRepo {
         +Redisの操作
-    s
 }
 
 Model --> Repository
 Model --> Service
 Repository --> Usecase
-Repository --> RdbRepo
-Repository --> CacheRepo
-Service --> NLPService
-Service --> ScrapingService
+RdbRepo --> Repository
+CacheRepo --> Repository
+NLPService --> Service
+ScrapingService --> Service
 Service --> Usecase
 Usecase --> Handler
 Usecase --> Scheduler
