@@ -3,7 +3,7 @@ import { api } from './API';
 
 export const topicAPI={
     async GetTopicData(topicID: number){
-        return api.get<Topic>(`/topic/${topicID}`,"no-store");
+        return api.get<Topic>(`/topic/${topicID}`);
     },
     async CheckFollow(topicID: number,token?:string){
         return api.get<boolean>(`/account/topic/follow/${topicID}`,"no-store",token);

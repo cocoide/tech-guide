@@ -34,24 +34,24 @@ export const articleAPI = {
         return await api.get<Header[]>(`/scraper/header`, "reload")
     },
     async GetArticlesByPagination(page: number){
-        const{data}=await api.get<Article[]>(`/article?page=${page}`,"no-store")
+        const { data } = await api.get<Article[]>(`/article?page=${page} `, "no-store")
         return data
     },
     async GetFeedsByPagination(page: number,token?: string){
-        const{data,error}=await api.get<Article[]>(`/account/feeds?page=${page}`,"no-store",token)
+        const { data, error } = await api.get<Article[]>(`/account/feeds?page=${page}`, "no-store", token)
         console.log(error)
         return data
     },
     async GetTopCommentForArticle(articleID: number){
-        return await api.get<Comment>(`/comment/${articleID}`,24*60*60)
+        return await api.get<Comment>(`/comment/${articleID}`, 24 * 60 * 60)
     },
     async GetCommentsForArticle(articleID: number){
-        return await api.get<Comment[]>(`/comment/${articleID}`,"no-store")
+        return await api.get<Comment[]>(`/comment/${articleID}`, "no-store")
     },
     async GetrArticlesBySourceID(sourceID: number, page: number){
-        return await api.get<Article[]>(`/article/source/${sourceID}?page=${page}`, 60 * 60)
+        return await api.get<Article[]>(`/article/source/${sourceID}?page=${page}`, "no-store")
     },
     async GetrArticlesByTopicID(topicID: number, page: number){
-        return await api.get<Article[]>(`/article/topic/${topicID}?page=${page}`, 60 * 60)
+        return await api.get<Article[]>(`/article/topic/${topicID}?page=${page}`, "no-store")
     },
 }
