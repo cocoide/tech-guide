@@ -1,18 +1,17 @@
 "use client"
 import { loginDialogAtom } from '@/stores/dialog'
-import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 
+import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import CustomDialog from '../elements/CustomDialog'
 
 const LoginDialog = () => {
+    const router = useRouter()
     async function signInWithGoogle() {
         toast.loading("ログイン中...");
         try {
-            await signIn("google", {
-                callbackUrl: window.location.href,
-            })
+            router.push("http://localhost:8080/oauth/login")
         } catch (error) {
             toast.error("エラーが発生")
         }
