@@ -12,7 +12,7 @@ const LoginDialog = () => {
     async function signInWithGoogle() {
         toast.loading("ログイン中...");
         try {
-            router.push(API_URL + "/oauth/login")
+            router.push(API_URL + "/callback")
         } catch (error) {
             toast.error("エラーが発生")
         }
