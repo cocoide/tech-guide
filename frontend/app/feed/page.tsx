@@ -12,11 +12,10 @@ import TopicDialogButton from '../_components/layouts/button/FeedFileterDialogBu
 
 export default async function FeedPage() {
     const myRef = useRef(null)
-    const { token, status } = useAuth()
+    const { token } = useAuth()
     const { data: articles, fetchNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
         queryKey: ['feeds_query'],
         queryFn: async ({ pageParam = 1 }) => await articleAPI.GetFeedsByPagination(pageParam, token),
-        enabled: status === 'authenticated',
     }
     )
     useEffect(() => {
