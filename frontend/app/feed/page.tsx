@@ -35,7 +35,11 @@ export default async function FeedPage() {
                     titleItem={<div className='custom-badge text-gray-500'><NewspaperIcon className='h-5 w-5' /><div>フィード</div></div>}
                     rightItem={
                         <div className="">
-                            <button onClick={async () => await api.pos("/cookie", undefined)} className="">認証</button>
+                            <button onClick={async () => {
+                                const { ok, error } = await api.pos("/cookie", undefined)
+                                console.log(ok)
+                                console.log(error)
+                            }} className="">認証</button>
                             <TopicDialogButton />
                         </div>
                     }
