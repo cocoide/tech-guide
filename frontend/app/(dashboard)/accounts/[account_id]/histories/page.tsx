@@ -1,9 +1,9 @@
 import ArticleCard from '@/app/(home)/_components/ArticleCard'
 import { articleAPI } from '@/app/_functions/article'
-import { authAPI } from '@/app/_functions/auth'
+import { authServerFunc } from '@/app/_server_functions/auth'
 
 export default async function HistoryPage() {
-    const { token } = await authAPI.GetAuthSession()
+    const { token } = await authServerFunc.GetAuth()
     const { data: articles } = await articleAPI.GetReadArticles(token)
     return (
         <div className="flex flex-col space-y-3 p-5">

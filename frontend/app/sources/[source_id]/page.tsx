@@ -1,5 +1,5 @@
-import { authAPI } from '@/app/_functions/auth'
 import { sourceAPI } from '@/app/_functions/source'
+import { authServerFunc } from '@/app/_server_functions/auth'
 import SourcePageContent from './SourcePageContent'
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
     }
 }
 export default async function SourcePage({ params }: Props) {
-    const { token } = await authAPI.GetAuthSession()
+    const { token } = await authServerFunc.GetAuth()
     const { data: source } = await sourceAPI.GetSourceData(Number(params.source_id))
     const { data: isFollowing, error } = await sourceAPI.CheckFollow(Number(params.source_id), token)
     return (

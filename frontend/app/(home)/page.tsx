@@ -44,11 +44,6 @@ export default function ArticlePage() {
                         {Array(10).fill(null).map((_, index) => (
                             <LoaderArticleCard key={index + "loader"} />
                         ))}
-                        {isFetchingNextPage &&
-                            Array(2).fill(null).map((_, index) => (
-                                <LoaderArticleCard key={index + "loader"} />
-                            ))
-                        }
                     </>
                     :
                     <>

@@ -1,10 +1,10 @@
-import { authAPI } from '@/app/_functions/auth'
+import { authServerFunc } from '@/app/_server_functions/auth'
 import { topicAPI } from '../_functions/topic'
 import FollowTopicsSection from './components/FollowTopicsSection'
 import RecommendTopicsSection from './components/RecommendTopicsSection'
 
 export default async function TopicsSettingPage() {
-    const session = await authAPI.GetAuthSession()
+    const session = await authServerFunc.GetAuth()
     const { data: follow_topics } = await topicAPI.GetFollowingTopics(session?.token)
     const { data: topics } = await topicAPI.GetAllTopics()
     const unfollow_topics = topics?.filter(topic => {
