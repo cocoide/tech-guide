@@ -1,7 +1,7 @@
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+import * as z from "zod";
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': process.env.NEXT_PUBLIC_API_BASE_URL,
