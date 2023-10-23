@@ -1,12 +1,24 @@
-import { authAPI } from '@/app/_functions/auth'
-import { useQuery } from '@tanstack/react-query'
+import { authAPI } from '@/app/_functions/auth';
+import { useQuery } from '@tanstack/react-query';
 
-export const useAuth=()=>{
+type AuthStatus = 'authenticated' | 'unauthenticated' | 'loading'
+type AuthData = {
+    token?: string;
+    status: AuthStatus;
+    user: UserData;
+}
+type UserData = {
+    uid: number;
+    image?: string;
+    name: string;
+}
+
+export const useAuth = (): AuthData => {
     const { data: token, isLoading } = useQuery({
         queryFn: async () => await authAPI.GetAccessToken(),
         queryKey: ["access_token"],
     })
-    var status: string
+    var status: AuthStatus
     if (token !== "" || token !== undefined) {
         status = "authenticated"
     } else if (isLoading) {
@@ -17,7 +29,7 @@ export const useAuth=()=>{
     return {
         token: token,
         status: status,
-        user:{
+        user: {
             uid: 6,
             name: "test",
             image: "",
