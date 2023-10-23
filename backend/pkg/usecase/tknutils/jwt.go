@@ -1,19 +1,18 @@
-package utils
+package tknutils
 
 import (
 	"fmt"
+	"github.com/golang-jwt/jwt/v5"
 	"os"
 	"time"
-
-	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateToken(accountId int) (string, error) {
+func GenerateJwt(accountId int, expireAt time.Time) (string, error) {
 	jwtKey := os.Getenv("JWT_KEY")
 
 	claims := jwt.MapClaims{
 		"account_id": accountId,
-		"exp":        time.Now().Add(30 * 24 * time.Hour).Unix(),
+		"exp":        expireAt.Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	strToken, err := token.SignedString([]byte(jwtKey))
@@ -24,7 +23,7 @@ func GenerateToken(accountId int) (string, error) {
 	return strToken, nil
 }
 
-func ParseToken(strToken string) (*jwt.Token, error) {
+func ParseJwt(strToken string) (*jwt.Token, error) {
 	token, err := jwt.Parse(strToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
