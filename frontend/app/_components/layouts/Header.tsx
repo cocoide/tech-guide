@@ -6,9 +6,10 @@ import { useAtom } from 'jotai'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import {useAuth} from "@/hooks/useAuth";
 
 export function Header() {
-    const { data: session, status } = useSession()
+    const { token, status,user } = useAuth()
     const [_, setLoginDialogOpen] = useAtom(loginDialogAtom)
     return (
         <div className="w-full p-[12px] bg-white/70  dark:bg-black
@@ -18,7 +19,7 @@ export function Header() {
             <Link href={'/'} className="text-xl font-bold dark:text-white">Tech Guide</Link>
 
             </div>
-            {status != "loading" && !session?.user &&
+            {status === "unauthenticated" &&
                 <button onClick={() => setLoginDialogOpen(true)}
                     className="text-cyan-300 ring-1 bg-white dark:bg-black
                      ring-gray-200 dark:ring-gray-500 
@@ -27,7 +28,10 @@ export function Header() {
                 animate-appear duration-500"
                 ><UserCircleIcon className='h-5 w-5' />ログイン</button>
             }
-            {status != "loading" && session?.user &&
+            {status == "loading"&&
+                <div className="h-7 w-7 custom-loader rounded-full"></div>
+            }
+            {status === "authenticated" &&
                 <BellIcon className='h-7 w-7 text-gray-500' />
             }
         </div>
