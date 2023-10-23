@@ -1,7 +1,5 @@
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import * as z from "zod";
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -18,22 +16,12 @@ const cookieOptions: Partial<ResponseCookie> = {
     sameSite: 'lax',
 }
 
-export async function POST(request: NextRequest) {
-    const requestSchema = z.object({
-        access_token: z.string(),
-        // refresh_token: z.string().nullable(),
-        display_name: z.string().nullable(),
-        avatar_url: z.string().nullable(),
-    });
-    const body = await request.json();
-    const validatedData = requestSchema.parse(body);
-    const cookieStore = cookies()
-    cookieStore.set("accessToken", validatedData.access_token, cookieOptions)
-    return NextResponse.json("success", { status: 200, headers: corsHeaders })
-}
-
-export async function GET() {
-    const cookieStore = cookies()
-    const token = cookieStore.get("accessToken")
-    return NextResponse.json(token, { status: 200 })
+export async function GET(request: NextRequest) {
+    const token = request.nextUrl.searchParams.get("token")
+    if (token === null || token === "") {
+        console.log("Failed to get token")
+        return NextResponse.redirect("www.tech-guide.jp")
+    }
+    const response = NextResponse.redirect("www.tech-guide.jp")
+    return response.cookies.set("accessToken", token, cookieOptions)
 }
