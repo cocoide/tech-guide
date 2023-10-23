@@ -20,7 +20,6 @@
     "eslint-config-next": "13.4.5",
     "jotai": "^2.2.1",
     "next": "13.4.8-canary.2",
-    "next-auth": "^4.22.1",
     "outline": "link:@heroicons/react/24/outline",
     "postcss": "8.4.24",
     "react": "18.2.0",
