@@ -10,7 +10,7 @@ import LoaderArticleCard from '../(home)/_components/LoaderArticleCard'
 import TopicDialogButton from '../_components/layouts/button/FeedFileterDialogButton'
 
 
-export default async function FeedPage() {
+export default function FeedPage() {
     const myRef = useRef(null)
     const { token } = useAuth()
     const { data: articles, fetchNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
