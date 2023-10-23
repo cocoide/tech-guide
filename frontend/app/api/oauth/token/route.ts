@@ -8,10 +8,10 @@ export async function GET() {
     if (!token) {
         return NextResponse.json({ status: 403 })
     }
-    const claims = verifyToken(token.value)
-    if (claims === null) {
-        return NextResponse.json({ status: 403 })
-    }
+    // const claims = verifyToken(token.value)
+    // if (claims === null) {
+    //     return NextResponse.json({ status: 403 })
+    // }
     return NextResponse.json(token?.value, { status: 200 })
 }
 
