@@ -1,4 +1,3 @@
-import { API_URL } from '@/libs/constant'
 
 interface ApiService {
   get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>>
@@ -78,7 +77,7 @@ export const api: ApiService = {
 }
 
 async function handleApiRequest<T>(dirURL: string, options: RequestInit, params?: Params): Promise<ApiResponse<T>> {
-  const apiURL = buildApiURL(dirURL, params)
+  const apiURL = buildApiURL(dirURL, "backend", params);
   console.log(apiURL)
   const res = await fetch(apiURL, options);
   try {
@@ -97,7 +96,13 @@ async function handleApiRequest<T>(dirURL: string, options: RequestInit, params?
   }
 }
 
-function buildApiURL(dirURL: string, params?: Params): string {
+function buildApiURL(dirURL: string, mode: "backend" | "nextjs", params?: Params): string {
+  var baseURL = ""
+  if (mode === "nextjs") {
+    baseURL = process.env.NEXT_PUBLIC_FRON_URL
+  } else if (mode === "backend") {
+    baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
+  }
   const queryParam = params
     ? '?' + Object.keys(params)
       .map((key) => {
@@ -109,5 +114,57 @@ function buildApiURL(dirURL: string, params?: Params): string {
       })
       .join('&')
     : '';
-  return  API_URL + dirURL + queryParam
+  return baseURL + dirURL + queryParam
+}
+
+export const apiRoute: ApiService = {
+  async get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>> {
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const options: RequestInit = {
+      method: "GET",
+      headers: headers,
+      credentials: 'include',
+      mode: 'cors',
+    }
+    if (typeof cache === 'string') {
+      options.cache = cache
+    } else if (typeof cache === 'number') {
+      options.next = { ...options.next, revalidate: cache }
+    }
+    return handleApiRequest(dirURL, options, params)
+  },
+  async pos<U>(dirURL: string, body: any, token?: string, params?: Params): Promise<ApiResponse<U>> {
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const options: RequestInit = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(body)
+    }
+    return handleApiRequest(dirURL, options, params)
+  },
+  async del(dirURL: string, token?: string, params?: Params): Promise<ApiResponse<void>> {
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const options: RequestInit = {
+      method: 'DELETE',
+      headers: headers,
+    }
+    return handleApiRequest(dirURL, options, params)
+  },
+  async put<U>(dirURL: string, body: U, token?: string, params?: Params): Promise<ApiResponse<void>> {
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const options: RequestInit = {
+      method: 'PUT',
+      headers: headers,
+      body: JSON.stringify(body),
+    }
+    return handleApiRequest(dirURL, options, params)
+  },
 }
