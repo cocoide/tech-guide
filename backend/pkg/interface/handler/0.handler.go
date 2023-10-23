@@ -13,11 +13,14 @@ type Handler struct {
 	ogp         service.OGPService
 	feed        service.TechFeedService
 	git         service.GithubService
+	tweet       service.TwitterService
+	scraper     service.ScrapingService
 	account     *usecase.AccountUsecase
 	article     *usecase.ArticleUsecase
 	personalize *usecase.PersonalizeUsecase
 	activity    *usecase.ActivityUsecase
 	scraping    *usecase.ScrapingUsecase
+	topic       *usecase.TopicUsecase
 }
 
 func NewHandler(
@@ -27,11 +30,14 @@ func NewHandler(
 	ogp service.OGPService,
 	feed service.TechFeedService,
 	git service.GithubService,
+	tweet service.TwitterService,
+	scraper service.ScrapingService,
 	account *usecase.AccountUsecase,
 	article *usecase.ArticleUsecase,
 	personalize *usecase.PersonalizeUsecase,
 	activity *usecase.ActivityUsecase,
 	scraping *usecase.ScrapingUsecase,
+	topic *usecase.TopicUsecase,
 ) *Handler {
 	return &Handler{
 		repo:        repo,
@@ -40,10 +46,13 @@ func NewHandler(
 		ogp:         ogp,
 		feed:        feed,
 		git:         git,
+		tweet:       tweet,
+		scraper:     scraper,
 		account:     account,
 		article:     article,
 		personalize: personalize,
 		activity:    activity,
 		scraping:    scraping,
+		topic:       topic,
 	}
 }

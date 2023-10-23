@@ -1,152 +1,70 @@
 package handler
 
 import (
+	"context"
 	"fmt"
-	"strconv"
-	"time"
-
-	"github.com/cocoide/tech-guide/key"
 	"github.com/cocoide/tech-guide/pkg/domain/model"
-	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
-	"github.com/cocoide/tech-guide/pkg/utils"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo"
+	"net/http"
+	"os"
+	"strconv"
 )
 
-func (h *Handler) Session(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
-	key := fmt.Sprintf(key.UserSession, accountId)
-	strSession, err := h.cache.Get(key)
+func (h *Handler) HandleOAuthLogin(c echo.Context) error {
+	redirectURL, err := h.account.GenerateOAuthRedirectURL(model.Google)
 	if err != nil {
-		return c.JSON(400, "cache error")
+		return c.JSON(500, err)
 	}
-	if strSession == "" {
-		// Sessionが存在しない場合は何も返さない
-		return c.JSON(200, "")
-	}
-	session, err := utils.Deserialize[dto.UserSession](strSession)
-	if err != nil {
-		return c.JSON(400, err.Error())
-	}
-	return c.JSON(200, session)
+	return c.Redirect(http.StatusFound, redirectURL)
 }
 
-func (h *Handler) Login(c echo.Context) error {
-	type REQ struct {
-		Email string
-	}
-	req := new(REQ)
-	if err := c.Bind(req); err != nil {
-		return c.JSON(403, err.Error())
-	}
-	account, token, err := h.account.Login(req.Email)
+func (h *Handler) HandleOAuthCallback(c echo.Context) error {
+	ctx := context.Background()
+	code := c.QueryParam("code")
+	authenticateRes, err := h.account.AuthenticateWithGoogle(ctx, code)
 	if err != nil {
-		c.JSON(403, "email or password is incorrect")
+		return c.JSON(400, "Failed to authenticate")
 	}
-	res := &LoginRES{
-		UID:          account.ID,
-		Name:         account.DisplayName,
-		Image:        account.AvatarURL,
-		Token:        token,
-		TokenExpires: time.Now().Add(30 * 24 * time.Hour).Unix(),
+	userEmail := authenticateRes.Email
+	displayName := authenticateRes.DisplayName
+	account, err := h.repo.GetByEmail(userEmail)
+	if err != nil {
+		return c.JSON(400, "Failed to authenticate")
 	}
-	return c.JSON(200, res)
-}
-
-type LoginRES struct {
-	UID          int    `json:"uid"`
-	Name         string `json:"name"`
-	Image        string `json:"image"`
-	Token        string `json:"token"`
-	TokenExpires int64  `json:"token_expires"`
+	if account == nil {
+		newAccount := &model.Account{
+			Email:       userEmail,
+			DisplayName: displayName,
+		}
+		tokens, err := h.account.TemporarySignUp(newAccount)
+		if err != nil {
+			return c.JSON(400, err)
+		}
+		redirectURL := fmt.Sprintf("%s/api/oauth?access=%s&refresh=%s", os.Getenv("FRONTEND_URL"), tokens.AccessToken, tokens.RefreshToken)
+		return c.Redirect(http.StatusFound, redirectURL)
+	}
+	loginRes, err := h.account.Login(userEmail)
+	tokens := loginRes.Tokens
+	if err != nil {
+		return c.JSON(400, err)
+	}
+	redirectURL := fmt.Sprintf("%s/api/oauth?access=%s&refresh=%s", os.Getenv("FRONTEND_URL"), tokens.AccessToken, tokens.RefreshToken)
+	return c.Redirect(http.StatusFound, redirectURL)
 }
 
 func (h *Handler) RefreshToken(c echo.Context) error {
-	type body struct {
-		RefreshToken string `json:"refresh_token"`
+	refreshToken := c.QueryParam("refresh_token")
+	if len(refreshToken) != 28 {
+		return c.JSON(403, "Unauthorized")
 	}
-	req := new(body)
-	if err := c.Bind(req); err != nil {
-		return c.JSON(400, err.Error())
-	}
-	token, err := utils.ParseToken(req.RefreshToken)
+	accountID := getAccountIDInCtx(c)
+	accessToken, err := h.account.RefreshToken(accountID, refreshToken)
 	if err != nil {
-		return c.JSON(400, err.Error())
+		return c.JSON(403, "Unauthorized")
 	}
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return c.JSON(400, "failed to parse claims")
-	}
-	accountId := int(claims["account_id"].(float64))
-	newToken, err := utils.GenerateToken(accountId)
-	if err != nil {
-		return c.JSON(403, err.Error())
-	}
-	type response struct {
-		Token        string `json:"token"`
-		TokenExpires int64
-	}
-	return c.JSON(200, &response{
-		Token:        newToken,
-		TokenExpires: time.Now().Add(1 * time.Hour).Unix(),
-	})
-}
-func (h *Handler) SignUp(c echo.Context) error {
-	type REQ struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-		Name     string `json:"name"`
-		Image    string `json:"image"`
-	}
-	req := new(REQ)
-	if err := c.Bind(req); err != nil {
-		return c.JSON(400, err.Error())
-	}
-	account := &model.Account{
-		Email:       req.Email,
-		Password:    req.Password,
-		DisplayName: req.Name,
-		AvatarURL:   req.Image,
-	}
-	account, err := h.account.SignUp(account)
-	if err != nil {
-		return c.JSON(403, err.Error())
-	}
-	// Sessionの設定
-	session := dto.UserSession{IsSetupDone: false}
-	strSession, err := utils.Serialize(session)
-	key := fmt.Sprintf(key.UserSession, account.ID)
-	if err := h.cache.Set(key, strSession, 2*24*time.Hour); err != nil {
-		return c.JSON(400, err.Error())
-	}
-	if err := h.repo.CreateCollection(&model.Collection{
-		AccountID:  account.ID,
-		Name:       "後で読む",
-		Visibility: 0,
-	}); err != nil {
-		return c.JSON(403, err.Error())
-	}
-	token, err := utils.GenerateToken(account.ID)
-	if err != nil {
-		return c.JSON(403, err.Error())
-	}
-	res := &LoginRES{
-		UID:          account.ID,
-		Name:         account.DisplayName,
-		Image:        account.AvatarURL,
-		Token:        token,
-		TokenExpires: time.Now().Add(1 * time.Hour).Unix(),
-	}
-	return c.JSON(200, res)
+	return c.JSON(200, accessToken)
 }
 
-func (h *Handler) GenerateToken(c echo.Context) error {
-	token, err := utils.GenerateToken(2)
-	if err != nil {
-		return c.JSON(400, err.Error())
-	}
-	return c.JSON(200, token)
-}
 func (h *Handler) GetAccountProfile(c echo.Context) error {
 	accountId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -158,19 +76,4 @@ func (h *Handler) GetAccountProfile(c echo.Context) error {
 	}
 	account.Password = ""
 	return c.JSON(200, account)
-}
-
-func (h *Handler) CheckEmail(c echo.Context) error {
-	email := c.QueryParam("email")
-	if len(email) < 1 {
-		return c.JSON(400, "email is not set for search query")
-	}
-	isExist, err := h.repo.CheckExistByEmail(email)
-	if err != nil {
-		return c.JSON(400, err.Error())
-	}
-	if isExist {
-		return c.JSON(400, true)
-	}
-	return c.JSON(200, false)
 }

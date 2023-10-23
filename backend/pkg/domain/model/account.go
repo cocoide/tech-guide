@@ -9,3 +9,9 @@ type Account struct {
 	FollowTopics  []Topic  `json:"follow_topics" gorm:"many2many:follow_topics;"`
 	FollowSources []Source `json:"follow_sources" gorm:"many2many:follow_sources;"`
 }
+
+type OAuthType int
+
+const (
+	Google OAuthType = iota + 1
+)
