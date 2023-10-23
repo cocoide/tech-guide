@@ -2,7 +2,6 @@
 import { loginDialogAtom } from '@/stores/dialog'
 import Image from 'next/image'
 
-import { API_URL } from '@/libs/constant'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import CustomDialog from '../elements/CustomDialog'
@@ -12,7 +11,7 @@ const LoginDialog = () => {
     async function signInWithGoogle() {
         toast.loading("ログイン中...");
         try {
-            router.push(API_URL + "/oauth/login")
+            router.push(process.env.NEXT_PUBLIC_API_BASE_URL + "/oauth/login")
         } catch (error) {
             toast.error("エラーが発生")
         }
