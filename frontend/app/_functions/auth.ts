@@ -23,6 +23,11 @@ type RefreshTokenResponse={
     token_expires: number
 }
 export const authAPI ={
+    async GetAccessToken() {
+        const res = await fetch("https://www.tech-guide.jp/api/oauth/token")
+        const token = await res.json() as string
+        return token
+    },
     async SignUp(req: SignupRequest){
         return await api.pos<LoginResponse>("/signup",req)
     },

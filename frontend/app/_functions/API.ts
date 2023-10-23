@@ -50,9 +50,7 @@ export const api: ApiService = {
     const options: RequestInit = {
       method: "POST",
       headers: headers,
-      body: JSON.stringify(body),
-      credentials: 'include',
-      mode: 'cors',
+      body: JSON.stringify(body)
     }
     return handleApiRequest(dirURL, options, params)
   },
@@ -63,8 +61,6 @@ export const api: ApiService = {
     const options: RequestInit = {
       method: 'DELETE',
       headers: headers,
-      credentials: 'include',
-      mode: 'cors',
     }
     return handleApiRequest(dirURL, options, params)
   },
@@ -76,8 +72,6 @@ export const api: ApiService = {
       method: 'PUT',
       headers: headers,
       body: JSON.stringify(body),
-      credentials: 'include',
-      mode: 'cors',
     }
     return handleApiRequest(dirURL, options, params)
   },
