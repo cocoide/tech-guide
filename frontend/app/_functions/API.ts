@@ -34,6 +34,7 @@ export const api: ApiService = {
       method: "GET",
       headers: headers,
       credentials: 'include',
+      mode: 'cors',
     }
     if (typeof cache === 'string') {
       options.cache=cache
@@ -51,6 +52,7 @@ export const api: ApiService = {
       headers: headers,
       body: JSON.stringify(body),
       credentials: 'include',
+      mode: 'cors',
     }
     return handleApiRequest(dirURL, options, params)
   },
@@ -61,6 +63,8 @@ export const api: ApiService = {
     const options: RequestInit = {
       method: 'DELETE',
       headers: headers,
+      credentials: 'include',
+      mode: 'cors',
     }
     return handleApiRequest(dirURL, options, params)
   },
@@ -71,7 +75,9 @@ export const api: ApiService = {
     const options: RequestInit = {
       method: 'PUT',
       headers: headers,
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      credentials: 'include',
+      mode: 'cors',
     }
     return handleApiRequest(dirURL, options, params)
   },
