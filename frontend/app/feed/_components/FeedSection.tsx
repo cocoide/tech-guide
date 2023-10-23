@@ -3,26 +3,17 @@ import ArticleCard from '@/app/(home)/_components/ArticleCard'
 import CircleLoading from '@/app/_components/animations/CircleLoading'
 import SectionHeader from '@/app/_components/layouts/desktop/SectionHeader'
 import { articleAPI } from '@/app/_functions/article'
-import { useAuth } from '@/hooks/useAuth'
 import { NewspaperIcon } from '@heroicons/react/24/outline'
 import { useInfiniteQuery } from "@tanstack/react-query"
-import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from "react"
 import TopicDialogButton from '../../_components/layouts/button/FeedFileterDialogButton'
-interface Props {
-    token?: string
-}
-export default function FeedSection({ token }: Props) {
-    const router = useRouter()
-    const { status } = useAuth()
-    if (status == "unauthenticated") {
-        router.push("/trend")
-    }
+
+export default function FeedSection() {
+
     const myRef = useRef(null)
     const { data: articles, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['feeds_query'],
-        queryFn: async ({ pageParam = 1 }) => await articleAPI.GetFeedsByPagination(pageParam, token),
-        enabled: token !== undefined
+        queryFn: async ({ pageParam = 1 }) => await articleAPI.GetFeedsByPagination(pageParam),
     }
     )
     useEffect(() => {
