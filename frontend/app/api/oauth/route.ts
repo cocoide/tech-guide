@@ -1,4 +1,3 @@
-import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { NextRequest, NextResponse } from 'next/server';
 
 const corsHeaders = {
@@ -7,21 +6,26 @@ const corsHeaders = {
     'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-const cookieOptions: Partial<ResponseCookie> = {
-    httpOnly: true,
-    domain: ".tech-guide.jp",
-    maxAge: 60 * 60,// 1時間,
-    secure: true,
-    path: "/",
-    sameSite: 'lax',
-}
-
 export async function GET(request: NextRequest) {
     const token = request.nextUrl.searchParams.get("token")
+    const response = NextResponse.redirect("https://www.tech-guide.jp")
+    response.headers.set('Access-Control-Allow-Origin', process.env.NEXT_PUBLIC_API_BASE_URL)
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
     if (token === null || token === "") {
         console.log("Failed to get token")
-        return NextResponse.redirect("https://www.tech-guide.jp")
+        return response
     }
-    const response = NextResponse.redirect("https://www.tech-guide.jp")
-    return response.cookies.set("accessToken", token, cookieOptions)
+    if (token) {
+        response.cookies.set({
+            name: 'accessToken',
+            domain: '.tech-guide.jp',
+            value: token,
+            httpOnly: true,
+            sameSite: 'lax',
+            maxAge: 60 * 60,// 1時間,
+            path: '/',
+            secure: true,
+        })
+    }
+    return response
 }
