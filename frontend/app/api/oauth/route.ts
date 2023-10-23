@@ -15,7 +15,6 @@ export async function GET(request: NextRequest) {
         console.log("Failed to get token")
         return response
     }
-    if (token) {
         response.cookies.set({
             name: 'accessToken',
             domain: '.tech-guide.jp',
@@ -26,6 +25,6 @@ export async function GET(request: NextRequest) {
             path: '/',
             secure: true,
         })
-    }
+
     return response
 }
