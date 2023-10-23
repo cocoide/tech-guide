@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const validatedData = requestSchema.parse(body);
     const cookieStore = cookies()
     cookieStore.set("accessToken", validatedData.access_token, cookieOptions)
-    return NextResponse.json("success", { status: 200 })
+    return NextResponse.json("success", { status: 200, headers: corsHeaders })
 }
 
 export async function GET() {
