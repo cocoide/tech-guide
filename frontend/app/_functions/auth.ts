@@ -1,4 +1,4 @@
-import { api } from '@/app/_functions/API'
+import { api, apiRoute } from '@/app/_functions/API'
 import { authOptions } from '@/libs/next-auth'
 import { getServerSession } from 'next-auth'
 
@@ -24,8 +24,10 @@ type RefreshTokenResponse={
 }
 export const authAPI ={
     async GetAccessToken() {
-        const res = await fetch("https://www.tech-guide.jp/api/oauth/token")
-        const token = await res.json() as string
+        const { data: token, error, status } = await apiRoute.get<string>("/oauth/token")
+        console.log(token)
+        console.log(error)
+        console.log(status)
         return token
     },
     async SignUp(req: SignupRequest){
