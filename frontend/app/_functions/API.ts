@@ -99,7 +99,7 @@ async function handleApiRequest<T>(dirURL: string, options: RequestInit, params?
 function buildApiURL(dirURL: string, mode: "backend" | "nextjs", params?: Params): string {
   var baseURL = ""
   if (mode === "nextjs") {
-    baseURL = process.env.NEXT_PUBLIC_FRON_URL
+    baseURL = `${process.env.NEXT_PUBLIC_FRON_URL}/api`
   } else if (mode === "backend") {
     baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
   }
