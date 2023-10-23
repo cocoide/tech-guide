@@ -8,7 +8,6 @@ import { useInfiniteQuery } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
 import LoaderArticleCard from '../(home)/_components/LoaderArticleCard'
 import TopicDialogButton from '../_components/layouts/button/FeedFileterDialogButton'
-import { api } from '../_functions/API'
 
 
 export default async function FeedPage() {
@@ -37,14 +36,7 @@ export default async function FeedPage() {
                 <SectionHeader
                     titleItem={<div className='custom-badge text-gray-500'><NewspaperIcon className='h-5 w-5' /><div>フィード</div></div>}
                     rightItem={
-                        <div className="">
-                            <button onClick={async () => {
-                                const { ok, error } = await api.pos("/cookie", undefined)
-                                console.log(ok)
-                                console.log(error)
-                            }} className="">認証</button>
-                            <TopicDialogButton />
-                        </div>
+                        <TopicDialogButton />
                     }
                 />
             </div>
