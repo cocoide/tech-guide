@@ -32,8 +32,6 @@ export const api: ApiService = {
     const options: RequestInit = {
       method: "GET",
       headers: headers,
-      credentials: 'include',
-      mode: 'cors',
     }
     if (typeof cache === 'string') {
       options.cache=cache
@@ -125,8 +123,6 @@ export const apiRoute: ApiService = {
     const options: RequestInit = {
       method: "GET",
       headers: headers,
-      credentials: 'include',
-      mode: 'cors',
     }
     if (typeof cache === 'string') {
       options.cache = cache
