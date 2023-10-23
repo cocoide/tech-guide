@@ -19,8 +19,7 @@ export const useAuth = (): AuthData => {
         queryKey: ["access_token"],
     })
     var status: AuthStatus
-    if (token !== "" || token !== undefined) {
-        console.log(token)
+    if ( token != undefined && token.length>0 ) {
         status = "authenticated"
     } else if (isLoading) {
         status = "loading"
