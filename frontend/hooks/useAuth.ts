@@ -20,6 +20,7 @@ export const useAuth = (): AuthData => {
     })
     var status: AuthStatus
     if (token !== "" || token !== undefined) {
+        console.log(token)
         status = "authenticated"
     } else if (isLoading) {
         status = "loading"

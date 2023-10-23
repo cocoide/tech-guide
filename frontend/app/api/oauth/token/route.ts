@@ -19,6 +19,12 @@ type CustomClaims = {
     account_id: number
 }
 
+export async function DELETE(){
+    const cookieStore = cookies()
+    cookieStore.delete("accessToken").delete("refreshToken")
+    return NextResponse.json("Cookies deleted", { status: 200 })
+}
+
 function verifyToken(token: string): CustomClaims | null {
     const option: VerifyOptions = {
         algorithms: ['HS256'],

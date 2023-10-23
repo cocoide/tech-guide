@@ -9,7 +9,7 @@ import Link from 'next/link'
 import {useAuth} from "@/hooks/useAuth";
 
 export function Header() {
-    const { token, status,user } = useAuth()
+    const { status,user } = useAuth()
     const [_, setLoginDialogOpen] = useAtom(loginDialogAtom)
     return (
         <div className="w-full p-[12px] bg-white/70  dark:bg-black

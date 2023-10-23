@@ -10,12 +10,10 @@ export default function Providers({ children }: { children: ReactNode }) {
     return (
         <>
             <Provider>
-                <SessionProvider>
-                    <QueryClientProvider client={queryClient}>
+                <QueryClientProvider client={queryClient}>
                     <Toaster />
                     {children}
-                    </QueryClientProvider>
-                </SessionProvider>
+                </QueryClientProvider>
             </Provider>
         </>
     )
