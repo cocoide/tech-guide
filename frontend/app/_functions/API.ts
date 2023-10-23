@@ -40,7 +40,7 @@ export const api: ApiService = {
     }else if (typeof cache === 'number'){
       options.next={...options.next, revalidate: cache}
     }
-    return handleApiRequest(dirURL, options, params)
+    return handleApiRequest(dirURL, options, 'backend', params)
   },
   async pos<U>(dirURL: string, body: any, token?: string, params?: Params): Promise<ApiResponse<U>> {
     if (token) {
@@ -51,7 +51,7 @@ export const api: ApiService = {
       headers: headers,
       body: JSON.stringify(body)
     }
-    return handleApiRequest(dirURL, options, params)
+    return handleApiRequest(dirURL, options, 'backend', params)
   },
   async del(dirURL: string,  token?: string,  params?: Params): Promise<ApiResponse<void>> {
     if (token) {
@@ -61,7 +61,7 @@ export const api: ApiService = {
       method: 'DELETE',
       headers: headers,
     }
-    return handleApiRequest(dirURL, options, params)
+    return handleApiRequest(dirURL, options, 'backend', params)
   },
   async put<U>(dirURL: string, body: U,  token?: string, params?: Params): Promise<ApiResponse<void>> {
     if (token) {
@@ -72,12 +72,12 @@ export const api: ApiService = {
       headers: headers,
       body: JSON.stringify(body),
     }
-    return handleApiRequest(dirURL, options, params)
+    return handleApiRequest(dirURL, options, 'backend', params)
   },
 }
 
-async function handleApiRequest<T>(dirURL: string, options: RequestInit, params?: Params): Promise<ApiResponse<T>> {
-  const apiURL = buildApiURL(dirURL, "backend", params);
+async function handleApiRequest<T>(dirURL: string, options: RequestInit, mode: "backend" | "nextjs", params?: Params): Promise<ApiResponse<T>> {
+  const apiURL = buildApiURL(dirURL, mode, params);
   console.log(apiURL)
   const res = await fetch(apiURL, options);
   try {
@@ -133,7 +133,7 @@ export const apiRoute: ApiService = {
     } else if (typeof cache === 'number') {
       options.next = { ...options.next, revalidate: cache }
     }
-    return handleApiRequest(dirURL, options, params)
+    return handleApiRequest(dirURL, options, 'nextjs', params)
   },
   async pos<U>(dirURL: string, body: any, token?: string, params?: Params): Promise<ApiResponse<U>> {
     if (token) {
@@ -144,7 +144,7 @@ export const apiRoute: ApiService = {
       headers: headers,
       body: JSON.stringify(body)
     }
-    return handleApiRequest(dirURL, options, params)
+    return handleApiRequest(dirURL, options, 'nextjs', params)
   },
   async del(dirURL: string, token?: string, params?: Params): Promise<ApiResponse<void>> {
     if (token) {
@@ -154,7 +154,7 @@ export const apiRoute: ApiService = {
       method: 'DELETE',
       headers: headers,
     }
-    return handleApiRequest(dirURL, options, params)
+    return handleApiRequest(dirURL, options, 'nextjs', params)
   },
   async put<U>(dirURL: string, body: U, token?: string, params?: Params): Promise<ApiResponse<void>> {
     if (token) {
@@ -165,6 +165,6 @@ export const apiRoute: ApiService = {
       headers: headers,
       body: JSON.stringify(body),
     }
-    return handleApiRequest(dirURL, options, params)
+    return handleApiRequest(dirURL, options, 'nextjs', params)
   },
 }
