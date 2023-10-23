@@ -13,11 +13,11 @@ import { api } from '../_functions/API'
 
 export default async function FeedPage() {
     const myRef = useRef(null)
-    const { token } = useAuth()
+    const { token, status } = useAuth()
     const { data: articles, fetchNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
         queryKey: ['feeds_query'],
         queryFn: async ({ pageParam = 1 }) => await articleAPI.GetFeedsByPagination(pageParam, token),
-        enabled: token != undefined && token?.length > 0
+        enabled: status === 'authenticated',
     }
     )
     useEffect(() => {
