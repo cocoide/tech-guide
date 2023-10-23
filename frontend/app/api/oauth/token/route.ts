@@ -1,22 +1,25 @@
-import jwt, { VerifyOptions } from 'jsonwebtoken';
+import jwt, {JwtPayload, VerifyOptions} from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { api } from "@/app/_functions/API";
 
 export async function GET() {
     const cookieStore = cookies()
-    const token = cookieStore.get("accessToken")
-    if (!token) {
+    const tokenCookie = cookieStore.get("accessToken")
+    if (!tokenCookie) {
         return NextResponse.json({ status: 403 })
     }
-    // const claims = verifyToken(token.value)
-    // if (claims === null) {
-    //     return NextResponse.json({ status: 403 })
-    // }
-    return NextResponse.json(token?.value, { status: 200 })
-}
+    var accessToken: string= tokenCookie.value
+    const response =await verifyToken(accessToken)
+    if (response!==null){
+        if (response.accountID){
 
-type CustomClaims = {
-    account_id: number
+        }
+        if (response.updatedToken){
+            accessToken=response.updatedToken
+        }
+    }
+    return NextResponse.json(accessToken, { status: 200 })
 }
 
 export async function DELETE(){
@@ -25,7 +28,13 @@ export async function DELETE(){
     return NextResponse.json("Cookies deleted", { status: 200 })
 }
 
-function verifyToken(token: string): CustomClaims | null {
+type VerifyResponse ={
+    updatedToken?: string
+    accountID?: number
+}
+
+async function verifyToken(token: string): Promise<VerifyResponse | null> {
+    var response: VerifyResponse={}
     const option: VerifyOptions = {
         algorithms: ['HS256'],
     }
@@ -34,13 +43,14 @@ function verifyToken(token: string): CustomClaims | null {
         return null
     }
     if (Date.now() < decoded.exp * 1000) {
-        // Add refresh token later
-        return null
+        const {data: accessToken}=await api.put<string>("/oauth/refresh",undefined)
+        const cookieStore=cookies()
+        if(!accessToken){
+            return null
+        }
+        decoded["account_id"]=response.accountID
+        cookieStore.set("accessToken",accessToken)
+        response.updatedToken=accessToken
     }
-    const account_id = decoded["account_id"] as number
-    if (!account_id) {
-        return null
-    }
-    const claims: CustomClaims = { account_id: account_id }
-    return claims
+    return response
 }

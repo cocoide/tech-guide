@@ -3,7 +3,7 @@ interface ApiService {
   get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>>
   del(dirURL: string,  token?: string, params?: Params): Promise<ApiResponse<void>>
   pos<U>(dirURL: string, body: any, token?: string,params?: Params): Promise<ApiResponse<U>>
-  put<U>(dirURL: string, body: U,  token?: string, params?: Params): Promise<ApiResponse<void>>
+  put<U>(dirURL: string, body: any,  token?: string, params?: Params): Promise<ApiResponse<U>>
 }
 
 export type ApiResponse<T> = {
@@ -61,7 +61,7 @@ export const api: ApiService = {
     }
     return handleApiRequest(dirURL, options, 'backend', params)
   },
-  async put<U>(dirURL: string, body: U,  token?: string, params?: Params): Promise<ApiResponse<void>> {
+  async put<U>(dirURL: string, body: any,  token?: string, params?: Params): Promise<ApiResponse<U>> {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
@@ -152,7 +152,7 @@ export const apiRoute: ApiService = {
     }
     return handleApiRequest(dirURL, options, 'nextjs', params)
   },
-  async put<U>(dirURL: string, body: U, token?: string, params?: Params): Promise<ApiResponse<void>> {
+  async put<U>(dirURL: string, body: any, token?: string, params?: Params): Promise<ApiResponse<U>> {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
