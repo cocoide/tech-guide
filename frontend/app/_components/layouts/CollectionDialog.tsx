@@ -5,11 +5,11 @@ import { collectionDialogAtom } from '@/stores/dialog'
 import { Collection } from '@/types/model'
 import { ChevronLeftIcon, NewspaperIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
-import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form"
 import { toast } from 'react-hot-toast'
 import CustomDialog from '../elements/CustomDialog'
+import {useAuth} from "@/hooks/useAuth";
 
 export type NewCollectionRequest = {
     name: string,
@@ -22,22 +22,22 @@ const CollectionDialog = () => {
     const [dialogAtom, setDialogAtom] = useAtom(collectionDialogAtom)
     const [isNewCollection, setIsNewCollection] = useState(false)
     const [collections, setCollections] = useState<Collection[] | undefined>()
-    const { data: session } = useSession()
+    const { token } = useAuth()
     useEffect(() => {
         if (dialogAtom !== false) {
             (async () => {
-                const { data: collections, ok } = await collectionAPI.getCollectionForBookmark(session?.token)
+                const { data: collections, ok } = await collectionAPI.getCollectionForBookmark(token)
                 if (!ok) {
                     toast.error("エラーが発生")
                 }
                 setCollections(collections)
             })()
         }
-    }, [dialogAtom, session?.token])
+    }, [dialogAtom, token])
     type BookmarkRequest = { collection_id: number, article_id: number }
     async function handleBookmark(articleId: number, collectionId: number) {
         toast.loading("保存中...")
-        const { ok, status } = await api.pos<BookmarkRequest>("/account/bookmark", { article_id: articleId, collection_id: collectionId }, session?.token)
+        const { ok, status } = await api.pos<BookmarkRequest>("/account/bookmark", { article_id: articleId, collection_id: collectionId }, token)
         if (!ok) {
             if (status == 409) {
                 return toast.error("すでに保存されてあります")

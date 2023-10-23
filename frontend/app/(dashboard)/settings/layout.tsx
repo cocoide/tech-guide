@@ -1,11 +1,11 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from "@/hooks/useAuth";
 
 export default function SettingPageLayout({ children, }: { children: React.ReactNode }) {
     const router = useRouter()
-    const { status } = useSession()
+    const { status } = useAuth()
     if (status === "unauthenticated") {
         router.push("/")
     }

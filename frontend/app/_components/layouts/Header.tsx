@@ -3,10 +3,9 @@
 import { loginDialogAtom } from '@/stores/dialog'
 import { BellIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
-import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import {useAuth} from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
     const { status,user } = useAuth()

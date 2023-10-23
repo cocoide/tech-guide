@@ -1,6 +1,5 @@
 'use client'
 import { ArrowRightOnRectangleIcon, Cog8ToothIcon, DocumentDuplicateIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
-import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import CustomDropDown, { Menue } from '../elements/CustomDropDown'
@@ -30,7 +29,7 @@ const UserDropDown = ({ name, img, uid }: Props) => {
                 </div>
             }
             footer={
-                <button onClick={() => signOut()}
+                <button onClick={()=>{}}
                     className="border-t px-1 pt-2 flex flex-row items-center space-x-2"
                 > <ArrowRightOnRectangleIcon className='h-5 w-5 text-slate-400' />
                     <div className="">ログアウト</div>
