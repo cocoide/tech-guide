@@ -20,8 +20,8 @@ export async function GET(request: NextRequest) {
     const token = request.nextUrl.searchParams.get("token")
     if (token === null || token === "") {
         console.log("Failed to get token")
-        return NextResponse.redirect("www.tech-guide.jp")
+        return NextResponse.redirect("https://www.tech-guide.jp")
     }
-    const response = NextResponse.redirect("www.tech-guide.jp")
+    const response = NextResponse.redirect("https://www.tech-guide.jp")
     return response.cookies.set("accessToken", token, cookieOptions)
 }
