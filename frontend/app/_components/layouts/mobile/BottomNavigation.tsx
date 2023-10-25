@@ -1,5 +1,6 @@
 'use client'
 import { useAuth } from '@/hooks/useAuth'
+import { useSession } from '@/hooks/useSession'
 import { loginDialogAtom, postDialogAtom } from '@/stores/dialog'
 import { HomeIcon, MagnifyingGlassIcon, NewspaperIcon, PlusCircleIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
@@ -8,12 +9,12 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function BottomNavigation() {
-  const { user, status } = useAuth()
+  const { status } = useAuth()
   const router = useRouter()
   const [_, setIsPostDialogOpen] = useAtom(postDialogAtom)
   const [__, setIsLoginDialogOpen] = useAtom(loginDialogAtom)
-  const uid = user.uid
-  const AccountURL = uid ? `/accounts/${uid}` : "/"
+  const session = useSession()
+  const AccountURL = session.account_id ? `/accounts/${session.account_id}` : "/"
   function handleAuth() {
     if (status === "unauthenticated") {
       setIsLoginDialogOpen(true)
@@ -44,8 +45,8 @@ export default function BottomNavigation() {
       <Link href={"/explore"} ><MagnifyingGlassIcon className='h-7 w-7' /></Link>
       <Link href={AccountURL} onClick={handleAuth}>
         {
-          user.uid && user.name && user.image ?
-            <Image src={user.image} alt={user.name} width={200} height={200}
+          session.avatar_url.length > 0 ?
+            <Image src={session.avatar_url} alt={session.display_name} width={200} height={200}
               className="h-7 w-7 rounded-full"></Image>
             :
             <UserCircleIcon className='h-7 w-7' />}</Link>
