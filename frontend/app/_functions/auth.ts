@@ -1,4 +1,4 @@
-import { api, apiRoute } from '@/app/_functions/API'
+import { apiRoute } from '@/app/_functions/API'
 import { AccountSession } from '@/types/model'
 
 export const authAPI ={
@@ -9,8 +9,8 @@ export const authAPI ={
         }
         return token
     },
-    async GetAccountSession(token: string) {
-        const { data: session, error } = await api.get<AccountSession>("/session", "no-store", token)
+    async GetAccountSession() {
+        const { data: session, error } = await apiRoute.get<AccountSession>("/session", "no-store")
         if (error) {
             console.log(error)
         }
