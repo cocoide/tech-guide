@@ -19,7 +19,12 @@ export async function VerifyJwt(token: string): Promise<VerifyResponse | null> {
         return null
     }
     if (Date.now() < decoded.exp * 1000) {
-        const { data: accessToken } = await api.put<string>("/oauth/refresh", undefined)
+        const refresh_token = cookies().get("refresh_token")?.value
+        if (!refresh_token || refresh_token.length==0){
+            return null
+        }
+        const params ={"token":refresh_token }
+        const { data: accessToken } = await api.put<string>("/oauth/refresh", undefined, undefined, params)
         const cookieStore = cookies()
         if (!accessToken) {
             return null

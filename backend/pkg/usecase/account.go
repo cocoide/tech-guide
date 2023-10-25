@@ -11,7 +11,6 @@ import (
 	"google.golang.org/api/option"
 	"google.golang.org/api/people/v1"
 	"log"
-	"strings"
 	"time"
 
 	"github.com/cocoide/tech-guide/pkg/domain/model"
@@ -28,8 +27,8 @@ const (
 )
 
 var (
-	accessTokenExpireAt = time.Now().Add(24 * time.Hour)
-	refreshTokenExpires = 7 * 24 * time.Hour
+	accessTokenExpireAt = time.Now().Add(7 * 24 * time.Hour)
+	refreshTokenExpires = 30 * 7 * 24 * time.Hour
 )
 
 type AccountUsecase struct {
@@ -130,7 +129,12 @@ type GenerateTokensResponse struct {
 }
 
 // Generate new AccessToken
-func (u *AccountUsecase) RefreshToken(accountID int, refreshToken string) (string, error) {
+func (u *AccountUsecase) RefreshToken(refreshToken string) (string, error) {
+	claims, err := tknutils.ParseJwt(refreshToken)
+	if err != nil {
+		return "", fmt.Errorf("Unauthenticated")
+	}
+	accountID := claims.AccountID
 	cacheRefreshTokenKey := fmt.Sprintf("%s.%d", CacheRefreshToken, accountID)
 	token, exists, err := u.cache.Get(cacheRefreshTokenKey)
 	if err != nil || !exists {
@@ -148,7 +152,7 @@ func (u *AccountUsecase) generateTokens(accountID int) (*GenerateTokensResponse,
 	if err != nil {
 		return nil, err
 	}
-	refreshToken := strings.ReplaceAll(tknutils.GenerateStrUUID(), "-", "")
+	refreshToken, err := tknutils.GenerateJwt(accountID, time.Now().Add(refreshTokenExpires))
 	cacheRefreshTokenKey := fmt.Sprintf("%s.%d", CacheRefreshToken, accountID)
 	if err := u.cache.Set(cacheRefreshTokenKey, refreshToken, refreshTokenExpires); err != nil {
 		return nil, fmt.Errorf("Failed to cache refresh token: %v", err)

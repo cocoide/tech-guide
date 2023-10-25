@@ -53,12 +53,8 @@ func (h *Handler) HandleOAuthCallback(c echo.Context) error {
 }
 
 func (h *Handler) RefreshToken(c echo.Context) error {
-	refreshToken := c.QueryParam("refresh_token")
-	if len(refreshToken) != 28 {
-		return c.JSON(403, "Unauthorized")
-	}
-	accountID := getAccountIDInCtx(c)
-	accessToken, err := h.account.RefreshToken(accountID, refreshToken)
+	refreshToken := c.QueryParam("token")
+	accessToken, err := h.account.RefreshToken(refreshToken)
 	if err != nil {
 		return c.JSON(403, "Unauthorized")
 	}
