@@ -64,6 +64,9 @@ export type Comment={
     content: string
 }
 
-export type UserSession={
-    is_setup_done: boolean
+export type AccountSession = {
+    account_id: number
+    display_name: string
+    avatar_url: string
+    features: number[]
 }

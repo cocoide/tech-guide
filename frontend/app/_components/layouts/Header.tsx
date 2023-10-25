@@ -1,14 +1,14 @@
 'use client'
 
+import { useAuth } from "@/hooks/useAuth"
 import { loginDialogAtom } from '@/stores/dialog'
 import { BellIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
-    const { status,user } = useAuth()
+    const { status } = useAuth()
     const [_, setLoginDialogOpen] = useAtom(loginDialogAtom)
     return (
         <div className="w-full p-[12px] bg-white/70  dark:bg-black

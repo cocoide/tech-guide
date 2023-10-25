@@ -1,5 +1,6 @@
 "use client"
 import { useAuth } from '@/hooks/useAuth'
+import { useSession } from '@/hooks/useSession'
 import { loginDialogAtom, postDialogAtom } from '@/stores/dialog'
 import { BookmarkIcon, HomeIcon, MagnifyingGlassIcon, NewspaperIcon, PlusCircleIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
@@ -10,11 +11,12 @@ import Link from 'next/link'
 const LeftSideVar = () => {
     const [_, openPostDialog] = useAtom(postDialogAtom)
     const [__, openLoginDialog] = useAtom(loginDialogAtom)
-    const { status, user } = useAuth()
+    const { status } = useAuth()
+    const session = useSession()
     const SideVarList = [
         { label: "ホーム", href: "/", icon: <HomeIcon className='h-7 w-7' />, isLogin: false },
         { label: "フィード", href: "/feed", icon: <NewspaperIcon className='h-7 w-7' />, isLogin: true },
-        { label: "保存リスト", href: `/accounts/${user.uid}/collections`, icon: <BookmarkIcon className='h-7 w-7' />, isLogin: true },
+        { label: "保存リスト", href: `/accounts/${session.account_id}/collections`, icon: <BookmarkIcon className='h-7 w-7' />, isLogin: true },
         { label: "検索", href: "/explore", icon: <MagnifyingGlassIcon className='h-7 w-7' />, isLogin: false },
     ]
     return (
@@ -49,10 +51,10 @@ const LeftSideVar = () => {
                         <div className="">ログイン</div>
                     </button>
                 }
-                {user.image &&
-                    <Link href={`/accounts/${user.uid}`} className="animate-appear flex flex-row space-x-3 ring-[0.5px] w-[150px] items-center p-1 rounded-md ring-gray-200">
-                        <Image src={user.image} alt={''} width={100} height={100} className='h-7 w-7 rounded-full' />
-                        <div className="">{user.name}</div>
+                {session.avatar_url &&
+                    <Link href={`/accounts/${session.account_id}`} className="animate-appear flex flex-row space-x-3 ring-[0.5px] w-[150px] items-center p-1 rounded-md ring-gray-200">
+                        <Image src={session.avatar_url} alt={''} width={100} height={100} className='h-7 w-7 rounded-full' />
+                        <div className="">{session.display_name}</div>
                     </Link>
                 }
             </div>

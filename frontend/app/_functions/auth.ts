@@ -1,14 +1,19 @@
 import { api, apiRoute } from '@/app/_functions/API'
+import { AccountSession } from '@/types/model'
 
 export const authAPI ={
     async GetAccessToken() {
-        const { data: token, error, status } = await apiRoute.get<string>("/oauth/token")
-        console.log(token)
-        console.log(error)
-        console.log(status)
+        const { data: token, error } = await apiRoute.get<string>("/oauth/token")
+        if (error) {
+            console.log(error)
+        }
         return token
     },
-    async RefreshToken(refresh_token: string){
-        return await api.pos<string>("/refresh",refresh_token)
-    },
+    async GetAccountSession(token: string) {
+        const { data: session, error } = await api.get<AccountSession>("/session", "no-store", token)
+        if (error) {
+            console.log(error)
+        }
+        return session
+    }
 }

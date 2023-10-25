@@ -2,6 +2,7 @@
 import { api } from '@/app/_functions/API'
 import { useAuth } from '@/hooks/useAuth'
 import useAutosizeTextArea from '@/hooks/useAutosizeTextArea'
+import { useSession } from '@/hooks/useSession'
 import { postDialogAtom } from '@/stores/dialog'
 import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
@@ -17,7 +18,8 @@ const PostDialog = () => {
     const [url, setUrl] = useState('')
     const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null)
     const [isFetching, setIsFetching] = useState(false)
-    const { user, token } = useAuth()
+    const { token } = useAuth()
+    const session = useSession()
 
     const [comment, setComment] = useState("")
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -106,7 +108,7 @@ const PostDialog = () => {
                             className='rounded-md  h-[150px] mx-auto' />
                     }
                     <div className="flex items-start w-[100%] space-x-3 pt-8">
-                        <Image src={user?.image as string} width={70} height={70} alt={user?.name as string} className="h-[50px] w-[50px] rounded-full bg-shadow" />
+                        <Image src={session.avatar_url} width={70} height={70} alt={session.display_name} className="h-[50px] w-[50px] rounded-full bg-shadow" />
                         <div className="flex flex-col w-[100%] justify-center items-center">
                             <textarea ref={textAreaRef} onChange={handleCommentChange} value={comment} rows={1}
                                 className="w-[100%] min-h-auto   focus:ring-transparent ring-none border-none resize-none min-h-15" placeholder="コメントを入力"></textarea>

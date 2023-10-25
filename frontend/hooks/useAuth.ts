@@ -5,12 +5,6 @@ type AuthStatus = 'authenticated' | 'unauthenticated' | 'loading'
 type AuthData = {
     token?: string;
     status: AuthStatus;
-    user: UserData;
-}
-type UserData = {
-    uid: number;
-    image?: string;
-    name: string;
 }
 
 export const useAuth = (): AuthData => {
@@ -29,10 +23,5 @@ export const useAuth = (): AuthData => {
     return {
         token: token,
         status: status,
-        user: {
-            uid: 6,
-            name: "test",
-            image: "",
-        },
     }
 }

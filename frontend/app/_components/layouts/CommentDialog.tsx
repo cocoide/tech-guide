@@ -2,6 +2,7 @@
 import ArticleCard from '@/app/(home)/_components/ArticleCard'
 import { api } from '@/app/_functions/API'
 import { useAuth } from '@/hooks/useAuth'
+import { useSession } from '@/hooks/useSession'
 import { commentDialogAtom } from '@/stores/dialog'
 import { ChatBubbleOvalLeftEllipsisIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
@@ -11,7 +12,8 @@ import toast from 'react-hot-toast'
 import CustomDialog from '../elements/CustomDialog'
 
 const CommentDialog = () => {
-    const { user, token } = useAuth()
+    const { token } = useAuth()
+    const session = useSession()
     const [comment, setComment] = useState("")
     const [commentDialogValue, setOpenCommentDialog] = useAtom(commentDialogAtom)
     function handleCommentChange(e: ChangeEvent<HTMLTextAreaElement>) {
@@ -42,7 +44,7 @@ const CommentDialog = () => {
                     content={
                         <div className='p-7 flex flex-col items-center w-full space-y-3'>
                             <div className="flex items-start w-[100%] space-x-3 justify-between">
-                                <Image src={user?.image as string} width={70} height={70} alt={user?.name as string} className="custom-border h-[50px] w-[50px] rounded-full" />
+                                <Image src={session.avatar_url} width={70} height={70} alt={session.display_name} className="custom-border h-[50px] w-[50px] rounded-full" />
                                 <div className="flex flex-col w-[100%] justify-center items-center">
                                     <textarea onChange={handleCommentChange} value={comment} rows={1}
                                         className="w-[100%] min-h-auto   focus:ring-transparent ring-none border-none resize-none min-h-15 bg-gray-50 dark:bg-gray-700 rounded-xl dark:text-white" ></textarea>
