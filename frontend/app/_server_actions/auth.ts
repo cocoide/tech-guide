@@ -20,14 +20,14 @@ export const serverAuthFunc = {
             return
         }
         // const account_id = decoded["account_id"]
-        if (Date.now() < decoded.exp * 1000) {
-            const updateAccessToken = await refreshToken()
-            if (!updateAccessToken) {
-                return
-            }
-            response = updateAccessToken
-            cookieStore.set("accessToken", updateAccessToken)
-        }
+        // if (Date.now() < decoded.exp * 1000) {
+        //     const updateAccessToken = await refreshToken()
+        //     if (!updateAccessToken) {
+        //         return
+        //     }
+        //     response = updateAccessToken
+        //     cookieStore.set("accessToken", updateAccessToken)
+        // }
         return response
     },
 }
