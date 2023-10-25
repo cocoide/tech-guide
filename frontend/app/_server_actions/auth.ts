@@ -21,11 +21,7 @@ export const serverAuthFunc = {
                 throw new Error("Failed to decode accessToken")
         }
         if (Date.now() < decoded["exp"] * 1000) {
-            const refresh_token = cookies().get("refreshToken")?.value
-            if (!refresh_token) {
-                throw new Error("Error getting refresh_token in cookies")
-            }
-            const updateAccessToken = await refreshToken(refresh_token)
+            const updateAccessToken = await refreshToken()
             if (!updateAccessToken) {
                 throw new Error("Failed to refresh token")
             }
@@ -40,7 +36,13 @@ export const serverAuthFunc = {
     },
 }
 
-async function refreshToken(refreshToken: string): Promise<string | undefined> {
+async function refreshToken(): Promise<string | undefined> {
+    "use server"
+
+    const refreshToken = cookies().get("refreshToken")?.value
+    if (!refreshToken) {
+        throw new Error("Error getting refresToken in cookies")
+    }
     const params = { "token": refreshToken }
     const { data: accessToken, error } = await api.pos<string>("/oauth/refresh", undefined, undefined, params)
     if (error || !accessToken) {
