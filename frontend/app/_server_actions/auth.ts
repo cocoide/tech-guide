@@ -1,4 +1,3 @@
-import jwt, { VerifyOptions } from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 import { api } from '../_functions/API'
 
@@ -12,13 +11,13 @@ export const serverAuthFunc = {
         if (!accessToken) {
             return
         }
-        const option: VerifyOptions = {
-            algorithms: ['HS256'],
-        }
-        const decoded = jwt.decode(accessToken, option)
-        if (decoded === null || typeof decoded === 'string' || !decoded.exp) {
-            return
-        }
+        // const option: VerifyOptions = {
+        //     algorithms: ['HS256'],
+        // }
+        // const decoded = jwt.decode(accessToken, option)
+        // if (decoded === null || typeof decoded === 'string' || !decoded.exp) {
+        //     return
+        // }
         // const account_id = decoded["account_id"]
         // if (Date.now() < decoded.exp * 1000) {
         //     const updateAccessToken = await refreshToken()
