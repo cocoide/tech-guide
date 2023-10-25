@@ -11,6 +11,7 @@ export const serverAuthFunc = {
         if (!accessToken) {
             return
         }
+        response = accessToken
         // const option: VerifyOptions = {
         //     algorithms: ['HS256'],
         // }
@@ -24,7 +25,7 @@ export const serverAuthFunc = {
         //     if (!updateAccessToken) {
         //         return
         //     }
-        //     response = updateAccessToken
+        // response = updateAccessToken
         //     cookieStore.set("accessToken", updateAccessToken)
         // }
         return response
