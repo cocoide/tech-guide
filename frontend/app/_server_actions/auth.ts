@@ -21,7 +21,7 @@ export const serverAuthFunc = {
                 throw new Error("Failed to decode accessToken")
         }
         if (Date.now() < decoded["exp"] * 1000) {
-            const refresh_token = cookies().get("refresh_token")?.value
+            const refresh_token = cookies().get("refreshToken")?.value
             if (!refresh_token) {
                 throw new Error("Error getting refresh_token in cookies")
             }
