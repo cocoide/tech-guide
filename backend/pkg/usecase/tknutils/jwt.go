@@ -24,12 +24,12 @@ func GenerateJwt(accountId int, expireAt time.Time) (string, error) {
 }
 
 type CustomClaims struct {
-	AccountID int   `json:"account_id"`
-	Exp       int64 `json:"exp"`
+	AccountID int     `json:"account_id"`
+	Exp       float64 `json:"exp"`
 }
 
 func ParseJwt(strToken string) (*CustomClaims, error) {
-	var response *CustomClaims
+	response := &CustomClaims{}
 	token, err := jwt.Parse(strToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -42,7 +42,7 @@ func ParseJwt(strToken string) (*CustomClaims, error) {
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
 		response.AccountID = int(claims["account_id"].(float64))
-		response.Exp = claims["exp"].(int64)
+		response.Exp = claims["exp"].(float64)
 	} else {
 		return nil, fmt.Errorf("Failed to get user data form claims")
 	}
