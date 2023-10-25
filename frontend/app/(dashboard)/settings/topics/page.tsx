@@ -1,11 +1,11 @@
-import { authServerFunc } from '@/app/_server_functions/auth'
-import { topicAPI } from '../_functions/topic'
-import FollowTopicsSection from './components/FollowTopicsSection'
-import RecommendTopicsSection from './components/RecommendTopicsSection'
+import { serverAuthFunc } from '@/app/_server_actions/auth';
+import { topicAPI } from '../_functions/topic';
+import FollowTopicsSection from './components/FollowTopicsSection';
+import RecommendTopicsSection from './components/RecommendTopicsSection';
 
 export default async function TopicsSettingPage() {
-    const session = await authServerFunc.GetAuth()
-    const { data: follow_topics } = await topicAPI.GetFollowingTopics(session?.token)
+    const token = await serverAuthFunc.GetAccessToken()
+    const { data: follow_topics } = await topicAPI.GetFollowingTopics(token)
     const { data: topics } = await topicAPI.GetAllTopics()
     const unfollow_topics = topics?.filter(topic => {
         return !follow_topics?.some(followTopic => followTopic.id === topic.id);
