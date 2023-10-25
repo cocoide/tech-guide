@@ -4,13 +4,24 @@ import { NextResponse } from 'next/server';
 import { serverAuthFunc } from '../../_server_actions/auth';
 
 export async function GET() {
-    const token = await serverAuthFunc.GetAccessToken()
-    if (!token) {
-        return NextResponse.json({ status: 403 })
+    let response: AccountSession = {
+        account_id: 0,
+        display_name: '',
+        avatar_url: '',
+        features: []
     }
-    const { data: session, ok } = await api.get<AccountSession>("/account/session", "no-store", token)
-    if (!ok) {
-        return NextResponse.json({ status: 403 })
+    try {
+        const token = await serverAuthFunc.GetAccessToken()
+        if (token) {
+            throw new Error(`Error getting token`)
+        }
+        const { data: session, error } = await api.get<AccountSession>("/account/session", "no-store", token)
+        if (!session || error) {
+            throw new Error(`Error getting session: ${error}`)
+        }
+        response = session
+    } catch (error) {
+        return NextResponse.json(error, { status: 403 })
     }
-    return NextResponse.json(session, { status: 200 })
+    return NextResponse.json(response, { status: 200 })
 }
