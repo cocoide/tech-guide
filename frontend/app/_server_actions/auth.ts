@@ -25,12 +25,10 @@ export const serverAuthFunc = {
         "use server"
 
         try {
-        var response = ""
         var accessToken = cookies().get("accessToken")?.value
         if (!accessToken) {
             throw new Error("Error getting accessToken in cookies")
         }
-        response = accessToken
         const option: VerifyOptions = {
             algorithms: ['HS256'],
         }
@@ -53,18 +51,16 @@ export const serverAuthFunc = {
                 path: '/',
                 secure: true,
             })
-            response = newAccessToken
+            return newAccessToken
         }
+            return accessToken
         } catch (error) {
-            console.error("Error in GetAccessToken:", error);
-            return
+            console.log("Error in GetAccessToken:", error);
         }
-        return response
     },
     async refreshToken() {
         "use server"
 
-    var response = ""
     const refreshToken = cookies().get("refreshToken")?.value
     try {
     if (!refreshToken) {
@@ -75,12 +71,11 @@ export const serverAuthFunc = {
     if (error || !accessToken) {
         throw new Error(`Failed to refresh token: ${error}`)
     }
-        response = accessToken
+        return accessToken
     } catch (error) {
-        console.error(`Failed to refresh token: ${error}`)
-        return
+        console.log(`Failed to refresh token: ${error}`)
+        throw error
     }
-    return response
     },
 }
 
