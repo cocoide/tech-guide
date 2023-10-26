@@ -62,7 +62,6 @@ export const serverAuthFunc = {
 }
 
 async function refreshToken(): Promise<string> {
-    "use server"
 
     const refreshToken = cookies().get("refreshToken")?.value
     if (!refreshToken) {
