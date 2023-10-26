@@ -21,6 +21,7 @@ export async function GET() {
         }
         response = session
     } catch (error) {
+        console.error(error)
         return NextResponse.json(error, { status: 403 })
     }
     return NextResponse.json(response, { status: 200 })

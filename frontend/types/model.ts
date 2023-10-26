@@ -68,5 +68,5 @@ export type AccountSession = {
     account_id: number
     display_name: string
     avatar_url: string
-    features: number[]
+    features?: number[]
 }

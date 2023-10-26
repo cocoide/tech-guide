@@ -1,8 +1,26 @@
+import { AccountSession } from '@/types/model'
 import jwt, { VerifyOptions } from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 import { api } from '../_functions/API'
 
 export const serverAuthFunc = {
+    async GetAccountSession() {
+        "use server"
+
+        let response: AccountSession = { account_id: 0, avatar_url: "", display_name: "" }
+        try {
+            const token = await this.GetAccessToken()
+            const { data: session, error } = await api.get<AccountSession>("/account/session", "no-store", token)
+            if (!session || error) {
+                throw new Error(`Failed to get session for: ${error}`)
+            }
+            response = session
+        } catch (error) {
+            console.error(error)
+            return
+        }
+        return response
+    },
     async GetAccessToken() {
         "use server"
 
@@ -10,7 +28,7 @@ export const serverAuthFunc = {
         var response = ""
         var accessToken = cookies().get("accessToken")?.value
         if (!accessToken) {
-            return
+            throw new Error("Error getting accessToken in cookies")
         }
         response = accessToken
         const option: VerifyOptions = {
