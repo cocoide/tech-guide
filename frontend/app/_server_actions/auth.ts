@@ -1,5 +1,4 @@
 import { AccountSession } from '@/types/model'
-import jwt, { VerifyOptions } from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 import { api } from '../_functions/API'
 
@@ -29,30 +28,30 @@ export const serverAuthFunc = {
         if (!accessToken) {
             throw new Error("Error getting accessToken in cookies")
         }
-        const option: VerifyOptions = {
-            algorithms: ['HS256'],
-        }
-        const decoded = jwt.decode(accessToken, option)
-            if (decoded === null || typeof decoded === 'string' || !decoded["exp"]) {
-                throw new Error("Failed to decode accessToken")
-        }
-        if (Date.now() < decoded["exp"] * 1000) {
-            const newAccessToken = await this.refreshToken()
-            if (!newAccessToken) {
-                throw new Error(`Failed to refresh accessToken`)
-            }
-            cookies().set({
-                name: 'accessToken',
-                domain: '.tech-guide.jp',
-                value: newAccessToken,
-                httpOnly: true,
-                sameSite: 'lax',
-                maxAge: 60 * 60 * 24 * 7,// 7日
-                path: '/',
-                secure: true,
-            })
-            return newAccessToken
-        }
+            // const option: VerifyOptions = {
+            //     algorithms: ['HS256'],
+            // }
+            // const decoded = jwt.decode(accessToken, option)
+            //     if (decoded === null || typeof decoded === 'string' || !decoded["exp"]) {
+            //         throw new Error("Failed to decode accessToken")
+            // }
+            // if (Date.now() < decoded["exp"] * 1000) {
+            //     const newAccessToken = await this.refreshToken()
+            //     if (!newAccessToken) {
+            //         throw new Error(`Failed to refresh accessToken`)
+            //     }
+            //     cookies().set({
+            //         name: 'accessToken',
+            //         domain: '.tech-guide.jp',
+            //         value: newAccessToken,
+            //         httpOnly: true,
+            //         sameSite: 'lax',
+            //         maxAge: 60 * 60 * 24 * 7,// 7日
+            //         path: '/',
+            //         secure: true,
+            //     })
+            //     return newAccessToken
+            // }
             return accessToken
         } catch (error) {
             console.log("Error in GetAccessToken:", error);
