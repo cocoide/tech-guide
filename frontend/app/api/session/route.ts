@@ -4,12 +4,6 @@ import { NextResponse } from 'next/server';
 import { serverAuthFunc } from '../../_server_actions/auth';
 
 export async function GET() {
-    let response: AccountSession = {
-        account_id: 0,
-        display_name: '',
-        avatar_url: '',
-        features: []
-    }
     try {
         const token = await serverAuthFunc.GetAccessToken()
         if (token) {
@@ -19,10 +13,9 @@ export async function GET() {
         if (!session || error) {
             throw new Error(`Error getting session: ${error}`)
         }
-        response = session
+        return NextResponse.json(session, { status: 200 })
     } catch (error) {
         console.error(error)
         return NextResponse.json(error, { status: 403 })
     }
-    return NextResponse.json(response, { status: 200 })
 }
