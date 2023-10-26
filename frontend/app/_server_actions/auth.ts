@@ -40,7 +40,9 @@ export const serverAuthFunc = {
         }
         if (Date.now() < decoded["exp"] * 1000) {
             const newAccessToken = await refreshToken()
-
+            if (!newAccessToken) {
+                throw new Error(`Failed to refresh accessToken`)
+            }
             cookies().set({
                 name: 'accessToken',
                 domain: '.tech-guide.jp',
@@ -61,9 +63,11 @@ export const serverAuthFunc = {
     },
 }
 
-async function refreshToken(): Promise<string> {
+async function refreshToken() {
 
+    var response = ""
     const refreshToken = cookies().get("refreshToken")?.value
+    try {
     if (!refreshToken) {
         throw new Error("Error getting refreshToken in cookies")
     }
@@ -72,5 +76,10 @@ async function refreshToken(): Promise<string> {
     if (error || !accessToken) {
         throw new Error(`Failed to refresh token: ${error}`)
     }
-    return accessToken
+        response = accessToken
+    } catch (error) {
+        console.error(`Failed to refresh token: ${error}`)
+        return
+    }
+    return response
 }

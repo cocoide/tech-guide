@@ -5,14 +5,16 @@ export const authAPI ={
     async GetAccessToken() {
         const { data: token, error } = await apiRoute.get<string>("/oauth/token")
         if (error) {
-            console.log(error)
+            console.error(error)
+            return
         }
         return token
     },
     async GetAccountSession() {
         const { data: session, error } = await apiRoute.get<AccountSession>("/session", "no-store")
         if (error) {
-            console.log(error)
+            console.error(error)
+            return
         }
         return session
     }
