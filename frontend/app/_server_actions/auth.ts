@@ -1,4 +1,5 @@
 import { AccountSession } from '@/types/model'
+import { decodeJwt, refreshAccessToken } from '@/utils/jwt'
 import { cookies } from 'next/headers'
 import { api } from '../_functions/API'
 
@@ -24,59 +25,34 @@ export const serverAuthFunc = {
         "use server"
 
         try {
-            const cookieStore = cookies()
-            var accessToken = cookieStore.get("accessToken")?.value
-        if (!accessToken) {
-            throw new Error("Error getting accessToken in cookies")
-        }
-            // const option: VerifyOptions = {
-            //     algorithms: ['HS256'],
-            // }
-            // const decoded = jwt.decode(accessToken, option)
-            //     if (decoded === null || typeof decoded === 'string' || !decoded["exp"]) {
-            //         throw new Error("Failed to decode accessToken")
-            // }
-            // if (Date.now() < decoded["exp"] * 1000) {
-            //     const newAccessToken = await this.refreshToken()
-            //     if (!newAccessToken) {
-            //         throw new Error(`Failed to refresh accessToken`)
-            //     }
-            //     cookies().set({
-            //         name: 'accessToken',
-            //         domain: '.tech-guide.jp',
-            //         value: newAccessToken,
-            //         httpOnly: true,
-            //         sameSite: 'lax',
-            //         maxAge: 60 * 60 * 24 * 7,// 7日
-            //         path: '/',
-            //         secure: true,
-            //     })
-            //     return newAccessToken
-            // }
+            var accessToken = cookies().get("accessToken")?.value
+            if (!accessToken) {
+                throw new Error(`Error getting token`)
+            }
+            const claims = await decodeJwt(accessToken)
+            if (Date.now() < claims.exp * 1000) {
+                const refreshToken = cookies().get("refreshToken")?.value
+                if (!refreshToken) {
+                    throw new Error(`Error getting refreshToken in cookie`)
+                }
+                accessToken = await refreshAccessToken(refreshToken)
+                // CookieのAccessTokenも更新
+                cookies().set({
+                    name: 'accessToken',
+                    domain: '.tech-guide.jp',
+                    value: accessToken,
+                    httpOnly: true,
+                    sameSite: 'lax',
+                    maxAge: 60 * 60 * 24 * 30,// 7日
+                    path: '/',
+                    secure: true,
+                })
+            }
             return accessToken
         } catch (error) {
-            console.log(`Error in GetAccessToken: ${error}`);
-            throw error;
+            console.error(`Failed to get accessToken: ${error}`)
+            return
         }
-    },
-    async refreshToken() {
-        "use server"
-
-    const refreshToken = cookies().get("refreshToken")?.value
-    try {
-    if (!refreshToken) {
-        throw new Error("Error getting refreshToken in cookies")
-    }
-    const params = { "token": refreshToken }
-    const { data: accessToken, error } = await api.pos<string>("/oauth/refresh", undefined, undefined, params)
-    if (error || !accessToken) {
-        throw new Error(`Failed to refresh token: ${error}`)
-    }
-        return accessToken
-    } catch (error) {
-        console.log(`Failed to refresh token: ${error}`)
-        throw error
-    }
     },
 }
 
