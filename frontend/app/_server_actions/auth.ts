@@ -24,7 +24,8 @@ export const serverAuthFunc = {
         "use server"
 
         try {
-        var accessToken = cookies().get("accessToken")?.value
+            const cookieStore = cookies()
+            var accessToken = cookieStore.get("accessToken")?.value
         if (!accessToken) {
             throw new Error("Error getting accessToken in cookies")
         }
@@ -54,7 +55,8 @@ export const serverAuthFunc = {
             // }
             return accessToken
         } catch (error) {
-            console.log("Error in GetAccessToken:", error);
+            console.log(`Error in GetAccessToken: ${error}`);
+            throw error;
         }
     },
     async refreshToken() {
