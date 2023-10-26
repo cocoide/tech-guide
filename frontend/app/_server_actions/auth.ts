@@ -39,7 +39,7 @@ export const serverAuthFunc = {
                 throw new Error("Failed to decode accessToken")
         }
         if (Date.now() < decoded["exp"] * 1000) {
-            const newAccessToken = await refreshToken()
+            const newAccessToken = await this.refreshToken()
             if (!newAccessToken) {
                 throw new Error(`Failed to refresh accessToken`)
             }
@@ -61,9 +61,8 @@ export const serverAuthFunc = {
         }
         return response
     },
-}
-
-async function refreshToken() {
+    async refreshToken() {
+        "use server"
 
     var response = ""
     const refreshToken = cookies().get("refreshToken")?.value
@@ -82,4 +81,6 @@ async function refreshToken() {
         return
     }
     return response
+    },
 }
+
