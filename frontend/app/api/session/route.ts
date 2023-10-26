@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
     try {
         var accessToken = cookies().get("accessToken")?.value
-        if (accessToken) {
+        if (!accessToken) {
             throw new Error(`Error getting token`)
         }
         const { data: session, error } = await api.get<AccountSession>("/account/session", "no-store", accessToken)
