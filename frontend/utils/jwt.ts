@@ -26,9 +26,6 @@ export async function refreshAccessToken(refreshToken: string) {
     "use server"
 
     try {
-        if (!refreshToken) {
-            throw new Error("Error getting refreshToken in cookies")
-        }
         const params = { "token": refreshToken }
         const { data: accessToken, error } = await api.pos<string>("/oauth/refresh", undefined, undefined, params)
         if (error || !accessToken) {
