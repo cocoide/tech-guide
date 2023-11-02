@@ -44,7 +44,7 @@ export default function FeedItems({ initialItems, fetchItems }: ItemsProps) {
             loadMore={loadMore}
             loader={
                 <>
-                    {Array(10).fill(null).map((_, index) => (
+                    {Array(6).fill(null).map((_, index) => (
                         <LoaderArticleCard key={index + "loader"} />
                     ))}
                 </>
