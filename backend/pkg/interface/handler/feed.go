@@ -1,32 +1,20 @@
 package handler
 
 import (
-	"strconv"
-
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
 	"github.com/labstack/echo"
 )
 
-func (h *Handler) GetFeeds(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
-	strPageIndex := c.QueryParam("page")
-	var pageIndex int
-	if strPageIndex == "" {
-		pageIndex = 1
-	} else {
-		pageIndex, _ = strconv.Atoi(strPageIndex)
-	}
-	topicIDs, err := h.repo.GetFollowingTopicIDs(accountId)
+func (h *Handler) GetFeedsWithPaginate(c echo.Context) error {
+	accountId := ctxutils.GetAccountID(c)
+	pageIndex, err := ctxutils.NewPaginateIndex(c)
 	if err != nil {
-		return c.JSON(400, err.Error())
+		return c.JSON(500, err)
 	}
-	sourceIDs, err := h.repo.GetFollowingSourceIDs(accountId)
+	articles, err := h.article.GetFeedsWithCache(accountId, pageIndex)
 	if err != nil {
-		return c.JSON(400, err.Error())
+		return c.JSON(500, err)
 	}
-	pageSize := 10
-	articles, err := h.repo.BatchGetArticlesByTopicIDsAndSourceID(topicIDs, sourceIDs, pageIndex, pageSize)
-	if err != nil {
-		return c.JSON(400, err.Error())
-	}
+
 	return c.JSON(200, articles)
 }
