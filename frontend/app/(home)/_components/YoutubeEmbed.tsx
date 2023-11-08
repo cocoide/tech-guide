@@ -1,8 +1,9 @@
+import { clsx } from '@/utils/clsx';
 
-function YouTubeEmbed({ youtube_id }: { youtube_id: string }) {
+function YouTubeEmbed({ youtube_id, style }: { youtube_id: string, style?: string }) {
         return (
             <iframe
-                className='w-full h-[250px] md:h-[300px] lg:h-[400px] lg:w-[500px] rounded-xl animate-appear'
+                className={clsx(style!, 'w-full h-[250px] md:h-[300px] lg:h-[400px] lg:w-[500px] rounded-xl animate-appear')}
                 width="400"
                 height="300"
                 src={`https://www.youtube.com/embed/${youtube_id}`}
