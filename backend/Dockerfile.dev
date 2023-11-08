@@ -1,4 +1,4 @@
-FROM golang:1.19-alpine AS devlop
+FROM golang:1.19-alpine AS develop
 
 WORKDIR /app
 RUN go install -tags mysql github.com/golang-migrate/migrate/v4/cmd/migrate@latest
