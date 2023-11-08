@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 const SectionHeaderButtonGroup = () => {
     return (
-        <WStack centerX={true} className='space-x-3'>
+        <WStack centerX={true} className='space-x-3 w-full'>
             <Link href={'/'} className='custom-badge custom-text custom-border p-1 rounded-xl'>
                 <HomeIcon className='h-5 w-5' /><div className='text-sm'>Latest</div>
             </Link>
