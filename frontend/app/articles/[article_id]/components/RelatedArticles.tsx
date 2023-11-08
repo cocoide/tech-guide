@@ -13,6 +13,8 @@ export default async function RelatedArticles({ origin, article_id, exclude }: P
     let renderArticles: Article[] | undefined = []
     if (exclude) {
         renderArticles = relatedArticles?.filter(article => article.id !== exclude);
+    } else {
+        renderArticles = relatedArticles
     }
     return (
         <div className='grid sm:grid-cols-2 gap-3 p-3'>
