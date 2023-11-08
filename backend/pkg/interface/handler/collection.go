@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"github.com/cocoide/tech-guide/pkg/domain/model"
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
 	"github.com/labstack/echo"
 	"gorm.io/gorm"
 	"strconv"
@@ -21,7 +22,7 @@ func (h *Handler) GetCollectionData(c echo.Context) error {
 }
 
 func (h *Handler) GetCollectionForBookmark(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	if accountId == 0 {
 		return c.JSON(403, "unauthorized for viewing bookmark")
 	}
@@ -94,7 +95,8 @@ func (h *Handler) DoBookmark(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	if authorId != int(c.Get("account_id").(float64)) {
+	accountId := ctxutils.GetAccountID(c)
+	if authorId != accountId {
 		return c.JSON(403, "unauthorized for creating bookmark")
 	}
 	bookmark := model.Bookmark{

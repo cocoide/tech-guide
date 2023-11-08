@@ -3,6 +3,8 @@ package handler
 import (
 	"context"
 	"fmt"
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
+	"github.com/cocoide/tech-guide/pkg/usecase/parser"
 	"log"
 	"regexp"
 	"strconv"
@@ -15,16 +17,19 @@ import (
 	"github.com/labstack/echo"
 )
 
+const (
+	paginateLimit = 6
+)
+
 func (h *Handler) GetRecommendArticles(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
-	strArticleIDs, err := h.cache.Get(fmt.Sprintf(key.PersonalizedArticleIDs, accountId))
+	accountId := ctxutils.GetAccountID(c)
+	strArticleIDs, exist, err := h.cache.Get(fmt.Sprintf(key.PersonalizedArticleIDs, accountId))
 	var articleIDs []int
-	if len(strArticleIDs) < 1 || err != nil {
+	if !exist || err != nil {
 		articleIDs, err = h.personalize.GetRecommendArticleIDs(accountId)
 		if err != nil {
 			return c.JSON(400, err.Error())
 		}
-		strArticleIDs, err = utils.Serialize(articleIDs)
 		if err != nil {
 			return c.JSON(400, err.Error())
 		}
@@ -32,12 +37,12 @@ func (h *Handler) GetRecommendArticles(c echo.Context) error {
 			return c.JSON(400, err.Error())
 		}
 	} else {
-		articleIDs, err = utils.Deserialize[[]int](strArticleIDs)
+		articleIDs, err = parser.Deserialize[[]int](string(strArticleIDs))
 		if err != nil {
 			return c.JSON(400, err.Error())
 		}
 	}
-	articles, err := h.repo.GetArticlesByIDs(articleIDs)
+	articles, err := h.repo.GetArticlesByIDs(articleIDs, []string{"Source"})
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
@@ -66,11 +71,15 @@ func (h *Handler) GetDomainID(c echo.Context) error {
 
 func (h *Handler) GetOverview(c echo.Context) error {
 	URL := c.QueryParam("url")
-	content, err := utils.GetMarkdownByURL(URL)
+	headers, err := h.scraper.GetHeaders(URL)
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	return c.JSON(200, content)
+	var strOverview string
+	for _, header := range headers {
+		strOverview += header.ToMarkdown() + "\n"
+	}
+	return c.JSON(200, strOverview)
 }
 
 func (h *Handler) GetOGP(c echo.Context) error {
@@ -82,7 +91,7 @@ func (h *Handler) GetOGP(c echo.Context) error {
 		if err != nil {
 			return c.JSON(400, err.Error())
 		}
-		if len(ogp.Thumbnail) > 700 {
+		if len(ogp.Thumbnail) > 999 {
 			ogp.Thumbnail = ""
 		}
 		return c.JSON(200, ogp)
@@ -91,11 +100,29 @@ func (h *Handler) GetOGP(c echo.Context) error {
 	}
 	return nil
 }
+
+func getSpeakerDeckCacheKey(id string) string {
+	return fmt.Sprintf("speakerdeck.%s", id)
+}
+
 func (h *Handler) GetSpeakerDeckID(c echo.Context) error {
 	var result string
 	URL := c.QueryParam("url")
 	type Response struct {
 		HTML string `json:"html"`
+	}
+	id, err := utils.ExtractIDFromURL(URL)
+	if err != nil {
+		return c.JSON(400, err)
+	}
+	value, exist, err := h.cache.Get(getSpeakerDeckCacheKey(id))
+	if err != nil {
+		return c.JSON(400, err)
+	}
+	if exist {
+		result = value
+		log.Printf("cache hit: %s", value)
+		return c.JSON(200, result)
 	}
 	params := map[string]string{"url": URL}
 	res, err := utils.FetchJSON[Response]("https://speakerdeck.com/oembed.json", params)
@@ -110,6 +137,7 @@ func (h *Handler) GetSpeakerDeckID(c echo.Context) error {
 	} else {
 		return c.JSON(400, "not found id")
 	}
+	h.cache.Set(getSpeakerDeckCacheKey(id), result, 30*24*time.Hour)
 	return c.JSON(200, result)
 }
 
@@ -121,7 +149,7 @@ func (h *Handler) GetArticles(c echo.Context) error {
 	} else {
 		pageIndex, _ = strconv.Atoi(strPageIndex)
 	}
-	articles, err := h.repo.GetLatestArticleByLimitWithSourceData(pageIndex, 20)
+	articles, err := h.repo.GetLatestArticleByLimitWithSourceData(pageIndex, paginateLimit)
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
@@ -177,7 +205,7 @@ func (h *Handler) CreateArticle(c echo.Context) error {
 		return c.JSON(400, err.Error())
 	}
 	thumbnailURL := ""
-	if len(ogp.Thumbnail) < 500 {
+	if len(ogp.Thumbnail) < 999 {
 		thumbnailURL = ogp.Thumbnail
 	}
 	article := &model.Article{
@@ -190,7 +218,7 @@ func (h *Handler) CreateArticle(c echo.Context) error {
 	}
 	topicAssignErrCh := make(chan error)
 	go func() {
-		wholeTopicWeights, err := h.article.ExtractTopicsWithWeightFromArticleTitle(article.Title)
+		wholeTopicWeights, err := h.article.ExtractTopicsWithWeightFromArticleTitle(article.Title, article.Summary)
 		if err != nil {
 			topicAssignErrCh <- err
 			return
@@ -220,7 +248,7 @@ func (h *Handler) GetArticlesBySourceID(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	articles, err := h.repo.GetArticlesBySourceID(sourceID, pageIndex, 10)
+	articles, err := h.repo.GetArticlesBySourceID(sourceID, pageIndex, paginateLimit)
 	return c.JSON(200, articles)
 }
 
@@ -230,7 +258,7 @@ func (h *Handler) GetArticlesByTopicID(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	articles, err := h.repo.GetArticlesByTopicID(topicID, pageIndex, 10)
+	articles, err := h.repo.GetArticlesByTopicID(topicID, pageIndex, paginateLimit)
 	return c.JSON(200, articles)
 }
 
@@ -244,4 +272,73 @@ func getPageIndexFromQuery(c echo.Context, defaultPage int) int {
 		return defaultPage
 	}
 	return pageIndex
+}
+
+func (h *Handler) GetHeaders(c echo.Context) error {
+	url := c.QueryParam("url")
+	if len(url) < 1 {
+		return c.JSON(400, "Required quey param: url")
+	}
+	headers, err := h.scraper.GetHeaders(url)
+	if err != nil {
+		return c.JSON(400, err)
+	}
+
+	var result string
+
+	for _, header := range headers {
+		result = result + header.ToMarkdown() + "\n"
+	}
+	return c.JSON(200, headers)
+}
+
+func (h *Handler) GetPageContent(c echo.Context) error {
+	url := c.QueryParam("url")
+	if len(url) < 1 {
+		return c.JSON(400, "Required quey param: url")
+	}
+	level, _ := strconv.Atoi(c.QueryParam("level"))
+
+	content, _ := h.scraper.GetHeaderContentWithHTMLElements(url, c.QueryParam("header"), level)
+
+	return c.JSON(200, content)
+}
+
+func (h *Handler) FindByTitle(c echo.Context) error {
+	title := c.QueryParam("title")
+	articles, err := h.repo.FindArticlesByTitle(title)
+	if err != nil {
+		return c.JSON(400, err)
+	}
+	return c.JSON(200, articles)
+}
+
+func (h *Handler) Summarize(c echo.Context) error {
+	url := c.QueryParam("url")
+	if len(url) < 1 {
+		return c.JSON(400, "Required quey param: url")
+	}
+	summary, err := h.scraping.SummarizeArticle(url)
+
+	if err != nil {
+		return c.JSON(400, err)
+	}
+
+	return c.JSON(200, summary)
+}
+
+func (h *Handler) ScrapeDetail(c echo.Context) error {
+	url := c.QueryParam("url")
+	content := c.QueryParam("content")
+	level, _ := strconv.Atoi(c.QueryParam("level"))
+	if len(url) < 1 {
+		return c.JSON(400, "Required quey param: url")
+	}
+	summary, err := h.scraper.GetHeaderContent(url, content, level)
+
+	if err != nil {
+		return c.JSON(400, err)
+	}
+
+	return c.JSON(200, summary)
 }
