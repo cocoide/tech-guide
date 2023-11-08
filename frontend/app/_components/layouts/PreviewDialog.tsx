@@ -20,7 +20,7 @@ const PreviewDialog = () => {
             openAtom={previewDialogAtom}
             layout='my-[150px] bg-white z-50 sm:mx-[15%] md:my-[100px] md:mx-[20%] lg:mx-[25%] sm:rounded-xl'
             content={
-                <div className='p-5 md:p-10 flex flex-col space-y-3 text-gray-600 dark:text-gray-100'>
+                <div className='p-5 md:p-10 flex flex-col space-y-3 text-gray-600 bg-gray-50/50 dark:bg-gray-900'>
                     {speakerdeck_id &&
                         <Suspense fallback={<SpeakerDeckLoader />}>
                             <SpeakerDeckEmbed url={speakerdeck_id} />

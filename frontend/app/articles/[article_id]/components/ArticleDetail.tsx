@@ -35,7 +35,7 @@ export default function ArticleDetail({ article }: { article: Article }) {
     }
     const youtube_id = extractYoutubeID(String(article?.original_url))
     return (
-        <div className="bg-white rounded-xl 
+        <div className="bg-gray-50/50 dark:bg-gray-900 rounded-xl 
         shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
         p-5  flex flex-col lg:flex-row items-center
         space-y-3 lg:space-x-3">
