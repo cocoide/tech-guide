@@ -1,9 +1,13 @@
 import { clsx } from '@/utils/clsx';
 
-function YouTubeEmbed({ youtube_id, style }: { youtube_id: string, style?: string }) {
+function YouTubeEmbed({ youtube_id, width_style }: { youtube_id: string, width_style?: string }) {
+    let style: string = "lg:w-[500px]"
+    if (width_style) {
+        style = width_style
+    }
         return (
             <iframe
-                className={clsx(style!, 'w-full h-[250px] md:h-[300px] lg:h-[400px] lg:w-[500px] rounded-xl animate-appear')}
+                className={clsx(width_style!, 'w-full h-[250px] md:h-[300px] lg:h-[400px]  rounded-xl animate-appear')}
                 width="400"
                 height="300"
                 src={`https://www.youtube.com/embed/${youtube_id}`}
