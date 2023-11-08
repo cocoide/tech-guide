@@ -30,7 +30,11 @@ export const articleAPI = {
     async GetReadArticles(token?: string) {
         return await api.get<Article[]>('/account/article/read', "no-store", token)
     },
-    async GetOverview(url?: OutlineElements | undefined | boolean) {
+    async GetOverview(obj?: OutlineElements | undefined | boolean) {
+        let url: string = ""
+        if (typeof obj === "object") {
+            url = obj.original_url
+        }
         return await api.get<string>(`/overview?url=${url}`,"reload")
     },
     async GetHeaders(url?: string) {
