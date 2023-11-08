@@ -15,7 +15,7 @@ export const articleAPI = {
         return await api.pos("/article", article)
     },
     async GetRelatedArticles(article_id: string) {
-        return await api.get<Article[]>(`/article/related/${article_id}`, 60 * 60)
+        return await api.get<Article[]>(`/article/related/${article_id}`, "no-store")
     },
     async GetArticleDetail(article_id: string) {
         return await api.get<Article>(`/article/${article_id}`)

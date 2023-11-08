@@ -18,7 +18,7 @@ export default async function ArticlePage({ params, searchParams }: Props) {
             {articleDetail &&
                 <ArticleDetail article={articleDetail} />
             }
-            <div className="text-slate-600 custom-badge">
+            <div className="text-slate-600 custom-badge ml-3">
                 <NewspaperIcon className="h-7 w-7" />
                 <> 関連記事</>
             </div>
