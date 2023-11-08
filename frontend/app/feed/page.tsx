@@ -5,7 +5,7 @@ import { FetchFeed } from './_functions/feed'
 export default async function FeedPage() {
     const feeds = await FetchFeed()
     return (
-        < FeedItems initialItems={feeds} fetchItems={FetchFeed} />
+        <FeedItems initialItems={feeds} fetchItems={FetchFeed}/>
     )
 }
 

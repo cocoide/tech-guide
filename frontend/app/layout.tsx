@@ -18,9 +18,8 @@ export const metadata = {
 }
 interface Props {
   children: React.ReactNode
-  modal: React.ReactNode
 }
-export default function RootLayout({ children, modal }: Props) {
+export default function RootLayout({ children }: Props) {
   return (
     <html lang="ja">
       <body className="bg-white dark:bg-black">
@@ -49,7 +48,6 @@ export default function RootLayout({ children, modal }: Props) {
           <PostDialog />
           <FeedFilterDialog />
           <PreviewDialog />
-          {modal}
         </Providers>
       </body>
     </html>
