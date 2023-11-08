@@ -21,6 +21,28 @@ const (
 	paginateLimit = 6
 )
 
+func (h *Handler) GetTrendArticles(c echo.Context) error {
+	articles, err := h.article.GetTrendArticles()
+	if err != nil {
+		return c.JSON(500, err)
+	}
+	return c.JSON(200, articles)
+}
+
+func (h *Handler) GetFeedsWithPaginate(c echo.Context) error {
+	accountId := ctxutils.GetAccountID(c)
+	pageIndex, err := ctxutils.NewPaginateIndex(c)
+	if err != nil {
+		return c.JSON(500, err)
+	}
+	articles, err := h.article.GetFeedsWithCache(accountId, pageIndex)
+	if err != nil {
+		return c.JSON(500, err)
+	}
+
+	return c.JSON(200, articles)
+}
+
 func (h *Handler) GetRecommendArticles(c echo.Context) error {
 	accountId := ctxutils.GetAccountID(c)
 	strArticleIDs, exist, err := h.cache.Get(fmt.Sprintf(key.PersonalizedArticleIDs, accountId))

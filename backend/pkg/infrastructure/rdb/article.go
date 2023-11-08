@@ -55,6 +55,13 @@ func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articl
 		query = query.Joins("JOIN topics_to_articles ON articles.id = topics_to_articles.article_id").
 			Where("topics_to_articles.topic_id IN (?)", params.TopicIDs)
 	}
+	if !params.Duration.Start.IsZero() && !params.Duration.End.IsZero() {
+		query = query.Where("created_at BETWEEN ? AND ?", params.Duration.Start, params.Duration.End)
+	} else if !params.Duration.Start.IsZero() {
+		query = query.Where("created_at >= ?", params.Duration.Start)
+	} else if !params.Duration.End.IsZero() {
+		query = query.Where("created_at <= ?", params.Duration.End)
+	}
 	limit := 50 // Default
 	if params.Limit != 0 {
 		limit = params.Limit
@@ -65,6 +72,14 @@ func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articl
 		query = query.Order("created_at desc")
 	case repo.Older:
 		query = query.Order("created_at asc")
+	case repo.Trend:
+		ratingSubQuery := r.db.Model(&model.ArticleRating{}).
+			Select("article_id, SUM(owned_stocks + origin_stocks + pocket_stocks + hatena_stocks) as total_stocks").
+			Group("article_id")
+
+		query = query.
+			Joins("LEFT JOIN (?) as rating ON rating.article_id = articles.id", ratingSubQuery).
+			Order("rating.total_stocks DESC")
 	default:
 		// Default: NoOrder
 	}

@@ -1,6 +1,9 @@
 package repository
 
-import "github.com/cocoide/tech-guide/pkg/domain/model"
+import (
+	"github.com/cocoide/tech-guide/pkg/domain/model"
+	"time"
+)
 
 //go:generate mockgen -source=article.go -destination=../../../mock/repository/article.go
 type ArticleRepo interface {
@@ -35,6 +38,12 @@ type ListArticlesParams struct {
 	Limit     int // default 50
 	OrderBy   OrderByType
 	Preloads  []string
+	Duration  Duration
+}
+
+type Duration struct {
+	Start time.Time
+	End   time.Time
 }
 
 type OrderByType int
@@ -42,5 +51,5 @@ type OrderByType int
 const (
 	Latest OrderByType = iota + 1
 	Older
-	Popular
+	Trend
 )

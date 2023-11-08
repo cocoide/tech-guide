@@ -37,6 +37,7 @@ func NewRootRouter(e *echo.Echo, h *handler.Handler) {
 
 	e.GET("/speakerdeck", h.GetSpeakerDeckID)
 
+	e.GET("/article/trend", h.GetTrendArticles)
 	e.GET("/article", h.GetArticles)
 	e.GET("/article/source/:sourceId", h.GetArticlesBySourceID)
 	e.GET("/article/topic/:topicId", h.GetArticlesByTopicID)

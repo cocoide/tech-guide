@@ -1,25 +1,118 @@
 package usecase
 
 import (
-	"fmt"
-	"sort"
-	"strconv"
-	"strings"
-
 	"github.com/cocoide/tech-guide/conf"
 	"github.com/cocoide/tech-guide/pkg/domain/model"
 	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
 	"github.com/cocoide/tech-guide/pkg/domain/repository"
 	"github.com/cocoide/tech-guide/pkg/domain/service"
+	"github.com/cocoide/tech-guide/pkg/usecase/keyutils"
+	"github.com/cocoide/tech-guide/pkg/usecase/parser"
+	"github.com/cocoide/tech-guide/pkg/usecase/timeutils"
+	"sort"
+	"strconv"
+	"strings"
+)
+
+const (
+	FeedsLimit        = 100
+	FeedsPaginateSize = 6
 )
 
 type ArticleUsecase struct {
-	nlp  service.NLPService
-	repo repository.Repository
+	nlp   service.NLPService
+	cache repository.CacheRepo
+	repo  repository.Repository
 }
 
-func NewArticleUsecase(nlp service.NLPService, repo repository.Repository) *ArticleUsecase {
-	return &ArticleUsecase{nlp: nlp, repo: repo}
+func NewArticleUsecase(nlp service.NLPService, cache repository.CacheRepo, repo repository.Repository) *ArticleUsecase {
+	return &ArticleUsecase{nlp: nlp, cache: cache, repo: repo}
+}
+
+func (u *ArticleUsecase) GetTrendArticles() (model.Articles, error) {
+	params := &repository.ListArticlesParams{
+		OrderBy:  repository.Trend,
+		Limit:    FeedsLimit,
+		Preloads: []string{"Source", "Rating"},
+	}
+	return u.repo.ListArticles(params)
+}
+
+func (u *ArticleUsecase) GetFeedsWithCache(accountId, pageIndex int) (model.Articles, error) {
+	var articles model.Articles
+	cacheKey := keyutils.CacheFeedArticleIDs(accountId)
+	// Feedは一日ごとにキャッシュ
+	str, exist, err := u.cache.Get(cacheKey)
+	if err != nil {
+		return nil, err
+	}
+	// キャッシュが存在する場合
+	if exist {
+		articleIDs, err := parser.Deserialize[[]int](str)
+		if err != nil {
+			return nil, err
+		}
+		paginateIDs := u.paginateArticleIDs(articleIDs, pageIndex)
+
+		articles, err = u.repo.GetArticlesByIDs(paginateIDs, []string{"Source", "Rating"})
+		if err != nil {
+			return nil, err
+		}
+		return articles, err
+	}
+
+	topicIDs, err := u.repo.GetFollowingTopicIDs(accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	sourceIDs, err := u.repo.GetFollowingSourceIDs(accountId)
+	if err != nil {
+		return nil, err
+	}
+	params := &repository.ListArticlesParams{
+		TopicIDs:  topicIDs,
+		SourceIDs: sourceIDs,
+		OrderBy:   repository.Latest,
+		Limit:     FeedsLimit,
+	}
+	articleIDs, err := u.repo.ListArticleIDs(params)
+
+	if err != nil {
+		return nil, err
+	}
+	paginateIDs := u.paginateArticleIDs(articleIDs, pageIndex)
+	articles, err = u.repo.GetArticlesByIDs(paginateIDs, []string{"Rating", "Source"})
+	if err != nil {
+		return nil, err
+	}
+
+	strArticleIDs, err := parser.Serialize(articles.IDs())
+	if err != nil {
+		return nil, err
+	}
+	if err := u.cache.Set(cacheKey, strArticleIDs, timeutils.OneDay()); err != nil {
+		return nil, err
+	}
+	return articles, nil
+}
+
+func (u *ArticleUsecase) paginateArticleIDs(allArticleIDs []int, pageIndex int) []int {
+	start := FeedsPaginateSize * (pageIndex - 1)
+
+	if start >= len(allArticleIDs) {
+		return []int{}
+	}
+	end := start + FeedsPaginateSize
+	if end > len(allArticleIDs) {
+		end = len(allArticleIDs)
+	}
+	return allArticleIDs[start:end]
+}
+
+func (u *ArticleUsecase) GetArticlesByTopicIDWithPagination() model.Articles {
+	articles, _ := u.repo.GetArticlesByIDs([]int{1, 2, 3, 5}, []string{"Source", "Rating"})
+	return articles
 }
 
 func (ts *ArticleUsecase) GetRelatedArticlesByOriginTopicToArticleArray(origin []model.TopicsToArticles, excludeID int) ([]model.Article, error) {
@@ -76,7 +169,7 @@ func (ts *ArticleUsecase) GetRelatedArticlesByOriginTopicToArticleArray(origin [
 	return result, nil
 }
 
-func (ts *ArticleUsecase) ExtractTopicsWithWeightFromArticleTitle(title string) ([]dto.TopicWeight, error) {
+func (ts *ArticleUsecase) ExtractTopicsWithWeightFromArticleTitle(title, summary string) ([]dto.TopicWeight, error) {
 	existingTopics, err := ts.repo.GetAllTopics()
 	existingTopicsName := ""
 	for i, t := range existingTopics {
@@ -85,8 +178,8 @@ func (ts *ArticleUsecase) ExtractTopicsWithWeightFromArticleTitle(title string) 
 		}
 		existingTopicsName += t.Name
 	}
-	prompt := fmt.Sprintf(conf.SelectTopicsPrompt, title, existingTopicsName)
-	answer, err := ts.nlp.GetAnswerFromPrompt(prompt, 0.01)
+	prompt := conf.NewSelectTopicsPrompt(title, summary, existingTopics)
+	answer, err := ts.nlp.GetAnswerFromPrompt(prompt)
 	if err != nil {
 		return nil, err
 	}
