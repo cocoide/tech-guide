@@ -1,7 +1,9 @@
 import { api } from '@/app/_functions/API';
 import { Article, Comment } from '@/types/model';
-import { Header } from '../@modal/(.)articles/[article_id]/components/DynamicOutlineSection';
-
+export type Header = {
+    content: string
+    subHeader?: Header
+}
 type MakeArticle=Pick<Article,"original_url">
 
 export const articleAPI = {
