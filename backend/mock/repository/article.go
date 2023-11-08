@@ -108,6 +108,21 @@ func (mr *MockArticleRepoMockRecorder) CreateTopicToArticle(topicToArticles inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTopicToArticle", reflect.TypeOf((*MockArticleRepo)(nil).CreateTopicToArticle), topicToArticles)
 }
 
+// FindArticlesByTitle mocks base method.
+func (m *MockArticleRepo) FindArticlesByTitle(title string) ([]model.Article, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindArticlesByTitle", title)
+	ret0, _ := ret[0].([]model.Article)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindArticlesByTitle indicates an expected call of FindArticlesByTitle.
+func (mr *MockArticleRepoMockRecorder) FindArticlesByTitle(title interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindArticlesByTitle", reflect.TypeOf((*MockArticleRepo)(nil).FindArticlesByTitle), title)
+}
+
 // GetArticleByID mocks base method.
 func (m *MockArticleRepo) GetArticleByID(articleID int) (*model.Article, error) {
 	m.ctrl.T.Helper()
@@ -154,18 +169,18 @@ func (mr *MockArticleRepoMockRecorder) GetArticleWithRelatedDataByID(articleID i
 }
 
 // GetArticlesByIDs mocks base method.
-func (m *MockArticleRepo) GetArticlesByIDs(articleIDs []int) ([]model.Article, error) {
+func (m *MockArticleRepo) GetArticlesByIDs(articleIDs []int, preloadColumns []string) ([]model.Article, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetArticlesByIDs", articleIDs)
+	ret := m.ctrl.Call(m, "GetArticlesByIDs", articleIDs, preloadColumns)
 	ret0, _ := ret[0].([]model.Article)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetArticlesByIDs indicates an expected call of GetArticlesByIDs.
-func (mr *MockArticleRepoMockRecorder) GetArticlesByIDs(articleIDs interface{}) *gomock.Call {
+func (mr *MockArticleRepoMockRecorder) GetArticlesByIDs(articleIDs, preloadColumns interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArticlesByIDs", reflect.TypeOf((*MockArticleRepo)(nil).GetArticlesByIDs), articleIDs)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArticlesByIDs", reflect.TypeOf((*MockArticleRepo)(nil).GetArticlesByIDs), articleIDs, preloadColumns)
 }
 
 // GetArticlesBySourceID mocks base method.
@@ -211,6 +226,21 @@ func (m *MockArticleRepo) GetArticlesByTopicIDs(topicIDs []int, omitArticleId in
 func (mr *MockArticleRepoMockRecorder) GetArticlesByTopicIDs(topicIDs, omitArticleId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArticlesByTopicIDs", reflect.TypeOf((*MockArticleRepo)(nil).GetArticlesByTopicIDs), topicIDs, omitArticleId)
+}
+
+// GetArticlesExcludingIDs mocks base method.
+func (m *MockArticleRepo) GetArticlesExcludingIDs(excludeIDs []int) ([]model.Article, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetArticlesExcludingIDs", excludeIDs)
+	ret0, _ := ret[0].([]model.Article)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetArticlesExcludingIDs indicates an expected call of GetArticlesExcludingIDs.
+func (mr *MockArticleRepoMockRecorder) GetArticlesExcludingIDs(excludeIDs interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArticlesExcludingIDs", reflect.TypeOf((*MockArticleRepo)(nil).GetArticlesExcludingIDs), excludeIDs)
 }
 
 // GetLatestArticleByLimitWithSourceData mocks base method.
