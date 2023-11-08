@@ -1,4 +1,5 @@
 import { api } from '@/app/_functions/API';
+import { OutlineElements } from '@/stores/dialog';
 import { Article, Comment } from '@/types/model';
 export type Header = {
     content: string
@@ -29,7 +30,7 @@ export const articleAPI = {
     async GetReadArticles(token?: string) {
         return await api.get<Article[]>('/account/article/read', "no-store", token)
     },
-    async GetOverview(url?: string){
+    async GetOverview(url?: OutlineElements | undefined | boolean) {
         return await api.get<string>(`/overview?url=${url}`,"reload")
     },
     async GetHeaders(url?: string) {

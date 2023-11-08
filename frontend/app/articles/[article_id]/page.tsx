@@ -3,6 +3,7 @@ import { NewspaperIcon } from '@heroicons/react/24/outline';
 import { Suspense } from 'react';
 import { articleAPI } from '../../_functions/article';
 import ArticleDetail from './components/ArticleDetail';
+import OutlineDialog from './components/OutlineDialog';
 import RelatedArticles from './components/RelatedArticles';
 
 interface Props extends ArticleParams {
@@ -15,6 +16,7 @@ export default async function ArticlePage({ params, searchParams }: Props) {
 
     return (
         <div className="flex flex-col md:p-5 space-y-5">
+            <OutlineDialog />
             {articleDetail &&
                 <ArticleDetail article={articleDetail} />
             }

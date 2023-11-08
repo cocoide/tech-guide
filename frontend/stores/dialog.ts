@@ -8,3 +8,7 @@ export const collectionDialogAtom = atom<number | boolean>(false)
 export const topicDialogAtom = atom(false)
 export const commentDialogAtom = atom<Article | boolean>(false)
 export const previewDialogAtom = atom<PreviewDialogModel | boolean>(false)
+export const outlineDialogAtom = atom<OutlineElements | boolean>(false)
+export type OutlineElements = {
+    original_url: string
+}
