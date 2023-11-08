@@ -1,15 +1,15 @@
+import { RelatedArticlesLoader } from '@/app/_components/loaders/RelatedArticlesLoader';
+import { Suspense } from 'react';
 import { articleAPI } from '../../_functions/article';
 import ArticleDetail from './components/ArticleDetail';
 import RelatedArticles from './components/RelatedArticles';
 
 interface Props extends ArticleParams {
-    searchParams: { "exclude": string }
+    searchParams: { "origin": string }
 }
 export default async function ArticlePage({ params, searchParams }: Props) {
-    const exclude = Number(searchParams.exclude)
+    const exclude = Number(searchParams?.origin)
     const { article_id } = params;
-    const { data: relatedArticles } = await articleAPI.GetRelatedArticles(article_id);
-    const selectedRelatedArticles = relatedArticles?.filter(article => article.id !== exclude);
     const { data: articleDetail } = await articleAPI.GetArticleDetail(article_id);
 
     return (
@@ -17,9 +17,9 @@ export default async function ArticlePage({ params, searchParams }: Props) {
             {articleDetail &&
                 <ArticleDetail article={articleDetail} />
             }
-            {selectedRelatedArticles && selectedRelatedArticles.length > 0 &&
-                <RelatedArticles articles={selectedRelatedArticles} origin={String(articleDetail?.id)} />
-            }
+            <Suspense fallback={<RelatedArticlesLoader />}>
+                <RelatedArticles origin={articleDetail?.id} article_id={params.article_id} exclude={exclude} />
+            </Suspense>
         </div>
     )
 }

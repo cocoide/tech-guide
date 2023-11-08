@@ -1,10 +1,10 @@
 "use client"
 import YouTubeEmbed from '@/app/(home)/_components/YoutubeEmbed'
+import SpeakerDeckEmbed from "@/app/_components/layouts/SpeakerDeckEmbed"
+import SpeakerDeckLoader from "@/app/_components/loaders/SpeakerDeckLoader"
 import { previewDialogAtom } from '@/stores/dialog'
 import { useAtom } from 'jotai'
 import { Suspense } from 'react'
-import SpeakerDeckEmbed from "@/app/_components/layouts/SpeakerDeckEmbed";
-import SpeakerDeckLoader from "@/app/_components/layouts/loader/SpeakerDeckLoader";
 import CustomDialog from '../elements/CustomDialog'
 const PreviewDialog = () => {
     const [previewDialog, _] = useAtom(previewDialogAtom)

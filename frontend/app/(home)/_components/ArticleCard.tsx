@@ -6,7 +6,7 @@ import ArticleOption from './ArticleOption'
 
 interface Props {
     article: Article
-    origin?: string
+    origin?: Number
 }
 
 const ArticleCard = ({ article, origin }: Props) => {
