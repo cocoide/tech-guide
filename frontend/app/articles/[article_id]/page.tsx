@@ -1,4 +1,5 @@
 import { RelatedArticlesLoader } from '@/app/_components/loaders/RelatedArticlesLoader';
+import { NewspaperIcon } from '@heroicons/react/24/outline';
 import { Suspense } from 'react';
 import { articleAPI } from '../../_functions/article';
 import ArticleDetail from './components/ArticleDetail';
@@ -17,6 +18,10 @@ export default async function ArticlePage({ params, searchParams }: Props) {
             {articleDetail &&
                 <ArticleDetail article={articleDetail} />
             }
+            <div className="text-slate-600 custom-badge">
+                <NewspaperIcon className="h-7 w-7" />
+                <> 関連記事</>
+            </div>
             <Suspense fallback={<RelatedArticlesLoader />}>
                 <RelatedArticles origin={articleDetail?.id} article_id={params.article_id} exclude={exclude} />
             </Suspense>

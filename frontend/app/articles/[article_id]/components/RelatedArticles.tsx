@@ -16,7 +16,6 @@ export default async function RelatedArticles({ origin, article_id, exclude }: P
     }
     return (
         <div className='grid sm:grid-cols-2 gap-3 p-3'>
-            <div className="text-slate-600">関連記事</div>
             {renderArticles?.map(article => {
                 return <ArticleCard key={article.id} article={article} origin={origin} />
             })}
