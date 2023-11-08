@@ -2,9 +2,77 @@ package rdb
 
 import (
 	"errors"
+	"fmt"
+	repo "github.com/cocoide/tech-guide/pkg/domain/repository"
+	"log"
 
 	"github.com/cocoide/tech-guide/pkg/domain/model"
 )
+
+func (r *Repository) ListArticleIDs(params *repo.ListArticlesParams) ([]int, error) {
+	var articleIDs []int
+	query := r.db.Model(&model.Article{}).Select("articles.id")
+
+	if len(params.SourceIDs) > 0 {
+		query = query.Where("source_id IN (?)", params.SourceIDs)
+	}
+	if len(params.TopicIDs) > 0 {
+		query = query.Joins("JOIN topics_to_articles ON articles.id = topics_to_articles.article_id").
+			Where("topics_to_articles.topic_id IN (?)", params.TopicIDs)
+	}
+	limit := 50 // Default
+	if params.Limit != 0 {
+		limit = params.Limit
+	}
+	query = query.Limit(limit)
+	switch params.OrderBy {
+	case repo.Latest:
+		query = query.Order("articles.created_at desc")
+	case repo.Older:
+		query = query.Order("articles.created_at asc")
+	default:
+		// Default: NoOrder
+	}
+	log.Print(query)
+	if err := query.Pluck("articles.id", &articleIDs).Error; err != nil {
+		return nil, err
+	}
+	log.Print(articleIDs)
+	return articleIDs, nil
+}
+
+func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articles, error) {
+	var articles model.Articles
+	query := r.db.Model(&model.Article{})
+
+	for _, v := range params.Preloads {
+		query = query.Preload(v)
+	}
+	if len(params.SourceIDs) > 0 {
+		query = query.Where("source_id IN (?)", params.SourceIDs)
+	}
+	if len(params.TopicIDs) > 0 {
+		query = query.Joins("JOIN topics_to_articles ON articles.id = topics_to_articles.article_id").
+			Where("topics_to_articles.topic_id IN (?)", params.TopicIDs)
+	}
+	limit := 50 // Default
+	if params.Limit != 0 {
+		limit = params.Limit
+	}
+	query = query.Limit(limit)
+	switch params.OrderBy {
+	case repo.Latest:
+		query = query.Order("created_at desc")
+	case repo.Older:
+		query = query.Order("created_at asc")
+	default:
+		// Default: NoOrder
+	}
+	if err := query.Find(&articles).Error; err != nil {
+		return nil, err
+	}
+	return articles, nil
+}
 
 func (r *Repository) GetArticleIDByURL(url string) (int, error) {
 	var id int
@@ -31,12 +99,16 @@ func (r *Repository) CheckArticleExistsByURL(url string) (bool, error) {
 	return count > 0, nil
 }
 
-func (r *Repository) GetArticlesByIDs(articleIDs []int) ([]model.Article, error) {
-	var articles []model.Article
-	err := r.db.
-		Where("id IN (?)", articleIDs).
-		Preload("Topics").
-		Find(&articles).Error
+func (r *Repository) GetArticlesByIDs(articleIDs []int, preloadColumns []string) (model.Articles, error) {
+	var articles model.Articles
+
+	query := r.db.Where("id IN (?)", articleIDs)
+
+	for _, column := range preloadColumns {
+		query = query.Preload(column)
+	}
+
+	err := query.Find(&articles).Error
 	if err != nil {
 		return nil, err
 	}
@@ -94,8 +166,9 @@ func (r *Repository) GetLatestArticleByLimitWithSourceData(pageIndex, pageSize i
 	}
 	var articles []*model.Article
 	if err := r.db.
-		Omit("summary").
+		//Omit("summary").
 		Preload("Source").
+		Preload("Rating").
 		Order("created_at desc").
 		Offset((pageIndex - 1) * pageSize).
 		Limit(pageSize).
@@ -141,8 +214,8 @@ func (r *Repository) GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([
 	return TopicsToArticlesArray, nil
 }
 
-func (r *Repository) BatchGetArticlesByTopicIDsAndSourceID(topicIDs, sourceIDs []int, pageIndex, pageSize int) ([]model.Article, error) {
-	var articles []model.Article
+func (r *Repository) BatchGetArticlesByTopicIDsAndSourceID(topicIDs, sourceIDs []int, pageIndex, pageSize int) (model.Articles, error) {
+	var articles model.Articles
 	query := r.db.Preload("Topics").Preload("Source").Where("source_id IN (?)", sourceIDs)
 	if len(topicIDs) > 0 {
 		query = query.Joins("JOIN topics_to_articles ON articles.id = topics_to_articles.article_id").
@@ -158,9 +231,11 @@ func (r *Repository) BatchGetArticlesByTopicIDsAndSourceID(topicIDs, sourceIDs [
 func (r *Repository) GetArticlesBySourceID(sourceID, pageIndex, pageSize int) ([]model.Article, error) {
 	var articles []model.Article
 	err := r.db.
+		Preload("Rating").
 		Preload("Source").
 		Where("source_id = ?", sourceID).
 		Offset((pageIndex - 1) * pageSize).
+		Order("created_at DESC").
 		Find(&articles).Error
 	if err != nil {
 		return nil, err
@@ -176,8 +251,11 @@ func (r *Repository) GetArticlesByTopicID(topicID, pageIndex, pageSize int) ([]m
 
 	err := r.db.
 		Joins("JOIN topics_to_articles ON topics_to_articles.article_id = articles.id").
+		Preload("Rating").
 		Preload("Source").
 		Where("topics_to_articles.topic_id = ?", topicID).
+		// 関連順に取得する
+		Order("topics_to_articles.weight DESC").
 		Offset(offset).
 		Limit(pageSize).
 		Find(&articles).Error
@@ -188,19 +266,21 @@ func (r *Repository) GetArticlesByTopicID(topicID, pageIndex, pageSize int) ([]m
 	return articles, nil
 }
 
-//func (r *Repository) GetArticlesByTopicID(topicID, pageIndex, pageSize int) ([]model.Article, error) {
-//	var topicsToArticles []model.TopicsToArticles
-//	var articles []model.Article
-//
-//	err := r.db.Preload("Article").
-//		Where("topic_id = ?", topicID).
-//		Offset((pageIndex - 1) * pageSize).
-//		Find(&topicsToArticles).Error
-//	if err != nil {
-//		return nil, err
-//	}
-//	for _, ta := range topicsToArticles {
-//		articles = append(articles, ta.Article)
-//	}
-//	return articles, nil
-//}
+func (r *Repository) FindArticlesByTitle(title string) (articles []model.Article, err error) {
+	likeQuery := fmt.Sprintf("%%%s%%", title)
+	if err = r.db.
+		Where("title LIKE ?", likeQuery).
+		Find(&articles).Error; err != nil {
+		return nil, err
+	}
+	return articles, nil
+}
+
+func (r *Repository) GetArticlesExcludingIDs(excludeIDs []int) (model.Articles, error) {
+	var articles model.Articles
+	err := r.db.Not("id", excludeIDs).Find(&articles).Error
+	if err != nil {
+		return nil, err
+	}
+	return articles, nil
+}

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
 	"github.com/labstack/echo"
 	"strconv"
 )
@@ -26,7 +27,7 @@ func (h *Handler) DoFollowSource(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	if err := h.repo.UnfollowTopic(accountId, topicId); err != nil {
 		return c.JSON(400, err.Error())
 	}
@@ -41,7 +42,7 @@ func (h *Handler) UnFollowSource(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	if err := h.repo.UnfollowTopic(accountId, topicId); err != nil {
 		return c.JSON(400, err.Error())
 	}
@@ -52,7 +53,7 @@ func (h *Handler) UnFollowSource(c echo.Context) error {
 }
 
 func (h *Handler) GetFollowingSources(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	souces, err := h.repo.GetFollowingSources(accountId)
 	if err != nil {
 		return c.JSON(400, err.Error())
@@ -68,7 +69,7 @@ func (h *Handler) GetSourceData(c echo.Context) error {
 	return c.JSON(200, souce)
 }
 func (h *Handler) CheckSourceFollow(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	sourceId, err := strconv.Atoi(c.Param("id"))
 	souce, err := h.repo.IsFollowingSource(accountId, sourceId)
 	if err != nil {

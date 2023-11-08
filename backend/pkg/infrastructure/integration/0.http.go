@@ -1,6 +1,7 @@
 package integration
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -20,11 +21,20 @@ const (
 	PUT
 )
 
+type ContentType string
+
+const (
+	JSON      ContentType = "application/json"
+	PLAIN     ContentType = "text/plain"
+	FORM_DATA ContentType = "multipart/form-data"
+)
+
 type HttpClient struct {
 	Client   *http.Client
 	Endpoint string
 	Headers  map[string]string
 	Params   map[string]interface{}
+	Body     io.Reader
 }
 
 func NewHttpClient() *HttpClient {
@@ -33,6 +43,7 @@ func NewHttpClient() *HttpClient {
 		Endpoint: "",
 		Headers:  make(map[string]string),
 		Params:   make(map[string]interface{}),
+		Body:     nil,
 	}
 }
 
@@ -52,6 +63,12 @@ func (h *HttpClient) IsTimeoutError(err error) bool {
 
 func (h *HttpClient) WithBaseURL(baseURL string) *HttpClient {
 	h.Endpoint = baseURL
+	return h
+}
+
+func (h *HttpClient) WithBody(values []byte, content ContentType) *HttpClient {
+	h.Body = bytes.NewReader(values)
+	h.Headers["Content-Type"] = string(content)
 	return h
 }
 
@@ -99,7 +116,7 @@ func (h *HttpClient) ExecuteRequest(method HttpMethod) ([]byte, error) {
 	}
 	client := h.Client
 
-	req, err := http.NewRequest(methodName, h.Endpoint, nil)
+	req, err := http.NewRequest(methodName, h.Endpoint, h.Body)
 	if err != nil {
 		return nil, err
 	}

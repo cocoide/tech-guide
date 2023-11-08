@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
 	"strconv"
 	"time"
 
@@ -25,7 +26,7 @@ func (h *Handler) GetContributions(c echo.Context) error {
 
 func (h *Handler) GetReadArticle(c echo.Context) error {
 	var articleIDs []int
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	cacheKey := fmt.Sprintf(key.RecentReads, accountId)
 	sortedSet, err := h.cache.GetAllSortedSet(cacheKey)
 	if err != nil {
@@ -38,14 +39,14 @@ func (h *Handler) GetReadArticle(c echo.Context) error {
 		}
 		articleIDs = append(articleIDs, id)
 	}
-	articles, err := h.repo.GetArticlesByIDs(articleIDs)
+	articles, err := h.repo.GetArticlesByIDs(articleIDs, []string{"Source", "Rating"})
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
 	sortedArticles := make([]model.Article, 0)
 	articleMap := make(map[int]model.Article)
 	for _, article := range articles {
-		articleMap[article.ID] = article
+		articleMap[article.ID] = *article
 	}
 	for _, id := range articleIDs {
 		article, ok := articleMap[id]
@@ -57,7 +58,7 @@ func (h *Handler) GetReadArticle(c echo.Context) error {
 }
 
 func (h *Handler) SetReadArticle(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	if strArticleID := c.QueryParam("article_id"); strArticleID != "" {
 		// 既読記事は一週間保持する
 		timestamp := time.Now().Unix()

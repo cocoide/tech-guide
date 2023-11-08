@@ -19,6 +19,8 @@ type Article struct {
 	Rating       ArticleRating `json:"rating" gorm:"foreignKey:RatingID"`
 }
 
+type Articles []*Article
+
 type Comment struct {
 	ID        int       `json:"id"`
 	Content   string    `json:"content"`
@@ -38,4 +40,12 @@ type ArticleRating struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 	ArticleID    int       `json:"article_id"`
 	Article      *Article  `json:"article" gorm:"foreignKey:ArticleID"`
+}
+
+func (a Articles) IDs() []int {
+	var ids []int
+	for _, v := range a {
+		ids = append(ids, v.ID)
+	}
+	return ids
 }

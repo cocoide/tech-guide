@@ -2,7 +2,8 @@ package repository
 
 import (
 	"context"
-	"github.com/cocoide/tech-guide/pkg/utils"
+	"fmt"
+	"github.com/cocoide/tech-guide/pkg/usecase/parser"
 	"time"
 
 	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
@@ -27,29 +28,30 @@ func GetOrSet[T any](
 	cache CacheRepo,
 	key string, expire time.Duration,
 	callback func(values ...interface{}) (T, error),
-) (*T, error) {
-	strResult, exist, err := cache.Get(key)
+) (T, error) {
+	var result T
+	str, exist, err := cache.Get(key)
 	if err != nil {
-		return nil, err
+		return result, fmt.Errorf("Failed to cache")
 	}
 	if exist {
-		result, err := utils.Deserialize[T](strResult)
+		result, err := parser.Deserialize[T](str)
 		if exist {
-			return nil, err
+			return result, err
 		}
-		return &result, nil
+		return result, nil
 	}
 	// 以下、Cacheが存在しない場合
-	result, err := callback()
+	result, err = callback()
 	if err != nil {
-		return nil, err
+		return result, err
 	}
-	strResult, err = utils.Serialize(result)
+	str, err = parser.Serialize(result)
 	if err != nil {
-		return nil, err
+		return result, err
 	}
-	if err := cache.Set(key, strResult, expire); err != nil {
-		return nil, err
+	if err := cache.Set(key, str, expire); err != nil {
+		return result, err
 	}
-	return &result, nil
+	return result, nil
 }

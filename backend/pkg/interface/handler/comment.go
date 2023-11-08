@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/cocoide/tech-guide/pkg/domain/model"
 	"github.com/cocoide/tech-guide/pkg/domain/model/object"
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
 	"github.com/cocoide/tech-guide/pkg/utils"
 	"github.com/labstack/echo"
 	"log"
@@ -10,7 +11,7 @@ import (
 )
 
 func (h *Handler) AddComment(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	articleID, err := strconv.Atoi(c.Param("articleId"))
 	if err != nil {
 		return c.JSON(400, err.Error())
@@ -35,7 +36,7 @@ func (h *Handler) AddComment(c echo.Context) error {
 }
 
 func (h *Handler) CreateComment(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	type body struct {
 		OriginalURL string `json:"original_url"`
 		Content     string `json:"content"`
@@ -96,7 +97,7 @@ func (h *Handler) CreateComment(c echo.Context) error {
 
 	go func() {
 		<-summarizeDoneCh
-		if err := h.topic.UpsertTopicsByArticleID(createdArticleID); err != nil {
+		if err := h.topic.UpsertTopicToArticlesByArticleID(createdArticleID); err != nil {
 			topicAssignErrCh <- err
 		}
 	}()

@@ -2,9 +2,18 @@ package handler
 
 import (
 	"github.com/cocoide/tech-guide/pkg/domain/model"
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
 	"github.com/labstack/echo"
 	"strconv"
 )
+
+func (h *Handler) GetCategories(c echo.Context) error {
+	categories, err := h.repo.GetCategoriesWithTopics()
+	if err != nil {
+		return c.JSON(400, err.Error())
+	}
+	return c.JSON(200, categories)
+}
 
 func (h *Handler) GetPopularTopics(c echo.Context) error {
 	topics, err := h.repo.GetPopularTopics(5)
@@ -15,7 +24,7 @@ func (h *Handler) GetPopularTopics(c echo.Context) error {
 }
 
 func (h *Handler) GetFollowingTopics(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	topics, err := h.repo.GetFollowingTopics(accountId)
 	if err != nil {
 		return c.JSON(400, err.Error())
@@ -28,7 +37,7 @@ func (h *Handler) DoFollowTopic(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	if err := h.repo.DoFollowTopic(accountId, topicId); err != nil {
 		return c.JSON(400, err.Error())
 	}
@@ -39,7 +48,7 @@ func (h *Handler) UnFollowTopic(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	if err := h.repo.UnfollowTopic(accountId, topicId); err != nil {
 		return c.JSON(400, err.Error())
 	}
@@ -53,6 +62,7 @@ func (h *Handler) GetTopics(c echo.Context) error {
 	}
 	return c.JSON(200, topics)
 }
+
 func (h *Handler) CreateTopics(c echo.Context) error {
 	topics := []model.Topic{}
 	if err := c.Bind(&topics); err != nil {
@@ -74,7 +84,7 @@ func (h *Handler) GetTopicData(c echo.Context) error {
 }
 
 func (h *Handler) CheckTopicFollow(c echo.Context) error {
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	topicId, err := strconv.Atoi(c.Param("id"))
 	souce, err := h.repo.IsFollowingTopic(accountId, topicId)
 	if err != nil {

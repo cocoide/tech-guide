@@ -4,11 +4,41 @@ import (
 	"context"
 	"fmt"
 	"github.com/cocoide/tech-guide/pkg/domain/model"
+	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
+	"github.com/cocoide/tech-guide/pkg/usecase/parser"
 	"github.com/labstack/echo"
 	"net/http"
 	"os"
-	"strconv"
 )
+
+func (h *Handler) GetAccountSession(c echo.Context) error {
+	var session dto.AccountSession
+	accountId := ctxutils.GetAccountID(c)
+	sessionKey := fmt.Sprintf("session.%d", accountId)
+	strSession, exist, err := h.cache.Get(sessionKey)
+	if err != nil {
+		return c.JSON(400, err)
+	}
+	if !exist {
+		account, err := h.repo.GetAccountProfile(accountId)
+		if err != nil {
+			return c.JSON(400, err)
+		}
+		session = dto.AccountSession{
+			AccountID:   account.ID,
+			DisplayName: account.DisplayName,
+			AvatarURL:   account.AvatarURL,
+		}
+	}
+	if len(strSession) > 0 {
+		session, err = parser.Deserialize[dto.AccountSession](strSession)
+	}
+	if err != nil {
+		return c.JSON(400, fmt.Sprintf("Failed to deserialized: %v", err))
+	}
+	return c.JSON(200, &session)
+}
 
 func (h *Handler) HandleOAuthLogin(c echo.Context) error {
 	redirectURL, err := h.account.GenerateOAuthRedirectURL(model.Google)
@@ -62,10 +92,7 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 }
 
 func (h *Handler) GetAccountProfile(c echo.Context) error {
-	accountId, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(400, err.Error())
-	}
+	accountId := ctxutils.GetIntFromPath(c)
 	account, err := h.repo.GetAccountProfile(accountId)
 	if err != nil {
 		return c.JSON(400, err.Error())

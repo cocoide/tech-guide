@@ -27,7 +27,7 @@ const (
 )
 
 var (
-	accessTokenExpireAt = time.Now().Add(7 * 24 * time.Hour)
+	accessTokenExpires  = 7 * 24 * time.Hour
 	refreshTokenExpires = 30 * 7 * 24 * time.Hour
 )
 
@@ -57,6 +57,7 @@ func (u *AccountUsecase) Login(email string) (*LoginResponse, error) {
 		return nil, fmt.Errorf("Error account not found")
 	}
 	tokens, err := u.generateTokens(account.ID)
+	log.Print(tokens)
 	if err != nil {
 		return nil, err
 	}
@@ -143,12 +144,12 @@ func (u *AccountUsecase) RefreshToken(refreshToken string) (string, error) {
 	if token != refreshToken {
 		return "", fmt.Errorf("Unauthenticated")
 	}
-	accessToken, err := tknutils.GenerateJwt(accountID, accessTokenExpireAt)
+	accessToken, err := tknutils.GenerateJwt(accountID, time.Now().Add(accessTokenExpires))
 	return accessToken, nil
 }
 
 func (u *AccountUsecase) generateTokens(accountID int) (*GenerateTokensResponse, error) {
-	accessToken, err := tknutils.GenerateJwt(accountID, accessTokenExpireAt)
+	accessToken, err := tknutils.GenerateJwt(accountID, time.Now().Add(accessTokenExpires))
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
 	"github.com/labstack/echo"
 	"strconv"
 )
@@ -10,7 +11,7 @@ func (h *Handler) DoFavoriteArticle(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	if err := h.repo.DoFavoriteArticle(accountId, articleId); err != nil {
 		return c.JSON(400, err.Error())
 	}
@@ -22,7 +23,7 @@ func (h *Handler) UnFavoriteArticle(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	accountId := int(c.Get("account_id").(float64))
+	accountId := ctxutils.GetAccountID(c)
 	if err := h.repo.UnFavoriteArticle(accountId, articleId); err != nil {
 		return c.JSON(400, err.Error())
 	}
