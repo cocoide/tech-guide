@@ -8,10 +8,6 @@ export type Header = {
 type MakeArticle=Pick<Article,"original_url">
 
 export const articleAPI = {
-    async getLatestArticles() {
-        const res = await api.get<Article[]>("/article", 60)
-        return res.data
-    },
     async createArticle(article: MakeArticle) {
         return await api.pos("/article", article)
     },
@@ -40,9 +36,12 @@ export const articleAPI = {
     async GetHeaders(url?: string) {
         return await api.get<Header[]>(`/scraper/header`, "reload")
     },
-    async GetArticlesByPagination(page: number){
-        const { data } = await api.get<Article[]>(`/article?page=${page} `, "no-store")
+    async GetLatestArticlesByPagination(page: number) {
+        const { data } = await api.get<Article[]>(`/article?page=${page} `, 60 * 60 * 24)
         return data
+    },
+    async GetTrendArticles() {
+        return await api.get<Article[]>("/article/trend", 60)
     },
     async GetFeedsByPagination(page: number, token?: string) {
         const { data, error } = await api.get<Article[]>(`/account/feeds?page=${page}`, "no-store", token)

@@ -1,10 +1,8 @@
 'use server'
 
 import { api } from '@/app/_functions/API';
-import { serverAuthFunc } from '@/app/_server_actions/auth';
 import { Article } from '@/types/model';
-import {cookies} from "next/headers";
-import {decodeJwt, refreshAccessToken} from "@/utils/jwt";
+import { cookies } from "next/headers";
 
 export async function FetchFeed(page = 1): Promise<Article[]> {
     "use server"
