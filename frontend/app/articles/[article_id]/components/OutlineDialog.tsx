@@ -11,18 +11,18 @@ import remarkGfm from 'remark-gfm'
 
 const OutlineDialog = () => {
     const [dialogState, _] = useAtom(outlineDialogAtom)
-    const { data: overview, isLoading, isFetching } = useQuery({
+    const { data: overview, isLoading, isRefetching } = useQuery({
         queryFn: async () => (await articleAPI.GetOverview(dialogState)).data,
         queryKey: [`article_outline.${dialogState}`],
         enabled: typeof dialogState !== 'boolean',
     })
     return (
-        <CustomDialog layout='my-[100px] bg-white z-50 sm:mx-[15%] md:my-[80px] md:mx-[20%] lg:mx-[25%] sm:rounded-xl overflow-y-hidden'
+        <CustomDialog layout='my-[100px] bg-white z-50 sm:mx-[15%] md:my-[80px] md:mx-[20%] lg:mx-[25%] sm:rounded-xl'
             openAtom={outlineDialogAtom}
             content={
-                <div className="relative flex flex-col  p-2 space-y-2 ">
+                <div className="relative flex flex-col  p-2 space-y-2 overflow-y-hidden h-full w-full">
                     <div className="text-gray-500">Outlines</div>
-                    {isLoading && isFetching ?
+                    {isLoading && isRefetching ?
                         <OutlineLoader />
                         :
                         overview &&
