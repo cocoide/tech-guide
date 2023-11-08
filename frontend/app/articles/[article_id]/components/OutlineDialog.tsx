@@ -22,10 +22,10 @@ const OutlineDialog = () => {
             content={
                 <div className="relative flex flex-col  p-2 space-y-2 ">
                     <div className="text-gray-500">Outlines</div>
-                    {isLoading ?
+                    {isLoading && isFetching ?
                         <OutlineLoader />
                         :
-                        overview && isFetching &&
+                        overview &&
                         <ReactMarkdown remarkPlugins={[remarkGfm]} className='markdown'
                         >{overview}</ReactMarkdown>
                     }
