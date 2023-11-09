@@ -11,15 +11,12 @@ const SectionHeaderButtonGroup = () => {
     const router = useRouter()
     function handleLatest() {
         router.push('/')
-        router.refresh()
     }
     function handleTrend() {
         router.push('/?order=trend')
-        router.refresh()
     }
     function handleDiscuss() {
         router.push('/?order=discuss')
-        router.refresh()
     }
     return (
         <WStack centerX={true} className='space-x-3 w-full'>
