@@ -29,6 +29,15 @@ func NewArticleUsecase(nlp service.NLPService, cache repository.CacheRepo, repo 
 	return &ArticleUsecase{nlp: nlp, cache: cache, repo: repo}
 }
 
+func (u *ArticleUsecase) GetDiscussArticles() (model.Articles, error) {
+	params := &repository.ListArticlesParams{
+		OrderBy:  repository.Discuss,
+		Limit:    FeedsLimit,
+		Preloads: []string{"Source", "Rating"},
+	}
+	return u.repo.ListArticles(params)
+}
+
 func (u *ArticleUsecase) GetTrendArticles() (model.Articles, error) {
 	params := &repository.ListArticlesParams{
 		OrderBy:  repository.Trend,

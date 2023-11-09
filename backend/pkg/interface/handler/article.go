@@ -21,6 +21,14 @@ const (
 	paginateLimit = 6
 )
 
+func (h *Handler) GetDiscussArticles(c echo.Context) error {
+	articles, err := h.article.GetDiscussArticles()
+	if err != nil {
+		return c.JSON(500, err)
+	}
+	return c.JSON(200, articles)
+}
+
 func (h *Handler) GetTrendArticles(c echo.Context) error {
 	articles, err := h.article.GetTrendArticles()
 	if err != nil {

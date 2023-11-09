@@ -52,4 +52,5 @@ const (
 	Latest OrderByType = iota + 1
 	Older
 	Trend
+	Discuss
 )

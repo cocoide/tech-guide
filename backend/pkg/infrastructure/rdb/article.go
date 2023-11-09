@@ -80,10 +80,20 @@ func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articl
 		query = query.
 			Joins("LEFT JOIN (?) as rating ON rating.article_id = articles.id", ratingSubQuery).
 			Order("rating.total_stocks DESC")
+
+	case repo.Discuss:
+		discussCountSubQuery := r.db.Model(&model.Comment{}).
+			Select("article_id, COUNT(*) as comment_count").
+			Group("article_id").
+			Having("COUNT(*) >= ?", 1)
+
+		query = query.
+			Joins("LEFT JOIN (?) as comment_count ON comment_count.article_id = articles.id", discussCountSubQuery).
+			Order("comment_count.comment_count DESC")
 	default:
-		// Default: NoOrder
+		// Default is no order
 	}
-	if err := query.Find(&articles).Error; err != nil {
+	if err := query.Scan(&articles).Error; err != nil {
 		return nil, err
 	}
 	return articles, nil
