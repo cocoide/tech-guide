@@ -41,7 +41,10 @@ export const articleAPI = {
         return data
     },
     async GetTrendArticles() {
-        return await api.get<Article[]>("/article/trend", 60)
+        return await api.get<Article[]>("/article/trend", 60 * 60 * 24)
+    },
+    async GetDiscussArticles() {
+        return await api.get<Article[]>("/article/discuss", 60 * 60 * 24)
     },
     async GetFeedsByPagination(page: number, token?: string) {
         const { data, error } = await api.get<Article[]>(`/account/feeds?page=${page}`, "no-store", token)

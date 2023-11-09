@@ -1,8 +1,9 @@
 import { Suspense } from 'react'
 import ToggleDarkModeButton from '../_components/layouts/button/ToggleDarkModeButton'
 import SectionHeader from '../_components/layouts/desktop/SectionHeader'
-import TrendArticlesLoader from '../_components/loaders/TrendArticlesLoader'
+import ArticlesContainerLoader from '../_components/loaders/ArticlesContainerLoader'
 import SectionHeaderButtonGroup from './_components/SectionHeaderButtonGroup'
+import DiscussArticleContainer from './_containers/DiscussArticlesContainer'
 import LatestArticleContainer from './_containers/LatestArticleContainer'
 import TrendArticleContainer from './_containers/TrendArticleContainer'
 interface Props {
@@ -19,10 +20,15 @@ export default async function ArticlePage({ searchParams }: Props) {
                     rightItem={<ToggleDarkModeButton />} />
             </div>
             {order === "trend" ?
-                <Suspense fallback={<TrendArticlesLoader />}>
+                <Suspense fallback={<ArticlesContainerLoader />}>
                     <TrendArticleContainer />
                 </Suspense>
                 :
+                order === "discuss" ?
+                    <Suspense fallback={<ArticlesContainerLoader />}>
+                        <DiscussArticleContainer />
+                    </Suspense>
+                    :
                 <LatestArticleContainer />
             }
         </div>
