@@ -25,7 +25,6 @@ type ArticleRepo interface {
 	UpdateSummaryByID(id int, summary string) error
 	BatchGetArticlesByTopicIDsAndSourceID(topicIDs, sourceIDs []int, pageIndex, pageSize int) (model.Articles, error)
 	ListArticles(params *ListArticlesParams) (model.Articles, error)
-	ListArticleIDs(params *ListArticlesParams) ([]int, error)
 	GetArticlesBySourceID(sourceID, pageIndex, pageSize int) ([]model.Article, error)
 	GetArticlesByTopicID(topicID, pageIndex, pageSize int) ([]model.Article, error)
 	FindArticlesByTitle(title string) ([]model.Article, error)
@@ -33,12 +32,11 @@ type ArticleRepo interface {
 }
 
 type ListArticlesParams struct {
-	TopicIDs  []int
-	SourceIDs []int
-	Limit     int // default 50
-	OrderBy   OrderByType
-	Preloads  []string
-	Duration  Duration
+	OrderBy        OrderByType
+	Preloads       []string
+	Duration       Duration
+	FeedOption     FeedOption
+	PaginateOption PaginateOption
 }
 
 type Duration struct {
@@ -54,3 +52,14 @@ const (
 	Trend
 	Discuss
 )
+
+type FeedOption struct {
+	AccountID      int
+	IsFollowTopic  bool
+	IsFollowDomain bool
+}
+
+type PaginateOption struct {
+	PageIndex int
+	PageSize  int
+}

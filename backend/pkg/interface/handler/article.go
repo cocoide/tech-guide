@@ -22,7 +22,8 @@ const (
 )
 
 func (h *Handler) GetDiscussArticles(c echo.Context) error {
-	articles, err := h.article.GetDiscussArticles()
+	pageIndex, err := ctxutils.NewPaginateIndex(c)
+	articles, err := h.article.GetDiscussArticlesWithPaginate(pageIndex)
 	if err != nil {
 		return c.JSON(500, err)
 	}
@@ -30,7 +31,8 @@ func (h *Handler) GetDiscussArticles(c echo.Context) error {
 }
 
 func (h *Handler) GetTrendArticles(c echo.Context) error {
-	articles, err := h.article.GetTrendArticles()
+	pageIndex, err := ctxutils.NewPaginateIndex(c)
+	articles, err := h.article.GetTrendArticlesWithPaginate(pageIndex)
 	if err != nil {
 		return c.JSON(500, err)
 	}
@@ -43,7 +45,7 @@ func (h *Handler) GetFeedsWithPaginate(c echo.Context) error {
 	if err != nil {
 		return c.JSON(500, err)
 	}
-	articles, err := h.article.GetFeedsWithCache(accountId, pageIndex)
+	articles, err := h.article.GetFeedArticlesWithPaginate(accountId, pageIndex)
 	if err != nil {
 		return c.JSON(500, err)
 	}

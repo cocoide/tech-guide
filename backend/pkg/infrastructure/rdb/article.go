@@ -3,43 +3,9 @@ package rdb
 import (
 	"errors"
 	"fmt"
-	repo "github.com/cocoide/tech-guide/pkg/domain/repository"
-	"log"
-
 	"github.com/cocoide/tech-guide/pkg/domain/model"
+	repo "github.com/cocoide/tech-guide/pkg/domain/repository"
 )
-
-func (r *Repository) ListArticleIDs(params *repo.ListArticlesParams) ([]int, error) {
-	var articleIDs []int
-	query := r.db.Model(&model.Article{}).Select("articles.id")
-
-	if len(params.SourceIDs) > 0 {
-		query = query.Where("source_id IN (?)", params.SourceIDs)
-	}
-	if len(params.TopicIDs) > 0 {
-		query = query.Joins("JOIN topics_to_articles ON articles.id = topics_to_articles.article_id").
-			Where("topics_to_articles.topic_id IN (?)", params.TopicIDs)
-	}
-	limit := 50 // Default
-	if params.Limit != 0 {
-		limit = params.Limit
-	}
-	query = query.Limit(limit)
-	switch params.OrderBy {
-	case repo.Latest:
-		query = query.Order("articles.created_at desc")
-	case repo.Older:
-		query = query.Order("articles.created_at asc")
-	default:
-		// Default: NoOrder
-	}
-	log.Print(query)
-	if err := query.Pluck("articles.id", &articleIDs).Error; err != nil {
-		return nil, err
-	}
-	log.Print(articleIDs)
-	return articleIDs, nil
-}
 
 func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articles, error) {
 	var articles model.Articles
@@ -48,12 +14,19 @@ func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articl
 	for _, v := range params.Preloads {
 		query = query.Preload(v)
 	}
-	if len(params.SourceIDs) > 0 {
-		query = query.Where("source_id IN (?)", params.SourceIDs)
-	}
-	if len(params.TopicIDs) > 0 {
-		query = query.Joins("JOIN topics_to_articles ON articles.id = topics_to_articles.article_id").
-			Where("topics_to_articles.topic_id IN (?)", params.TopicIDs)
+	if params.FeedOption.AccountID != 0 {
+		query = query.Group("articles.id")
+		if params.FeedOption.IsFollowTopic {
+			query = query.
+				Joins("JOIN topics_to_articles ON topics_to_articles.article_id = articles.id").
+				Joins("JOIN follow_topics ON follow_topics.topic_id = topics_to_articles.topic_id").
+				Where("follow_topics.account_id = ?", params.FeedOption.AccountID)
+		}
+		if params.FeedOption.IsFollowDomain {
+			query = query.
+				Joins("JOIN follow_sources ON follow_sources.source_id = articles.source_id").
+				Where("follow_sources.account_id = ?", params.FeedOption.AccountID)
+		}
 	}
 	if !params.Duration.Start.IsZero() && !params.Duration.End.IsZero() {
 		query = query.Where("created_at BETWEEN ? AND ?", params.Duration.Start, params.Duration.End)
@@ -62,11 +35,12 @@ func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articl
 	} else if !params.Duration.End.IsZero() {
 		query = query.Where("created_at <= ?", params.Duration.End)
 	}
-	limit := 50 // Default
-	if params.Limit != 0 {
-		limit = params.Limit
+
+	if params.PaginateOption.PageIndex != 0 {
+		query = query.Offset((params.PaginateOption.PageIndex - 1) * params.PaginateOption.PageSize).
+			Limit(params.PaginateOption.PageSize)
 	}
-	query = query.Limit(limit)
+
 	switch params.OrderBy {
 	case repo.Latest:
 		query = query.Order("created_at desc")
