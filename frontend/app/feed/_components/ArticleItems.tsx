@@ -6,16 +6,16 @@ import { Article } from '@/types/model';
 import * as React from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
-type ItemsProps = {
-    initialItems: Article[];
-    fetchItems: (page?: number) => Promise<Article[]>;
+interface Props {
+    articles: Article[];
+    fetchFunc: (page?: number) => Promise<Article[]>;
 };
 
-const paginateLimit = 6
+const paginateLimit = 12
 
-export default function FeedItems({ initialItems, fetchItems }: ItemsProps) {
+export default function ArticleItems({ articles, fetchFunc }: Props) {
     const fetching = React.useRef(false);
-    const [pages, setPages] = React.useState([initialItems]);
+    const [pages, setPages] = React.useState([articles]);
     const [hasMoreItems, setHasMoreItems] = React.useState(true);
     const items = pages.flatMap((page) => page);
 
@@ -24,7 +24,7 @@ export default function FeedItems({ initialItems, fetchItems }: ItemsProps) {
             try {
                 fetching.current = true;
 
-                const data = await fetchItems(page);
+                const data = await fetchFunc(page);
 
                 if (data.length < paginateLimit) {
                     setHasMoreItems(false);
