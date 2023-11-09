@@ -21,6 +21,15 @@ const (
 	paginateLimit = 6
 )
 
+func (h *Handler) GetLatestArticles(c echo.Context) error {
+	pageIndex, err := ctxutils.NewPaginateIndex(c)
+	articles, err := h.article.GetLatestArticlesWithPaginate(pageIndex)
+	if err != nil {
+		return c.JSON(500, err)
+	}
+	return c.JSON(200, articles)
+}
+
 func (h *Handler) GetDiscussArticles(c echo.Context) error {
 	pageIndex, err := ctxutils.NewPaginateIndex(c)
 	articles, err := h.article.GetDiscussArticlesWithPaginate(pageIndex)
@@ -171,21 +180,6 @@ func (h *Handler) GetSpeakerDeckID(c echo.Context) error {
 	}
 	h.cache.Set(getSpeakerDeckCacheKey(id), result, 30*24*time.Hour)
 	return c.JSON(200, result)
-}
-
-func (h *Handler) GetArticles(c echo.Context) error {
-	strPageIndex := c.QueryParam("page")
-	var pageIndex int
-	if strPageIndex == "" {
-		pageIndex = 1
-	} else {
-		pageIndex, _ = strconv.Atoi(strPageIndex)
-	}
-	articles, err := h.repo.GetLatestArticleByLimitWithSourceData(pageIndex, paginateLimit)
-	if err != nil {
-		return c.JSON(400, err.Error())
-	}
-	return c.JSON(200, articles)
 }
 
 func (h *Handler) GetArticleDetail(c echo.Context) error {

@@ -11,9 +11,6 @@ func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articl
 	var articles model.Articles
 	query := r.db.Model(&model.Article{})
 
-	for _, v := range params.Preloads {
-		query = query.Preload(v)
-	}
 	if params.FeedOption.AccountID != 0 {
 		query = query.Group("articles.id")
 		if params.FeedOption.IsFollowTopic {
@@ -67,7 +64,10 @@ func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articl
 	default:
 		// Default is no order
 	}
-	if err := query.Scan(&articles).Error; err != nil {
+	for _, v := range params.Preloads {
+		query = query.Preload(v)
+	}
+	if err := query.Find(&articles).Error; err != nil {
 		return nil, err
 	}
 	return articles, nil
