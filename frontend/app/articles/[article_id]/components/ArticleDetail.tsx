@@ -1,11 +1,13 @@
 "use client"
 import YouTubeEmbed from '@/app/(home)/_components/YoutubeEmbed';
+import SpeakerDeckEmbed from '@/app/_components/layouts/SpeakerDeckEmbed';
 import { articleAPI } from '@/app/_functions/article';
 import { useAuth } from '@/hooks/useAuth';
 import { collectionDialogAtom, loginDialogAtom, outlineDialogAtom } from '@/stores/dialog';
 import { Article } from '@/types/model';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { toast } from 'react-hot-toast';
 
 export default function ArticleDetail({ article }: { article: Article }) {
@@ -39,7 +41,15 @@ export default function ArticleDetail({ article }: { article: Article }) {
         shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
         p-5  flex flex-col lg:flex-row items-center
         space-y-3 lg:space-x-3">
-            {youtube_id ?
+            {article.source.domain === "speakerdeck.com" ?
+                <Suspense fallback={
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={article.thumbnail_url} alt={article.title} width={500}
+                        className='w-full h-auto lg:w-[50%] rounded-md custom-border' />}>
+                    <SpeakerDeckEmbed url={article.original_url} />
+                </Suspense>
+                :
+                youtube_id ?
                 <YouTubeEmbed youtube_id={youtube_id} />
                 :
                 article?.thumbnail_url &&
