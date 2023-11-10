@@ -40,7 +40,7 @@ export default function ArticleDetail({ article }: { article: Article }) {
         p-5  flex flex-col lg:flex-row items-center
         space-y-3 lg:space-x-3">
             {youtube_id ?
-                <YouTubeEmbed youtube_id={youtube_id} width_style='lg:w-[50%]' />
+                <YouTubeEmbed youtube_id={youtube_id} />
                 :
                 article?.thumbnail_url &&
                 // eslint-disable-next-line @next/next/no-img-element
