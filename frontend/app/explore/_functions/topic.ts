@@ -6,7 +6,7 @@ type Topic={
 }
 
 export const topicAPI ={
-    async GetAllTopics(){
-        return await api.get<Topic[]>('/topic')
+    async GetPopularTopics() {
+        return await api.get<Topic[]>('/topic/popular')
     }
 }

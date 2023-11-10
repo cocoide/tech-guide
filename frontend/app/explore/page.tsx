@@ -5,7 +5,7 @@ import SearchSection from './_components/SearchSectioin';
 import { topicAPI } from './_functions/topic';
 
 export default async function ExplorePage() {
-    const { data: topics } = await topicAPI.GetAllTopics()
+    const { data: topics } = await topicAPI.GetPopularTopics()
     const { data: sources } = await sourceAPI.GetAllSources()
     return (
         <div className="flex flex-col space-y-10 w-full p-10">
