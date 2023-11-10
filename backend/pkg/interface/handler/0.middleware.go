@@ -6,7 +6,6 @@ import (
 	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
 	"github.com/cocoide/tech-guide/pkg/usecase/tknutils"
 	"github.com/labstack/echo"
-	"log"
 	"strings"
 )
 
@@ -21,7 +20,6 @@ func (h *Handler) AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(403, fmt.Sprintf("Failed to parse accessToken: %v", err))
 		}
-		log.Print(claims)
 		ctxutils.SetInEchoCtx(c, key.CtxAccountID, claims.AccountID)
 		return next(c)
 	}

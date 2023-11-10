@@ -1,11 +1,14 @@
 package integration
 
 import (
+	"errors"
 	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
 	"github.com/cocoide/tech-guide/pkg/domain/service"
 	"github.com/dyatlov/go-opengraph/opengraph"
 	"io"
+	"log"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -25,6 +28,13 @@ func (s *ogpService) GetOGPByURL(url string) (*dto.OGPResponse, error) {
 	}
 	resp, err := s.client.Do(req)
 	if err != nil {
+		if isTimeoutError(err) {
+			log.Printf("Error ogp reqest timeout: %v", err)
+			return &dto.OGPResponse{
+				URL:       url,
+				Thumbnail: "",
+			}, nil
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -45,6 +55,7 @@ func (s *ogpService) GetOGPByURL(url string) (*dto.OGPResponse, error) {
 		}
 	}
 	result := &dto.OGPResponse{
+		URL:         ogp.URL,
 		Title:       ogp.Title,
 		Thumbnail:   thumbnail,
 		Sitename:    ogp.SiteName,
@@ -61,6 +72,14 @@ func isImageValid(imagePath string) bool {
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusOK {
 		return true
+	}
+	return false
+}
+
+func isTimeoutError(err error) bool {
+	var urlErr *url.Error
+	if errors.As(err, &urlErr) {
+		return urlErr.Timeout()
 	}
 	return false
 }

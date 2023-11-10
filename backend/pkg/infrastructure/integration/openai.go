@@ -7,6 +7,10 @@ import (
 	"os"
 )
 
+const (
+	variability = 0.01
+)
+
 type openAIService struct {
 	client *openai.Client
 }
@@ -17,7 +21,7 @@ func NewNLPService() service.NLPService {
 	return &openAIService{client: client}
 }
 
-func (s *openAIService) GetAnswerFromPrompt(prompt string, variability float32) (string, error) {
+func (s *openAIService) GetAnswerFromPrompt(prompt string) (string, error) {
 	ctx := context.Background()
 	req := openai.ChatCompletionRequest{
 		Model: openai.GPT3Dot5Turbo,
@@ -37,11 +41,11 @@ func (s *openAIService) GetAnswerFromPrompt(prompt string, variability float32) 
 	return answer, nil
 }
 
-func (s *openAIService) AsyncGetAnswerFromPrompt(prompt string, variability float32) <-chan string {
+func (s *openAIService) AsyncGetAnswerFromPrompt(prompt string) <-chan string {
 	responseCh := make(chan string, 1)
 
 	go func() {
-		answer, _ := s.GetAnswerFromPrompt(prompt, variability)
+		answer, _ := s.GetAnswerFromPrompt(prompt)
 		responseCh <- answer
 	}()
 

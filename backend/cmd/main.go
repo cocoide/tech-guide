@@ -23,7 +23,7 @@ func main() {
 	conf.NewEnv()
 	ctx := context.Background()
 
-	gorm := database.NewGormDatabase()
+	gorm := database.NewGormClient()
 	redis := database.NewRedisCilent(ctx)
 
 	cache := cacheRepo.NewRepository(redis, ctx)
@@ -33,18 +33,21 @@ func main() {
 	ogp := integration.NewOGPService()
 	feed := integration.NewTechFeedService()
 	git := integration.NewGithubService()
+	tweet := integration.NewTwitterService()
+	scraper := integration.NewScrapingService()
 
-	account := usecase.NewAccountUsecase(repo)
+	topic := usecase.NewTopicUsecase(repo, nlp, scraper)
+	account := usecase.NewAccountUsecase(repo, cache)
 	activity := usecase.NewActivityUsecase(cache)
-	article := usecase.NewArticleUsecase(nlp, repo)
+	article := usecase.NewArticleUsecase(nlp, cache, repo)
 	personalize := usecase.NewPersonalizeUsecase(repo, cache)
 	scraping := usecase.NewScrapingUsecase(nlp, ogp)
 
-	rootHandler := handler.NewHandler(repo, cache, nlp, ogp, feed, git, account, article, personalize, activity, scraping)
+	rootHandler := handler.NewHandler(repo, cache, nlp, ogp, feed, git, tweet, scraper, account, article, personalize, activity, scraping, topic)
 	router.NewRootRouter(e, rootHandler)
 
 	sp := scheduler.NewSchedulerPool()
-	tw := scheduler.NewTimelineWorker(repo, cache, activity, feed, personalize)
+	tw := scheduler.NewTimelineWorker(repo, cache, activity, feed, ogp, personalize)
 	scheduler.NewAsyncJobRunner(sp, tw)
 
 	e.Logger.Fatal(e.Start(":8080"))
