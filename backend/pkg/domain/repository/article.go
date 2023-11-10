@@ -8,7 +8,6 @@ import (
 //go:generate mockgen -source=article.go -destination=../../../mock/repository/article.go
 type ArticleRepo interface {
 	CreateArticle(article *model.Article) (int, error)
-	GetArticleIDByURL(url string) (int, error)
 	CheckArticleExistsByURL(url string) (bool, error)
 	BatchCreate(articles []*model.Article) ([]int, error)
 	CreateTopicToArticle(topicToArticles []model.TopicsToArticles) error
@@ -32,7 +31,7 @@ type ArticleRepo interface {
 }
 
 type ListArticlesParams struct {
-	OrderBy        OrderByType
+	OrderBy        ArticleOrderType
 	Preloads       []string
 	Duration       Duration
 	FeedOption     FeedOption
@@ -44,10 +43,10 @@ type Duration struct {
 	End   time.Time
 }
 
-type OrderByType int
+type ArticleOrderType int
 
 const (
-	Latest OrderByType = iota + 1
+	Latest ArticleOrderType = iota + 1
 	Older
 	Trend
 	Discuss

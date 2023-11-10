@@ -1,12 +1,40 @@
 package rdb
 
 import (
+	repo "github.com/cocoide/tech-guide/pkg/domain/repository"
 	"log"
 	"time"
 
 	"github.com/cocoide/tech-guide/pkg/domain/model"
 	"gorm.io/gorm"
 )
+
+const (
+	CacheFollowTopicIDs = "follow_topic_ids"
+)
+
+func (r *Repository) ListTopics(params *repo.ListTopicsParams) (model.Topics, error) {
+	var topics model.Topics
+	query := r.db.Model(&model.Topic{})
+
+	if params.MinHasArticlesCount > 0 {
+		query = query.Where("EXISTS (SELECT 1 FROM topics_to_articles WHERE topics_to_articles.topic_id = topics.id GROUP BY topics_to_articles.topic_id HAVING COUNT(topics_to_articles.article_id) >= ?)", params.MinHasArticlesCount)
+	}
+
+	if params.OrderBy == repo.Follow {
+		followCountSubQuery := r.db.Model(&model.FollowTopic{}).
+			Select("topic_id, COUNT(*) as follow_count").
+			Group("topic_id")
+
+		query = query.
+			Joins("LEFT JOIN (?) as follow_count ON follow_count.topic_id = topics.id", followCountSubQuery).
+			Order("follow_count.follow_count DESC")
+	}
+	if err := query.Find(&topics).Error; err != nil {
+		return nil, err
+	}
+	return topics, nil
+}
 
 func (r *Repository) GetCategoriesWithTopics() ([]model.Category, error) {
 	var categories []model.Category

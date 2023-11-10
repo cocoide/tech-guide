@@ -73,15 +73,6 @@ func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articl
 	return articles, nil
 }
 
-func (r *Repository) GetArticleIDByURL(url string) (int, error) {
-	var id int
-	err := r.db.Model(&model.Article{}).Where("original_url = ?", url).Pluck("id", &id).Error
-	if err != nil {
-		return 0, err
-	}
-	return id, nil
-}
-
 func (r *Repository) UpdateSummaryByID(id int, summary string) error {
 	if err := r.db.Model(&model.Article{}).Where("id = ?", id).Update("summary", summary).Error; err != nil {
 		return err

@@ -16,7 +16,7 @@ func (h *Handler) GetCategories(c echo.Context) error {
 }
 
 func (h *Handler) GetPopularTopics(c echo.Context) error {
-	topics, err := h.repo.GetPopularTopics(5)
+	topics, err := h.topic.ListPopularTopics()
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}

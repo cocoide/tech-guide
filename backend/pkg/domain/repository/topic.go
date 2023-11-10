@@ -14,6 +14,7 @@ type TopicRepo interface {
 	GetFollowingTopics(accountId int) ([]model.Topic, error)
 	CreateTopics(topics []model.Topic) error
 	GetAllTopics() ([]model.Topic, error)
+	ListTopics(params *ListTopicsParams) (model.Topics, error)
 	GetTopicsByCategoryIDs(categoryIds []int) ([]model.Topic, error)
 	GetTopicToArticleArrayByArticleID(articleID int) ([]model.TopicsToArticles, error)
 	GetTopicsByIDs(IDs []int) ([]model.Topic, error)
@@ -26,3 +27,14 @@ type TopicRepo interface {
 	GetCategoriesWithTopics() ([]model.Category, error)
 	GetCategories() ([]model.Category, error)
 }
+
+type ListTopicsParams struct {
+	MinHasArticlesCount int
+	OrderBy             TopicOrderType
+}
+
+type TopicOrderType int
+
+const (
+	Follow TopicOrderType = iota + 1
+)

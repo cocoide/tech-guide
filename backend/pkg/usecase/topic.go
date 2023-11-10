@@ -1,14 +1,13 @@
 package usecase
 
 import (
-	"log"
-	"strconv"
-	"strings"
-
 	"github.com/cocoide/tech-guide/conf"
 	"github.com/cocoide/tech-guide/pkg/domain/model"
 	"github.com/cocoide/tech-guide/pkg/domain/repository"
 	"github.com/cocoide/tech-guide/pkg/domain/service"
+	"log"
+	"strconv"
+	"strings"
 )
 
 type topicUsecaseRepo interface {
@@ -24,6 +23,14 @@ type TopicUsecase struct {
 
 func NewTopicUsecase(repo topicUsecaseRepo, nlp service.NLPService, scraper service.ScrapingService) *TopicUsecase {
 	return &TopicUsecase{repo: repo, nlp: nlp, scraper: scraper}
+}
+
+func (u *TopicUsecase) ListPopularTopics() (model.Topics, error) {
+	params := &repository.ListTopicsParams{
+		MinHasArticlesCount: 1,
+		OrderBy:             repository.Follow,
+	}
+	return u.repo.ListTopics(params)
 }
 
 func (u *TopicUsecase) extractTopicToArticlesByArticleID(articleID int) ([]model.TopicsToArticles, error) {
