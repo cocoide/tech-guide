@@ -5,7 +5,7 @@ export default async function SpeakerDeckEmbed({ url }: { url: string }) {
     return (
         <>
             <iframe
-                className='w-[350px] md:w-[400px]  h-[250px] md:h-[300px] lg:h-[400px] lg:w-[550px] rounded-xl bg-gray-100'
+                className='w-[350px] md:w-[400px]  h-[250px] md:h-[300px]  lg:w-[550px] rounded-xl bg-gray-100'
                 width="400"
                 height="300"
                 src={`//speakerdeck.com/player/${id}`}
