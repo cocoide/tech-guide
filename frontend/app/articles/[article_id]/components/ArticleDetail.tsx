@@ -50,7 +50,12 @@ export default function ArticleDetail({ article }: { article: Article }) {
                 </Suspense>
                 :
                 youtube_id ?
+                    <Suspense fallback={
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={article.thumbnail_url} alt={article.title} width={500}
+                            className='w-full h-auto lg:w-[50%] rounded-md custom-border' />}>
                 <YouTubeEmbed youtube_id={youtube_id} />
+                    </Suspense>
                 :
                 article?.thumbnail_url &&
                 // eslint-disable-next-line @next/next/no-img-element
