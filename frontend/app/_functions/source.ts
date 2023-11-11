@@ -3,7 +3,7 @@ import { api } from './API';
 
 export const sourceAPI ={
     async GetSourceData(sourceID: number){
-        return api.get<Source>(`/source/${sourceID}`,"no-store");
+        return api.get<Source>(`/source/${sourceID}`);
     },
     async CheckFollow(sourceID: number,token?:string){
         return api.get<boolean>(`/account/source/follow/${sourceID}`,"no-store",token);

@@ -8,12 +8,13 @@ import InfiniteScroll from "react-infinite-scroller";
 
 interface Props {
     articles: Article[];
-    fetchFunc: (page?: number) => Promise<Article[]>;
+    fetchFunc: (page?: number, filterID?: number) => Promise<Article[]>;
+    filterID?: number;
 };
 
 const paginateLimit = 12
 
-export default function ArticleItems({ articles, fetchFunc }: Props) {
+export default function ArticleItems({ articles, fetchFunc, filterID }: Props) {
     const fetching = React.useRef(false);
     const [pages, setPages] = React.useState([articles]);
     const [hasMoreItems, setHasMoreItems] = React.useState(true);
@@ -24,7 +25,7 @@ export default function ArticleItems({ articles, fetchFunc }: Props) {
             try {
                 fetching.current = true;
 
-                const data = await fetchFunc(page);
+                const data = await fetchFunc(page, filterID);
 
                 if (data.length < paginateLimit) {
                     setHasMoreItems(false);
