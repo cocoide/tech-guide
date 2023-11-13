@@ -2,7 +2,7 @@
 import { useAuth } from '@/hooks/useAuth'
 import { useSession } from '@/hooks/useSession'
 import { loginDialogAtom, postDialogAtom } from '@/stores/dialog'
-import { BookmarkIcon, HomeIcon, MagnifyingGlassIcon, NewspaperIcon, PlusCircleIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import { ChatBubbleOvalLeftEllipsisIcon, FireIcon, HomeIcon, MagnifyingGlassIcon, MegaphoneIcon, NewspaperIcon, PlusCircleIcon, StarIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,10 +14,13 @@ const LeftSideVar = () => {
     const { status } = useAuth()
     const session = useSession()
     const SideVarList = [
-        { label: "ホーム", href: "/", icon: <HomeIcon className='h-7 w-7' />, isLogin: false },
-        { label: "フィード", href: "/feed", icon: <NewspaperIcon className='h-7 w-7' />, isLogin: true },
-        { label: "保存リスト", href: `/accounts/${session.account_id}/collections`, icon: <BookmarkIcon className='h-7 w-7' />, isLogin: true },
-        { label: "検索", href: "/explore", icon: <MagnifyingGlassIcon className='h-7 w-7' />, isLogin: false },
+        { label: "Latest", href: "/", icon: <HomeIcon className='h-7 w-7' />, isLogin: false },
+        { label: "Trend", href: "/order?=trend", icon: <FireIcon className='h-7 w-7' />, isLogin: false },
+        { label: "Discuss", href: "/order?=discuss", icon: <ChatBubbleOvalLeftEllipsisIcon className='h-7 w-7' />, isLogin: false },
+        { label: "Custom", href: "/feed", icon: <NewspaperIcon className='h-7 w-7' />, isLogin: true },
+        { label: "Favorite", href: `/accounts/${session.account_id}/collections`, icon: <StarIcon className='h-7 w-7' />, isLogin: true },
+        { label: "Explore", href: "/explore", icon: <MagnifyingGlassIcon className='h-7 w-7' />, isLogin: false },
+        { label: "About", href: "/about", icon: <MegaphoneIcon className='h-7 w-7' />, isLogin: false },
     ]
     return (
         <div className="hidden md:flex flex-col p-5 w-[70px] lg:w-[200px] justify-between  items-center h-[100%]">
