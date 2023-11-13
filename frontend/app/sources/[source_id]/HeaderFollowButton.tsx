@@ -22,7 +22,7 @@ const HeaderFollowButton = ({ isFollowing, doFollowFunc, unFollowFunc }: Props) 
                         await unFollowFunc();
                         setOnClicked(false);
                     }}
-                    className='text-sm custom-badge p-2 bg-gray-400 text-white rounded-xl'>
+                    className='text-sm custom-badge p-[6px] bg-gray-400 text-white rounded-xl'>
                     フォロー中
                 </button>
                 :
@@ -31,7 +31,7 @@ const HeaderFollowButton = ({ isFollowing, doFollowFunc, unFollowFunc }: Props) 
                         await doFollowFunc();
                         setOnClicked(true);
                     }}
-                    className="text-sm custom-badge p-2 ring-1 bg-cyan-50/50 ring-cyan-300 text-cyan-300 rounded-xl">
+                    className="text-sm custom-badge p-[6px] ring-1 bg-cyan-50/50 ring-cyan-300 text-cyan-300 rounded-xl">
                     フォローする
                 </button>
             }

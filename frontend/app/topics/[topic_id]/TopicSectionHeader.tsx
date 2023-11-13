@@ -47,7 +47,7 @@ const TopicSectionHeader = ({ topic }: { topic: Topic }) => {
     return (
         <SectionHeader
             titleItem={<div className='custom-badge custom-text'>
-                <HashtagIcon className='h-7 w-7 custom-text' />
+                <HashtagIcon className='h-5 w-5 custom-text' />
                 <div>{topic?.name}</div>
             </div>}
             rightItem={<HeaderFollowButton

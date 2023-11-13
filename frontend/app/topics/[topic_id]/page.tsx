@@ -16,7 +16,7 @@ export default async function TopicPage({ params }: Props) {
     const { data: topic } = await topicAPI.GetTopicData(topicID)
     return (
         <>
-            <div className="flex flex-col w-full dark:bg-black">
+            <div className="flex flex-col w-full pb-5 dark:bg-black">
                 <div className="sticky top-0 h-10 bg-white/70 dark:bg-black/30 dark:text-slate-300
              backdrop-blur-[5px] z-20">
                     {topic ?
