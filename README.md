@@ -1,7 +1,7 @@
 ## TechGuide 
 - 技術のキャッチアップを効率化するWebアプリ
 - [スライド資料](https://www.canva.com/design/DAFrN62dO18/o8oX1WvMlyUHB_QwoIKRnw/edit?utm_content=DAFrN62dO18&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
-- [公開URL](https://www.tech-guide.jp/
+- [公開URL](https://www.tech-guide.jp/about
 )
 <img width="686" alt="スクリーンショット 2023-11-10 13 43 37" src="https://github.com/cocoide/tech-guide/assets/113165849/21f532ec-b835-4d28-9959-01d96e9d6e83">
 
