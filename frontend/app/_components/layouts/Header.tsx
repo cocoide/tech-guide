@@ -36,7 +36,7 @@ export function Header() {
                 <Image src="/logo.svg" alt="" width={100} height={100} className='h-7 w-7' />
             <Link href={'/'} className="text-xl font-bold dark:text-white">Tech Guide</Link>
             </div>
-            <WStack centerX={true} className='space-x-2'>
+            <WStack centerX={true} className='space-x-3'>
                 <Link href={"/explore"} ><MagnifyingGlassIcon className='h-7 w-7' /></Link>
             {status === "unauthenticated" &&
                 <button onClick={() => setLoginDialogOpen(true)}
@@ -61,7 +61,7 @@ export function Header() {
                 </Link>
             }
             {status === "authenticated" &&
-                    <button onClick={handlePost} className='p-[5px] bg-cyan-300 rounded-xl shadow-sm text-white dark:text-black'>投稿</button>
+                    <button onClick={handlePost} className='p-[5px] bg-cyan-300 rounded-xl shadow-sm text-white dark:text-black text-sm'>投稿</button>
             }
             </WStack>
         </div>
