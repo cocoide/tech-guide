@@ -4,6 +4,7 @@ import '../styles/globals.css'
 import CollectionDialog from './_components/layouts/CollectionDialog'
 import CommentDialog from './_components/layouts/CommentDialog'
 import FeedFilterDialog from './_components/layouts/FeedFilterDialog'
+import GoogleAnalytics from './_components/layouts/GoogleAnalitics'
 import { Header } from './_components/layouts/Header'
 import LoginDialog from './_components/layouts/LoginDialog'
 import PostDialog from './_components/layouts/PostDialog'
@@ -22,6 +23,9 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="ja">
       <body className="bg-white dark:bg-black">
+        <Suspense>
+          <GoogleAnalytics />
+        </Suspense>
         <Providers>
           <div className="flex md:w-[770px] lg:w-[1050px] xl:w-[1300px]  mx-auto relative">
             <div className="sticky top-0 h-screen">

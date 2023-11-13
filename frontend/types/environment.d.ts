@@ -5,5 +5,6 @@ namespace NodeJS {
       NEXT_PUBLIC_API_BASE_URL: string;
       NEXT_PUBLIC_FRON_URL: string;
       NEXTJWT_KEY: string;
+      NEXT_PUBLIC_GTM_ID: string;
     }
   }
