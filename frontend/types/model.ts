@@ -62,6 +62,7 @@ export type Comment={
     article_id: number
     account: Account
     content: string
+    article: Article
 }
 
 export type AccountSession = {

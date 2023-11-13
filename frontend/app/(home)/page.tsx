@@ -1,9 +1,9 @@
+import DiscussContainer from '@/features/discuss/DiscussContainer'
 import { Suspense } from 'react'
 import ToggleDarkModeButton from '../_components/layouts/button/ToggleDarkModeButton'
 import SectionHeader from '../_components/layouts/desktop/SectionHeader'
 import ArticlesContainerLoader from '../_components/loaders/ArticlesContainerLoader'
 import SectionHeaderButtonGroup from './_components/SectionHeaderButtonGroup'
-import DiscussArticleContainer from './_containers/DiscussArticlesContainer'
 import LatestArticleContainer from './_containers/LatestArticleContainer'
 import TrendArticleContainer from './_containers/TrendArticleContainer'
 interface Props {
@@ -26,7 +26,7 @@ export default async function ArticlePage({ searchParams }: Props) {
                 :
                 order === "discuss" ?
                     <Suspense fallback={<ArticlesContainerLoader />}>
-                        <DiscussArticleContainer />
+                        <DiscussContainer />
                     </Suspense>
                     :
                 <LatestArticleContainer />
