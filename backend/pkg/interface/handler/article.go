@@ -21,8 +21,37 @@ const (
 	paginateLimit = 6
 )
 
+func (h *Handler) GetArticlesByTopicID(c echo.Context) error {
+	pageIndex, err := ctxutils.NewPaginateIndex(c)
+	if err != nil {
+		return c.JSON(400, err)
+	}
+	topicID := ctxutils.ParseParamInt(c, "topicId")
+	articles, err := h.article.GetArticlesByTopicIDWithPaginate(pageIndex, topicID)
+	if err != nil {
+		return c.JSON(500, err)
+	}
+	return c.JSON(200, articles)
+}
+
+func (h *Handler) GetArticlesBySourceID(c echo.Context) error {
+	pageIndex, err := ctxutils.NewPaginateIndex(c)
+	if err != nil {
+		return c.JSON(400, err)
+	}
+	sourceID := ctxutils.ParseParamInt(c, "sourceId")
+	articles, err := h.article.GetArticlesBySourceIDWithPaginate(pageIndex, sourceID)
+	if err != nil {
+		return c.JSON(500, err)
+	}
+	return c.JSON(200, articles)
+}
+
 func (h *Handler) GetLatestArticles(c echo.Context) error {
 	pageIndex, err := ctxutils.NewPaginateIndex(c)
+	if err != nil {
+		return c.JSON(400, err)
+	}
 	articles, err := h.article.GetLatestArticlesWithPaginate(pageIndex)
 	if err != nil {
 		return c.JSON(500, err)
@@ -32,6 +61,9 @@ func (h *Handler) GetLatestArticles(c echo.Context) error {
 
 func (h *Handler) GetDiscussArticles(c echo.Context) error {
 	pageIndex, err := ctxutils.NewPaginateIndex(c)
+	if err != nil {
+		return c.JSON(400, err)
+	}
 	articles, err := h.article.GetDiscussArticlesWithPaginate(pageIndex)
 	if err != nil {
 		return c.JSON(500, err)
@@ -266,26 +298,6 @@ func (h *Handler) CreateArticle(c echo.Context) error {
 		}
 	}()
 	return c.JSON(200, article)
-}
-
-func (h *Handler) GetArticlesBySourceID(c echo.Context) error {
-	sourceID, err := strconv.Atoi(c.Param("sourceId"))
-	pageIndex := getPageIndexFromQuery(c, 1)
-	if err != nil {
-		return c.JSON(400, err.Error())
-	}
-	articles, err := h.repo.GetArticlesBySourceID(sourceID, pageIndex, paginateLimit)
-	return c.JSON(200, articles)
-}
-
-func (h *Handler) GetArticlesByTopicID(c echo.Context) error {
-	topicID, err := strconv.Atoi(c.Param("topicId"))
-	pageIndex := getPageIndexFromQuery(c, 1)
-	if err != nil {
-		return c.JSON(400, err.Error())
-	}
-	articles, err := h.repo.GetArticlesByTopicID(topicID, pageIndex, paginateLimit)
-	return c.JSON(200, articles)
 }
 
 func getPageIndexFromQuery(c echo.Context, defaultPage int) int {

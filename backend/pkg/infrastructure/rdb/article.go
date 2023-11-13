@@ -11,6 +11,16 @@ func (r *Repository) ListArticles(params *repo.ListArticlesParams) (model.Articl
 	var articles model.Articles
 	query := r.db.Model(&model.Article{})
 
+	if params.TopicID != 0 {
+		query = query.
+			Joins("JOIN topics_to_articles ON topics_to_articles.article_id = articles.id").
+			Where("topics_to_articles.topic_id = ?", params.TopicID)
+	}
+
+	if params.SourceID != 0 {
+		query = query.Where("articles.source_id = ?", params.SourceID)
+	}
+
 	if params.FeedOption.AccountID != 0 {
 		query = query.Group("articles.id")
 		if params.FeedOption.IsFollowTopic {
@@ -202,58 +212,6 @@ func (r *Repository) GetArticlesByTopicIDs(topicIDs []int, omitArticleId int) ([
 		return nil, err
 	}
 	return TopicsToArticlesArray, nil
-}
-
-func (r *Repository) BatchGetArticlesByTopicIDsAndSourceID(topicIDs, sourceIDs []int, pageIndex, pageSize int) (model.Articles, error) {
-	var articles model.Articles
-	query := r.db.Preload("Topics").Preload("Source").Where("source_id IN (?)", sourceIDs)
-	if len(topicIDs) > 0 {
-		query = query.Joins("JOIN topics_to_articles ON articles.id = topics_to_articles.article_id").
-			Where("topics_to_articles.topic_id IN (?)", topicIDs)
-	}
-	offset := (pageIndex - 1) * pageSize
-	query = query.Offset(offset).Limit(pageSize)
-	if err := query.Find(&articles).Error; err != nil {
-		return nil, err
-	}
-	return articles, nil
-}
-func (r *Repository) GetArticlesBySourceID(sourceID, pageIndex, pageSize int) ([]model.Article, error) {
-	var articles []model.Article
-	err := r.db.
-		Preload("Rating").
-		Preload("Source").
-		Where("source_id = ?", sourceID).
-		Offset((pageIndex - 1) * pageSize).
-		Order("created_at DESC").
-		Find(&articles).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return articles, nil
-}
-
-func (r *Repository) GetArticlesByTopicID(topicID, pageIndex, pageSize int) ([]model.Article, error) {
-	var articles []model.Article
-
-	offset := (pageIndex - 1) * pageSize
-
-	err := r.db.
-		Joins("JOIN topics_to_articles ON topics_to_articles.article_id = articles.id").
-		Preload("Rating").
-		Preload("Source").
-		Where("topics_to_articles.topic_id = ?", topicID).
-		// 関連順に取得する
-		Order("topics_to_articles.weight DESC").
-		Offset(offset).
-		Limit(pageSize).
-		Find(&articles).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return articles, nil
 }
 
 func (r *Repository) FindArticlesByTitle(title string) (articles []model.Article, err error) {

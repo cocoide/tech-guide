@@ -25,6 +25,32 @@ func NewArticleUsecase(nlp service.NLPService, cache repository.CacheRepo, repo 
 	return &ArticleUsecase{nlp: nlp, cache: cache, repo: repo}
 }
 
+func (u *ArticleUsecase) GetArticlesBySourceIDWithPaginate(pageIndex, sourceID int) (model.Articles, error) {
+	params := &repository.ListArticlesParams{
+		OrderBy:  repository.Latest,
+		SourceID: sourceID,
+		Preloads: []string{"Rating", "Source"},
+		PaginateOption: repository.PaginateOption{
+			PageIndex: pageIndex,
+			PageSize:  ArticlePaginateSize,
+		},
+	}
+	return u.repo.ListArticles(params)
+}
+
+func (u *ArticleUsecase) GetArticlesByTopicIDWithPaginate(pageIndex, topicID int) (model.Articles, error) {
+	params := &repository.ListArticlesParams{
+		OrderBy:  repository.Latest,
+		TopicID:  topicID,
+		Preloads: []string{"Rating", "Source"},
+		PaginateOption: repository.PaginateOption{
+			PageIndex: pageIndex,
+			PageSize:  ArticlePaginateSize,
+		},
+	}
+	return u.repo.ListArticles(params)
+}
+
 func (u *ArticleUsecase) GetLatestArticlesWithPaginate(pageIndex int) (model.Articles, error) {
 	params := &repository.ListArticlesParams{
 		OrderBy:  repository.Latest,
