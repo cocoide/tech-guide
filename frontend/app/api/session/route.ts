@@ -1,6 +1,6 @@
 import { api } from '@/app/_functions/API';
 import { AccountSession } from '@/types/model';
-import { decodeJwt, refreshAccessToken } from '@/utils/jwt';
+import { decodeJwt } from '@/utils/jwt';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -12,11 +12,17 @@ export async function GET() {
         }
         const claims = await decodeJwt(accessToken)
         if (Date.now() < claims.exp * 1000) {
+            console.log(claims.exp)
+            console.log(Date.now())
             const refreshToken = cookies().get("refreshToken")?.value
             if (!refreshToken) {
                 throw new Error(`Error getting refreshToken in cookie`)
             }
-            accessToken = await refreshAccessToken(refreshToken)
+            const params = { "token": refreshToken }
+            const { data: accessToken, error } = await api.pos<string>("/oauth/refresh", undefined, undefined, params)
+            if (error || !accessToken) {
+                throw new Error(`Failed to refresh token: ${error}`)
+            }
             // CookieのAccessTokenも更新
             cookies().set({
                 name: 'accessToken',
