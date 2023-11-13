@@ -57,7 +57,7 @@ export function Header() {
                             <Image src={session.avatar_url} alt={session.display_name} width={200} height={200}
                                     className="h-10 w-10 rounded-full custom-border"></Image>
                             :
-                            <UserCircleIcon className='h-7 w-7' />}
+                                <UserCircleIcon className='h-10 w-10' />}
                 </Link>
             }
             {status === "authenticated" &&
