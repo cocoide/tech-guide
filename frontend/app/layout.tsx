@@ -9,7 +9,6 @@ import LoginDialog from './_components/layouts/LoginDialog'
 import PostDialog from './_components/layouts/PostDialog'
 import PreviewDialog from './_components/layouts/PreviewDialog'
 import LeftSideVar from './_components/layouts/desktop/LeftSideVar'
-import BottomNavigation from './_components/layouts/mobile/BottomNavigation'
 import Providers from './_components/providers'
 
 export const metadata = {
@@ -38,9 +37,6 @@ export default function RootLayout({ children }: Props) {
                 </div>
             </Suspense>
           </div>
-          </div>
-          <div className="fixed bottom-0 w-[100%] z-30 flex md:hidden">
-            <BottomNavigation />
           </div>
           <CommentDialog />
           <CollectionDialog />
