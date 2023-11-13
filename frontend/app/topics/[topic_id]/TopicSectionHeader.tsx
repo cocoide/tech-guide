@@ -6,9 +6,9 @@ import HeaderFollowButton from '@/app/sources/[source_id]/HeaderFollowButton'
 import { useAuth } from '@/hooks/useAuth'
 import { loginDialogAtom } from '@/stores/dialog'
 import { Topic } from '@/types/model'
+import { HashtagIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import Image from 'next/image'
 import toast from 'react-hot-toast'
 
 
@@ -46,9 +46,8 @@ const TopicSectionHeader = ({ topic }: { topic: Topic }) => {
     useQuery
     return (
         <SectionHeader
-            titleItem={<div className='custom-badge text-gray-500'>
-                <Image src={topic?.icon_url as string} alt={topic?.name as string} width={100} height={100}
-                    className='h-7 w-7 rounded-full' />
+            titleItem={<div className='custom-badge custom-text'>
+                <HashtagIcon className='h-7 w-7 custom-text' />
                 <div>{topic?.name}</div>
             </div>}
             rightItem={<HeaderFollowButton
