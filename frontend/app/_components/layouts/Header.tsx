@@ -7,7 +7,6 @@ import { MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/outline
 import { useAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
-import WStack from '../elements/ui/WStack'
 
 export function Header() {
     const { status } = useAuth()
@@ -36,7 +35,7 @@ export function Header() {
                 <Image src="/logo.svg" alt="" width={100} height={100} className='h-7 w-7' />
             <Link href={'/'} className="text-xl font-bold dark:text-white">Tech Guide</Link>
             </div>
-            <WStack centerX={true} className='space-x-3'>
+            <div className='flex flex-row items-center space-x-2'>
                 <Link href={"/explore"} ><MagnifyingGlassIcon className='h-7 w-7' /></Link>
             {status === "unauthenticated" &&
                 <button onClick={() => setLoginDialogOpen(true)}
@@ -55,15 +54,15 @@ export function Header() {
                     {
                         session.avatar_url.length > 0 ?
                             <Image src={session.avatar_url} alt={session.display_name} width={200} height={200}
-                                    className="h-10 w-10 rounded-full custom-border"></Image>
+                                    className="h-7 w-7 rounded-full custom-border"></Image>
                             :
-                                <UserCircleIcon className='h-10 w-10' />}
+                                <UserCircleIcon className='h-7 w-7' />}
                 </Link>
             }
             {status === "authenticated" &&
                     <button onClick={handlePost} className='p-[5px] bg-cyan-300 rounded-xl shadow-sm text-white dark:text-black text-sm'>投稿</button>
             }
-            </WStack>
+            </div>
         </div>
     )
 }
