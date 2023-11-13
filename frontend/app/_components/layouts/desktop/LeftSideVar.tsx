@@ -15,8 +15,8 @@ const LeftSideVar = () => {
     const session = useSession()
     const SideVarList = [
         { label: "Latest", href: "/", icon: <HomeIcon className='h-7 w-7' />, isLogin: false },
-        { label: "Trend", href: "/order?=trend", icon: <FireIcon className='h-7 w-7' />, isLogin: false },
-        { label: "Discuss", href: "/order?=discuss", icon: <ChatBubbleOvalLeftEllipsisIcon className='h-7 w-7' />, isLogin: false },
+        { label: "Trend", href: "/?order=trend", icon: <FireIcon className='h-7 w-7' />, isLogin: false },
+        { label: "Discuss", href: "/?order=discuss", icon: <ChatBubbleOvalLeftEllipsisIcon className='h-7 w-7' />, isLogin: false },
         { label: "Custom", href: "/feed", icon: <NewspaperIcon className='h-7 w-7' />, isLogin: true },
         { label: "Favorite", href: `/accounts/${session.account_id}/collections`, icon: <StarIcon className='h-7 w-7' />, isLogin: true },
         { label: "Explore", href: "/explore", icon: <MagnifyingGlassIcon className='h-7 w-7' />, isLogin: false },
