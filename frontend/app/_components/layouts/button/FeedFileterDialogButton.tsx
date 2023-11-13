@@ -7,8 +7,8 @@ import { useAtom } from 'jotai'
 const FeedFileterDialogButton = () => {
     const [__, setTopicDialogOpen] = useAtom(topicDialogAtom)
     return (
-        <button onClick={() => setTopicDialogOpen(true)} className="custom-text custom-badge">
-            <AdjustmentsHorizontalIcon className='h-7 w-7' />
+        <button onClick={() => setTopicDialogOpen(true)} className="custom-text custom-badge custom-border p-[3px] rounded-md shadow-sm">
+            <AdjustmentsHorizontalIcon className='h-5 w-5' />
             <div className="text-sm">設定</div>
         </button>
     )
