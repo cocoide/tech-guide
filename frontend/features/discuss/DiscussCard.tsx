@@ -10,7 +10,7 @@ interface Props {
 }
 const DiscussCard = ({ comment }: Props) => {
     return (
-        <WStack className="custom-text space-x-1 p-5  sm:pl-10 border-b border-gray-300 dark:border-gray-500">
+        <WStack className="custom-text space-x-1 p-5  sm:pl-10 border-b lg:border-r border-gray-300 dark:border-gray-500">
             <Image src={comment.account.avatar_url} alt={comment.account.display_name} width={100} height={100} className='w-10 h-10 rounded-full custom-border' />
             <HStack className='space-y-2'>
                 <div className="font-medium">{comment.account.display_name}</div>
