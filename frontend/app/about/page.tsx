@@ -4,12 +4,12 @@ import HStack from '../_components/elements/ui/HStack';
 export default async function AboutPage() {
     return (
         <HStack className="justify-center items-center w-full">
-            <HStack className="justify-center items-center w-full space-y-3 border-t p-10 bg-white">
+            <HStack className="justify-center items-center w-full space-y-3 p-10 bg-white">
                 <h1
                     className="font-extrabold text-transparent text-5xl bg-clip-text bg-gradient-to-r from-cyan-300 to-indigo-300"
                 >TechGuide</h1>
                 <div className="text-2xl text-gray-600 font-bold">技術のキャチアップをこれ一つで</div>
-                <Image src={"/about/view.png"} alt='view' width={400} height={200} className="rounded-md h-[250px] w-[450px] lg:h-[350px] lg:w-[500pc] custom-border"></Image>
+                <Image src={"/about/view.png"} alt='view' width={400} height={200} className="rounded-md h-[250px] w-[450px]  custom-border"></Image>
                 <button className="text-white bg-cyan-300 p-[7px] rounded-xl text-md shadow-sm">はじめる</button>
             </HStack>
 
@@ -51,8 +51,8 @@ interface FeatureSectionProps {
 }
 const FeatureSection = ({ text, thumbnail_url }: FeatureSectionProps) => {
     return (
-        <div className="rounded-xl aspect-square h-30 custom-border p-5 flex flex-col space-y-5">
-            <div className="w-full h-min-[200px] rounded-xl custom-border flex flex-row items-end justify-center overflow-hidden">
+        <div className="rounded-xl custom-border p-5 flex flex-col space-y-5 bg-white">
+            <div className="w-full h-min-[200px] rounded-xl custom-border flex flex-row items-end justify-center overflow-hidden bg-gray-100">
                 <Image src={thumbnail_url} alt='thumbnail' width={200} height={200} className="rounded-md h-[200px] w-[200px]"></Image>
             </div>
             <div className="font-bold text-gray-700">{text.title}</div>
