@@ -52,11 +52,12 @@ export default function DiscussItems({ Discusss, fetchFunc, filterID }: Props) {
                 </>
             }
             element="div"
-            className='w-full flex flex-col divide-y'
         >
+            <div className="w-full flex flex-col divide-y">
             {items && items.map((item, index) => (
                 <DiscussCard key={index} comment={item} />
             ))}
+            </div>
         </InfiniteScroll>
     );
 }

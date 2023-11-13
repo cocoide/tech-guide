@@ -1,6 +1,7 @@
 import HStack from '@/app/_components/elements/ui/HStack'
 import WStack from '@/app/_components/elements/ui/WStack'
 import { Comment } from '@/types/model'
+import { ChatBubbleOvalLeftEllipsisIcon, FaceSmileIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -14,10 +15,14 @@ const DiscussCard = ({ comment }: Props) => {
             <HStack className='space-y-2'>
                 <div className="font-medium">{comment.account.display_name}</div>
                 <div className="font-medium text-sm">{comment.content}</div>
-                <Link href={`/articles/${comment.article.id}`} className="overflow-hidden h-[150px] w-[270px] relative rounded-xl custom-border">
+                <Link href={`/articles/${comment.article.id}`} className="overflow-hidden h-[180px] w-[300px] relative rounded-xl custom-border">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={comment.article.thumbnail_url} alt={comment.article.title} width={200} height={100} className='min-h-[150px] w-[280px] lg:w-[400px]' />
+                    <img src={comment.article.thumbnail_url} alt={comment.article.title} className='min-h-[180px] w-[300px]' />
                 </Link>
+                <WStack className="space-x-1">
+                    <FaceSmileIcon className='h-5 w-5' />
+                    <ChatBubbleOvalLeftEllipsisIcon className='h-5 w-5' />
+                </WStack>
             </HStack>
         </WStack>
     )
