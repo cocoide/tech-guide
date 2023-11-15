@@ -1,9 +1,19 @@
-import HStack from '@/app/_components/elements/ui/HStack'
-import Image from 'next/image'
+"use client"
+
+import HStack from '@/app/_components/elements/ui/HStack';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 const SignupContainer = () => {
-    function handleSignup(oauthType: "google" | "github") {
-
+    const router = useRouter()
+    function handleSignup(type: "google" | "github") {
+        toast.loading("ログイン中...");
+        try {
+            router.push(process.env.NEXT_PUBLIC_API_BASE_URL + `/oauth/login?type=${type}`)
+        } catch (error) {
+            toast.error("エラーが発生")
+        }
     }
 
     return (
