@@ -8,13 +8,10 @@ export default async function OnboardingPage({ searchParams }: Porps) {
     const step = Number(searchParams.step);
     return (
         <div className="p-10 w-full">
-            {step === 1 ?
-            <SignupContainer />
-                :
-                step === 2 ?
+            {step === 2 ?
                     <RegisterContainer />
                     :
-                    <div className=""></div>
+                <SignupContainer />
             }
         </div>
     )
