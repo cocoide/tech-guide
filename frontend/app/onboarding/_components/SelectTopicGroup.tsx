@@ -24,7 +24,7 @@ const SelectTopicGroup = ({ categories }: { categories?: Category[] }) => {
         <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
             {categories?.map(category => (
                 <button key={category.id} onClick={() => handleFollowCategory(category)}
-                    className={clsx(followingTopics && followingTopics[category.id] ? "bg-cyan-300 text-white" : "bg-cyan-50 text-cyan-300 ", "relative custom-border aspect-square w-full rounded-xl flex items-center justify-center p-5")}
+                    className={clsx(followingTopics && followingTopics[category.id] ? "bg-cyan-300 text-white" : "bg-cyan-50 text-cyan-300 ", "font-bold relative custom-border aspect-square w-full rounded-xl flex items-center justify-center p-5")}
                 >{category.name}
                     {followingTopics && followingTopics[category.id]?.length > 0
                         &&
