@@ -17,14 +17,14 @@ const SignupContainer = () => {
     }
 
     return (
-        <div className="flex lg:flex-row flex-col text-custom justify-center items-center w-full p-10 space-x-10">
+        <div className="flex lg:flex-row flex-col text-custom lg:justify-center items-center w-full p-10 space-x-10 lg:space-y-10">
             <div className="flex flex-col space-y-3 lg:w-[50%] items-center">
                 <div className="text-2xl font-bold">Tech Guideへようこそ</div>
                 <Image src={"/about/view.png"} alt='view' width={400} height={200} className="rounded-md h-[200px] w-[350px]  custom-border"></Image>
             </div>
             <div className='custom-boarder bg-gray-50 rounded-xl shadow-sm'
             >
-        <HStack className="w-full items-center space-y-5 custom-text">
+                <HStack className="w-full items-center space-y-5 custom-text p-5">
             <div className="">TechGuideにサインアップ</div>
             <button className='ring-1 ring-gray-200 w-[300px] rounded-md p-2 text-gray-700 flex flex-row items-center space-x-3 bg-white' type="button"
                 onClick={() => handleSignup("google")}>
