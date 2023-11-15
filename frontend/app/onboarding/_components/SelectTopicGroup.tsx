@@ -7,10 +7,18 @@ import { useState } from 'react';
 const SelectTopicGroup = ({ categories }: { categories?: Category[] }) => {
     const [followingTopics, setFollowingTopics] = useState<Record<number, Topic[]>>()
     function handleFollowCategory(category: Category) {
-        setFollowingTopics(prevTopics => ({
-            ...prevTopics,
-            [category.id]: category.topics
-        }));
+        if (followingTopics && followingTopics[category.id]) {
+            setFollowingTopics(prevTopics => {
+                const newTopics = { ...prevTopics };
+                delete newTopics[category.id];
+                return newTopics;
+            });
+        } else {
+            setFollowingTopics(prevTopics => ({
+                ...prevTopics,
+                [category.id]: category.topics
+            }));
+        }
     }
     return (
         <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
