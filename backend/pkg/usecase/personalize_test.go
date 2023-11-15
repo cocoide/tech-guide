@@ -1,6 +1,7 @@
 package usecase_test
 
 import (
+	"github.com/cocoide/tech-guide/pkg/usecase/parser"
 	"reflect"
 	"testing"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/cocoide/tech-guide/key"
 	"github.com/cocoide/tech-guide/pkg/domain/model"
 	"github.com/cocoide/tech-guide/pkg/usecase"
-	"github.com/cocoide/tech-guide/pkg/utils"
 	"github.com/golang/mock/gomock"
 )
 
@@ -58,7 +58,7 @@ func Test_GetRecommendArticleIDs(t *testing.T) {
 		GetFollowingTopicIDs(testAccountID).
 		Return(testTopicIDs, nil)
 
-	testStrIDs, _ := utils.Serialize(testPupularArticleIDs)
+	testStrIDs, _ := parser.Serialize(testPupularArticleIDs)
 	cr.EXPECT().
 		Get(key.PopularArticleIDs).
 		Return(testStrIDs, nil)

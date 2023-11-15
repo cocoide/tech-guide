@@ -7,7 +7,7 @@ interface Porps {
 export default async function OnboardingPage({ searchParams }: Porps) {
     const step = Number(searchParams.step);
     return (
-        <div className="p-10 w-full">
+        <div className="w-full">
             {step === 2 ?
                     <RegisterContainer />
                     :

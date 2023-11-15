@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import CircleLoading from '@/app/_components/animations/CircleLoading';
+import HStack from '@/app/_components/elements/ui/HStack';
 import { api } from '@/app/_functions/API';
 import { useRouter } from 'next/navigation';
 
@@ -30,15 +31,18 @@ export default function RegisterContainer() {
         setIsLoading(false);
     };
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <HStack className='custom-text space-y-3 items-center w-full'>
             {isLoading && (
                 <div className="z-10 bg-white/30 backdrop-blur-[2px]  fixed inset-0 flex justify-center items-center">
                     <CircleLoading />
                 </div>
             )}
+            <div className="text-xl">プロフィールを登録</div>
+            <form onSubmit={handleSubmit(onSubmit)}>
             <input {...register('display_name')} />
             <input {...register('avatar_url')} />
-            <button className="">登録</button>
+                <button className="bg-cyan-300 text-white p-[6px] rounded-xl text-sm">登録</button>
         </form>
+        </HStack>
     )
 }
