@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import HStack from '../_components/elements/ui/HStack';
+import RegisterButton from './RegisterButton';
 
 export default async function AboutPage() {
     return (
@@ -10,7 +11,7 @@ export default async function AboutPage() {
                 >TechGuide</h1>
                 <div className="text-2xl text-gray-600 font-bold">技術のキャチアップをこれ一つで</div>
                 <Image src={"/about/view.png"} alt='view' width={400} height={200} className="rounded-md h-[250px] w-[450px]  custom-border"></Image>
-                <button className="text-white bg-cyan-300 p-[7px] rounded-xl text-md shadow-sm">はじめる</button>
+                <RegisterButton />
             </HStack>
 
             <HStack className="justify-center items-center w-full space-y-3 bg-gray-50 border-t border-gray-300 p-10">
