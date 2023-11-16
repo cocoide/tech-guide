@@ -29,7 +29,7 @@ const SectionHeaderButtonGroup = () => {
                 <HomeIcon className='h-5 w-5' /><div className='text-sm'>Latest</div>
             </button>
             {status === "authenticated" &&
-                <button onClick={handleCustom} className={clsx('custom-badge custom-text custom-border p-1 rounded-xl', order === "discuss" ? "bg-gray-100 dark:bg-gray-800" : "")}>
+                <button onClick={handleCustom} className={clsx('custom-badge custom-text custom-border p-1 rounded-xl', order === "feed" ? "bg-gray-100 dark:bg-gray-800" : "")}>
                     <NewspaperIcon className='h-5 w-5' /><div className='text-sm'>Custom</div>
                 </button>
             }
