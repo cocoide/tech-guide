@@ -53,7 +53,7 @@ export default function DiscussItems({ Discusss, fetchFunc, filterID }: Props) {
             }
             element="div"
         >
-            <div className="w-full grid lg:grid-cols-2 ">
+            <div className="w-full grid lg:grid-cols-2 mx-auto sm:gap-10 sm:p-5 lg:p-10">
             {items && items.map((item, index) => (
                 <DiscussCard key={index} comment={item} />
             ))}
