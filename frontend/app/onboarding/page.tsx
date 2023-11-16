@@ -8,7 +8,7 @@ interface Porps {
 }
 export default async function OnboardingPage({ searchParams }: Porps) {
     const { data: session } = await getSignupSession()
-    const step = session?.onboarding_Index
+    const step = session?.onboarding_index
     return (
         <div className="w-full">
             {step === 1 ?

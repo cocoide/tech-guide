@@ -10,5 +10,10 @@ export async function getSignupSession() {
 }
 
 type SignupSession = {
-    onboarding_Index: number
-}
+    account_id: number;
+    display_name: string;
+    avatar_url: string;
+    email: string;
+    follow_topic_ids: number[] | null;
+    onboarding_index: number;
+};
