@@ -2,7 +2,7 @@
 interface ApiService {
   get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params, sessionId?: string): Promise<ApiResponse<T>>
   del(dirURL: string,  token?: string, params?: Params): Promise<ApiResponse<void>>
-  pos<U>(dirURL: string, body: any, token?: string,params?: Params): Promise<ApiResponse<U>>
+  pos<U>(dirURL: string, body: any, token?: string, params?: Params, sessionId?: string): Promise<ApiResponse<U>>
   put<U>(dirURL: string, body: any,  token?: string, params?: Params): Promise<ApiResponse<U>>
 }
 
@@ -43,9 +43,12 @@ export const api: ApiService = {
     }
     return handleApiRequest(dirURL, options, 'backend', params)
   },
-  async pos<U>(dirURL: string, body: any, token?: string, params?: Params): Promise<ApiResponse<U>> {
+  async pos<U>(dirURL: string, body: any, token?: string, params?: Params, sessionId?: string): Promise<ApiResponse<U>> {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
+    }
+    if (sessionId) {
+      headers["X-Session-ID"] = sessionId
     }
     const options: RequestInit = {
       method: "POST",
