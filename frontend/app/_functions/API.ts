@@ -1,6 +1,6 @@
 
 interface ApiService {
-  get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>>
+  get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params, sessionId?: string): Promise<ApiResponse<T>>
   del(dirURL: string,  token?: string, params?: Params): Promise<ApiResponse<void>>
   pos<U>(dirURL: string, body: any, token?: string,params?: Params): Promise<ApiResponse<U>>
   put<U>(dirURL: string, body: any,  token?: string, params?: Params): Promise<ApiResponse<U>>
@@ -25,9 +25,12 @@ const headers: HeadersInit = {
   "Content-Type": 'application/json',
 }
 export const api: ApiService = {
-  async get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params): Promise<ApiResponse<T>> {
+  async get<T>(dirURL: string, cache?: Cache, token?: string, params?: Params, sessionId?: string): Promise<ApiResponse<T>> {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
+    }
+    if (sessionId) {
+      headers["X-Session-ID"] = sessionId
     }
     const options: RequestInit = {
       method: "GET",

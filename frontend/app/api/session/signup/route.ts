@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ status: 403 })
     }
     cookies().set({
-        name: 'techguide.sessionId',
+        name: 'signup.sessionId',
         domain: '.tech-guide.jp',
         value: sessionId,
         httpOnly: true,
