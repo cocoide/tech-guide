@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import CircleLoading from '@/app/_components/animations/CircleLoading';
@@ -12,12 +12,18 @@ type Inputs = {
     display_name: string
     avatar_url: string
 }
-export default function RegisterContainer({ sessionId }: { sessionId?: string }) {
+interface Props {
+    sessionId?: string
+    display_name?: string
+    avatar_url?: string
+}
+export default function RegisterContainer({ sessionId, avatar_url, display_name }: Props) {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false);
     const {
         register,
         handleSubmit,
+        setValue
     } = useForm<Inputs>();
     const onSubmit = async (data: Inputs) => {
         setIsLoading(true);
@@ -29,6 +35,15 @@ export default function RegisterContainer({ sessionId }: { sessionId?: string })
         }
         setIsLoading(false);
     };
+    useEffect(() => {
+        if (avatar_url) {
+            setValue("avatar_url", avatar_url);
+        }
+        if (display_name) {
+            setValue("display_name", display_name);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     return (
         <HStack className='custom-text space-y-3 items-center w-full p-10'>
             {isLoading && (
@@ -38,8 +53,8 @@ export default function RegisterContainer({ sessionId }: { sessionId?: string })
             )}
             <div className="text-xl">プロフィールを登録</div>
             <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col items-center w-full space-y-3'>
-                <input {...register('display_name')} className='bg-slate-50 rounded-xl p-[3px] w-[300px]' />
-                <input {...register('avatar_url')} className='bg-slate-50 rounded-xl p-[3px] w-[300px]' />
+                <input {...register('display_name', { "required": true })} className='bg-slate-50 rounded-xl p-[3px] w-[300px]' />
+                <input {...register('avatar_url'), { "required": true }} className='bg-slate-50 rounded-xl p-[3px] w-[300px]' />
                 <button className="bg-cyan-300 text-white p-[6px] rounded-xl text-sm">登録完了</button>
         </form>
         </HStack>
