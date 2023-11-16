@@ -58,7 +58,7 @@ const RegisterContainer = ({ sessionId, avatar_url, display_name }: Props) => {
                 <div className="text-sm">表示名</div>
                 <input {...register('display_name', { "required": true })} className='custom-boarder bg-slate-50 rounded-xl p-[3px] w-[300px]' />
                 <div className="text-sm">アイコン</div>
-                {watch("avatar_url").length > 0 ?
+                {watch("avatar_url") && watch("avatar_url").length > 0 ?
                     <Image src={watch("avatar_url")} alt='avatar' width={100} height={100} className='rounded-md h-[100px] w-[100px]' />
                     :
                     <div className="custom-loader rounded-md h-[100px] w-[100px]"></div>
