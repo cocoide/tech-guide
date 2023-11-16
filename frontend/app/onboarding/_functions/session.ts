@@ -1,7 +1,7 @@
 import { api } from '@/app/_functions/API'
 import { cookies } from 'next/headers'
 
-export function getSignupSession() {
+export async function getSignupSession() {
     "use server"
 
     const store = cookies()
