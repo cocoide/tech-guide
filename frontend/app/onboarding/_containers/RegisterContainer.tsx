@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import CircleLoading from '@/app/_components/animations/CircleLoading';
 import HStack from '@/app/_components/elements/ui/HStack';
 import { api } from '@/app/_functions/API';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 type Inputs = {
@@ -23,7 +24,8 @@ const RegisterContainer = ({ sessionId, avatar_url, display_name }: Props) => {
     const {
         register,
         handleSubmit,
-        setValue
+        setValue,
+        watch,
     } = useForm<Inputs>();
     const onSubmit = async (data: Inputs) => {
         setIsLoading(true);
@@ -45,7 +47,7 @@ const RegisterContainer = ({ sessionId, avatar_url, display_name }: Props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
-        <HStack className='custom-text space-y-3 items-center w-full p-10'>
+        <HStack className='custom-text space-y-3 items-center w-full p-10 h-'>
             <>{isLoading && (
                 <div className="z-10 bg-white/30 backdrop-blur-[2px]  fixed inset-0 flex justify-center items-center">
                     <CircleLoading />
@@ -53,9 +55,11 @@ const RegisterContainer = ({ sessionId, avatar_url, display_name }: Props) => {
             )}</>
             <div className="text-xl">プロフィールを登録</div>
             <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col items-center w-full space-y-3'>
-                <input {...register('display_name', { "required": true })} className='bg-slate-50 rounded-xl p-[3px] w-[300px]' />
-                <input {...register('avatar_url', { required: true })} className='bg-slate-50 rounded-xl p-[3px] w-[300px]' />
-                <button className="bg-cyan-300 text-white p-[6px] rounded-xl text-sm">登録完了</button>
+                <div className="text-sm">表示名</div>
+                <input {...register('display_name', { "required": true })} className='custom-boarder bg-slate-50 rounded-xl p-[3px] w-[300px]' />
+                <div className="text-sm">アイコン</div>
+                <Image src={watch("avatar_url")} alt='avatar' width={100} height={100} className='rounded-md h-20 w-20' />
+                <button className="bg-cyan-300 text-white p-[6px] rounded-xl shadow-sm">登録完了</button>
             </form>
         </HStack>
     )
