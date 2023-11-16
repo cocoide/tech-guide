@@ -1,12 +1,17 @@
 import { api } from '@/app/_functions/API'
 import { cookies } from 'next/headers'
 
-export async function getSignupSession() {
+export async function getSignupSession(sessionId: string | undefined) {
+    "use server"
+
+    return api.get<SignupSession>("/onboarding/session", "no-store", undefined, undefined, sessionId)
+}
+
+export async function getSessionID() {
     "use server"
 
     const store = cookies()
-    const sessionId = store.get("signup.sessionId")?.value
-    return api.get<SignupSession>("/onboarding/session", "no-store", undefined, undefined, sessionId)
+    return store.get("signup.sessionId")?.value
 }
 
 type SignupSession = {

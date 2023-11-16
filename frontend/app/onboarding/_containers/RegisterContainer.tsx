@@ -12,7 +12,7 @@ type Inputs = {
     display_name: string
     avatar_url: string
 }
-export default function RegisterContainer({ sessionId }: { sessionId: string }) {
+export default function RegisterContainer({ sessionId }: { sessionId?: string }) {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false);
     const {
