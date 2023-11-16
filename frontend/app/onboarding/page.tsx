@@ -1,3 +1,4 @@
+import ProgressBar from './_components/ProgressBar';
 import RegisterContainer from './_containers/RegisterContainer';
 import SignupContainer from './_containers/SignupContainer';
 import TopicSelectContainer from './_containers/TopicSelectContainer';
@@ -9,6 +10,7 @@ export default async function OnboardingPage() {
     const step = session?.onboarding_index
     return (
         <div className="w-full">
+            <ProgressBar step={step} />
             {step === 1 ?
                 <RegisterContainer sessionId={sessionId} avatar_url={session?.avatar_url} display_name={session?.display_name} />
                     :
