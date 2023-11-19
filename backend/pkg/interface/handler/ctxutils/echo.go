@@ -4,12 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"github.com/cocoide/tech-guide/key"
+	"github.com/google/uuid"
 	"github.com/labstack/echo"
 	"log"
 	"strconv"
 )
 
-func GetIntFromPath(ctx echo.Context) int {
+var err error
+
+func GetIDFromPath(ctx echo.Context) int {
 	accountId, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		log.Print(err)
@@ -48,6 +51,21 @@ func NewPaginateIndex(c echo.Context) (int, error) {
 	result, err := strconv.Atoi(pageIndex)
 	if err != nil {
 		return 0, fmt.Errorf("Parse error: %v", err)
+	}
+	return result, nil
+}
+
+func ParseParamInt(c echo.Context, name string) int {
+	value, _ := strconv.Atoi(c.Param(name))
+	return value
+}
+
+func GetSessionIDFromHeader(c echo.Context) (uuid.UUID, error) {
+	var result uuid.UUID
+	strSessionID := c.Request().Header.Get("X-Session-ID")
+	result, err = uuid.Parse(strSessionID)
+	if err != nil {
+		return result, err
 	}
 	return result, nil
 }

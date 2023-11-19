@@ -7,13 +7,21 @@ import (
 	"gorm.io/gorm"
 )
 
-//type Repository struct {
-//	db *gorm.DB
-//}
-//
-//func NewRepository(db *gorm.DB) repository.AccountRepo {
-//	return &Repository{db: db}
-//}
+func (r *Repository) CreateFollowTopics(accountID int, topicIDs []int) error {
+	var followTopics []*model.FollowTopic
+	for _, topicID := range topicIDs {
+		followTopics = append(followTopics, &model.FollowTopic{TopicID: topicID, AccountID: accountID})
+	}
+	return r.db.Create(followTopics).Error
+}
+
+func (r *Repository) CreateFollowSources(accountID int, sourceIDs []int) error {
+	var followSources []*model.FollowSource
+	for _, sourceID := range sourceIDs {
+		followSources = append(followSources, &model.FollowSource{SourceID: sourceID, AccountID: accountID})
+	}
+	return r.db.Create(followSources).Error
+}
 
 func (r *Repository) GetAllAccountIDs() ([]int, error) {
 	var accountIDs []int

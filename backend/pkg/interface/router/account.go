@@ -33,5 +33,5 @@ func newAccountRouterGroup(account *echo.Group, h *handler.Handler) {
 
 	account.GET("/article/recommend", h.GetRecommendArticles)
 	account.GET("/feeds", h.GetFeedsWithPaginate)
-	account.GET("/session", h.GetAccountSession)
+	account.GET("/session", h.GetLoginSession)
 }

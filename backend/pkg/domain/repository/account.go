@@ -11,4 +11,6 @@ type AccountRepo interface {
 	CheckExistByEmail(email string) (bool, error)
 	GetByEmail(email string) (*model.Account, error)
 	GetAccountProfile(id int) (*model.Account, error)
+	CreateFollowTopics(accountID int, topicIDs []int) error
+	CreateFollowSources(accountID int, sourceIDs []int) error
 }

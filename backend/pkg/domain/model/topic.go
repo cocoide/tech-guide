@@ -9,6 +9,8 @@ type Topic struct {
 	Articles []Article `json:"articles" gorm:"many2many:topics_to_articles"`
 }
 
+type Topics []*Topic
+
 type FollowTopic struct {
 	AccountID int `json:"account_id"`
 	TopicID   int `json:"topic_id"`

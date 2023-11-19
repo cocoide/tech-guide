@@ -14,7 +14,7 @@ func NewRootRouter(e *echo.Echo, h *handler.Handler) {
 		AllowOrigins:     []string{os.Getenv("FRONTEND_URL"), "https://accounts.google.com"},
 		AllowMethods:     []string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodPut, http.MethodPut, http.MethodOptions},
 		AllowCredentials: true,
-		AllowHeaders:     []string{"Content-Type", "Authorization", "X-Requested-With"},
+		AllowHeaders:     []string{"Content-Type", "Authorization", "X-Requested-With", "X-Session-ID"},
 	}))
 	account := e.Group("/account", h.AuthMiddleware)
 	newAccountRouterGroup(account, h)
@@ -23,10 +23,15 @@ func NewRootRouter(e *echo.Echo, h *handler.Handler) {
 	e.GET("/oauth/callback", h.HandleOAuthCallback)
 	e.POST("/oauth/refresh", h.RefreshToken)
 
+	e.POST("/onboarding/register", h.RegisterAccount)
+	e.POST("/onboarding/complete", h.CompleteOnboarding)
+	e.GET("/onboarding/session", h.GetSignupSession)
+
 	e.GET("/account/profile/:id", h.GetAccountProfile)
 	e.GET("/account/collection/:id", h.GetCollections)
 
-	e.GET("/comment/:articleId", h.GetComments)
+	e.GET("/comment/:articleId", h.ListCommentsByArticleID)
+	e.GET("/comment", h.ListLatestComments)
 
 	e.GET("/contribution/:id", h.GetContributions)
 

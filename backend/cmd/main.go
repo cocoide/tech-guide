@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
 
 	"github.com/cocoide/tech-guide/pkg/infrastructure/integration"
 	"github.com/cocoide/tech-guide/pkg/interface/handler"
@@ -36,8 +37,9 @@ func main() {
 	tweet := integration.NewTwitterService()
 	scraper := integration.NewScrapingService()
 
+	signupSession := cacheRepo.NewSessionService[dto.SignupSession](redis, ctx)
 	topic := usecase.NewTopicUsecase(repo, nlp, scraper)
-	account := usecase.NewAccountUsecase(repo, cache)
+	account := usecase.NewAccountUsecase(repo, cache, signupSession)
 	activity := usecase.NewActivityUsecase(cache)
 	article := usecase.NewArticleUsecase(nlp, cache, repo)
 	personalize := usecase.NewPersonalizeUsecase(repo, cache)

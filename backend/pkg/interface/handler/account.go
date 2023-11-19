@@ -3,41 +3,88 @@ package handler
 import (
 	"context"
 	"fmt"
-	"github.com/cocoide/tech-guide/pkg/domain/model"
-	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
-	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
-	"github.com/cocoide/tech-guide/pkg/usecase/parser"
-	"github.com/labstack/echo"
+	"github.com/cocoide/tech-guide/pkg/interface/handler/pathutils"
+	"github.com/cocoide/tech-guide/pkg/usecase"
 	"net/http"
 	"os"
+
+	"github.com/cocoide/tech-guide/pkg/domain/model"
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
+	"github.com/labstack/echo"
 )
 
-func (h *Handler) GetAccountSession(c echo.Context) error {
-	var session dto.AccountSession
-	accountId := ctxutils.GetAccountID(c)
-	sessionKey := fmt.Sprintf("session.%d", accountId)
-	strSession, exist, err := h.cache.Get(sessionKey)
+type CompleteOnboardingRequest struct {
+	FollowTopicIDs  []int `json:"follow_topic_ids"`
+	FollowSourceIDs []int `json:"follow_source_ids"`
+}
+
+func (h *Handler) CompleteOnboarding(c echo.Context) error {
+	sessionID, err := ctxutils.GetSessionIDFromHeader(c)
 	if err != nil {
 		return c.JSON(400, err)
 	}
-	if !exist {
-		account, err := h.repo.GetAccountProfile(accountId)
-		if err != nil {
-			return c.JSON(400, err)
-		}
-		session = dto.AccountSession{
-			AccountID:   account.ID,
-			DisplayName: account.DisplayName,
-			AvatarURL:   account.AvatarURL,
-		}
+	var req CompleteOnboardingRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(400, err)
 	}
-	if len(strSession) > 0 {
-		session, err = parser.Deserialize[dto.AccountSession](strSession)
+	completeOnboardingRequest := &usecase.CompleteOnboardingRequest{
+		SessionID:       sessionID,
+		FollowTopicIDs:  req.FollowTopicIDs,
+		FollowSourceIDs: req.FollowSourceIDs,
+	}
+	tokens, err := h.account.CompleteOnboarding(completeOnboardingRequest)
+	if err != nil {
+		return c.JSON(500, err)
+	}
+	return c.Redirect(http.StatusFound, pathutils.CompleteSignupSessionURL(tokens))
+}
+
+func (h *Handler) GetSignupSession(c echo.Context) error {
+	sessionID, err := ctxutils.GetSessionIDFromHeader(c)
+	if err != nil {
+		return c.JSON(400, err)
+	}
+	session, err := h.account.GetSignupSession(sessionID)
+	if session == nil {
 	}
 	if err != nil {
-		return c.JSON(400, fmt.Sprintf("Failed to deserialized: %v", err))
+		return c.JSON(400, err)
 	}
-	return c.JSON(200, &session)
+	return c.JSON(200, session)
+}
+
+func (h *Handler) GetLoginSession(c echo.Context) error {
+	accountID := ctxutils.GetAccountID(c)
+	session, err := h.account.GetLoginSession(accountID)
+	if err != nil {
+		return c.JSON(400, err)
+	}
+	return c.JSON(200, session)
+}
+
+type RegisterAccountRequest struct {
+	AvatarURL   string `json:"avatar_url"`
+	DisplayName string `json:"display_name"`
+}
+
+func (h *Handler) RegisterAccount(c echo.Context) error {
+	sessionID, err := ctxutils.GetSessionIDFromHeader(c)
+	if err != nil {
+		return c.JSON(500, err)
+	}
+	var req RegisterAccountRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(500, err)
+	}
+	registerAccountReq := &usecase.RegisterAccountRequest{
+		SessionID:   sessionID,
+		AvatarURl:   req.AvatarURL,
+		DisplayName: req.DisplayName,
+	}
+	if err := h.account.RegisterAccount(registerAccountReq); err != nil {
+		return c.JSON(500, err)
+	}
+	return c.JSON(200, "register account success")
 }
 
 func (h *Handler) HandleOAuthLogin(c echo.Context) error {
@@ -51,27 +98,26 @@ func (h *Handler) HandleOAuthLogin(c echo.Context) error {
 func (h *Handler) HandleOAuthCallback(c echo.Context) error {
 	ctx := context.Background()
 	code := c.QueryParam("code")
-	authenticateRes, err := h.account.AuthenticateWithGoogle(ctx, code)
+	authenticateResp, err := h.account.AuthenticateWithGoogle(ctx, code)
 	if err != nil {
 		return c.JSON(400, "Failed to authenticate")
 	}
-	userEmail := authenticateRes.Email
-	displayName := authenticateRes.DisplayName
+	userEmail := authenticateResp.Email
 	account, err := h.repo.GetByEmail(userEmail)
 	if err != nil {
-		return c.JSON(400, "Failed to authenticate")
+		return c.JSON(403, "Failed to authenticate")
 	}
 	if account == nil {
-		newAccount := &model.Account{
-			Email:       userEmail,
-			DisplayName: displayName,
+		temporarySignupReq := &usecase.CacheTemporarySignUpRequest{
+			DisplayName: authenticateResp.DisplayName,
+			AvatarURL:   authenticateResp.AvatarURL,
+			Email:       authenticateResp.Email,
 		}
-		tokens, err := h.account.TemporarySignUp(newAccount)
+		sessionID, err := h.account.CacheTemporarySignUp(temporarySignupReq)
 		if err != nil {
 			return c.JSON(400, err)
 		}
-		redirectURL := fmt.Sprintf("%s/api/oauth?access=%s&refresh=%s", os.Getenv("FRONTEND_URL"), tokens.AccessToken, tokens.RefreshToken)
-		return c.Redirect(http.StatusFound, redirectURL)
+		return c.Redirect(http.StatusFound, pathutils.StartSignupSessionURL(sessionID))
 	}
 	loginRes, err := h.account.Login(userEmail)
 	tokens := loginRes.Tokens
@@ -92,7 +138,7 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 }
 
 func (h *Handler) GetAccountProfile(c echo.Context) error {
-	accountId := ctxutils.GetIntFromPath(c)
+	accountId := ctxutils.GetIDFromPath(c)
 	account, err := h.repo.GetAccountProfile(accountId)
 	if err != nil {
 		return c.JSON(400, err.Error())
