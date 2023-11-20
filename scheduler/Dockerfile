@@ -8,6 +8,6 @@ RUN go build -o /main .
 
 FROM alpine:latest AS deploy
 WORKDIR /app
-RUN apk update
+RUN apk add --no-cache tzdata
 COPY --from=build /main .
 CMD ["./main"]

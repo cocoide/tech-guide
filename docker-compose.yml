@@ -34,9 +34,8 @@ services:
       dockerfile: Dockerfile
       target: deploy
     ports:
-      - "432:8000"
-    volumes:
-      - ./scheduler:/app
+      - "80:8080"
+    command: ./main
 
   db:
     container_name: tech-guide-db
