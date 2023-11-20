@@ -27,6 +27,17 @@ services:
     volumes:
       - ./backend:/app
 
+  scheduler:
+    container_name: tech-guide-scheduler
+    build:
+      context: ./scheduler
+      dockerfile: Dockerfile
+      target: deploy
+    ports:
+      - "432:8000"
+    volumes:
+      - ./scheduler:/app
+
   db:
     container_name: tech-guide-db
     build:
