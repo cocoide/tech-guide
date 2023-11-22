@@ -11,13 +11,6 @@ type JobSetting struct {
 	UpdatedAt       time.Time `json:"updated_at"`
 }
 
-func (j *JobSetting) WithCheckJob() bool {
-	if j.WorkerID == CheckJobs {
-		return true
-	}
-	return false
-}
-
 type JobSettings []*JobSetting
 
 type JobStatus int

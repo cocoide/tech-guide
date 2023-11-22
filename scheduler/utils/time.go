@@ -13,3 +13,11 @@ func NowInJST() time.Time {
 	}
 	return time.Now().In(loc)
 }
+
+func ParseInJST(target time.Time) time.Time {
+	loc, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		panic(err)
+	}
+	return target.In(loc)
+}

@@ -3,7 +3,7 @@ package scheduler
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"os"
+	"log"
 	"time"
 )
 
@@ -19,12 +19,12 @@ type repository struct {
 }
 
 func NewRepository() Repository {
-	DSN := os.Getenv("DSN")
+	DSN := "cohwngu5b2cuidkfc1vr:pscale_pw_RAARP1gJwWPKnRfQEjm5d15Y4mHVlV96l4onOmUGumi@tcp(aws.connect.psdb.cloud)/tech-guide?tls=true&parseTime=true"
 	db, err := gorm.Open(
 		mysql.Open(DSN),
 	)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to init db: %v", err)
 	}
 	return &repository{db: db}
 }
