@@ -5,13 +5,22 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import CustomDialog from '../elements/CustomDialog'
+import {API_URL} from "@/libs/environment";
 
 const LoginDialog = () => {
     const router = useRouter()
     async function signInWithGoogle() {
         toast.loading("ログイン中...");
         try {
-            router.push(process.env.NEXT_PUBLIC_API_BASE_URL + "/oauth/login")
+            router.push(API_URL + "/oauth/login?type=1")
+        } catch (error) {
+            toast.error("エラーが発生")
+        }
+    }
+    async function signInWithGithub() {
+        toast.loading("ログイン中...");
+        try {
+            router.push(API_URL + "/oauth/login?type=2")
         } catch (error) {
             toast.error("エラーが発生")
         }
@@ -32,6 +41,13 @@ const LoginDialog = () => {
                         <Image src={"/google.png"} alt='google' width={50} height={50} className='h-5 w-5' />
                         <div className="text-center">
                             Googleアカウントでログイン
+                        </div>
+                    </button>
+                    <button className='ring-1 ring-gray-200 rounded-md p-2 text-gray-700 flex flex-row items-center justify-center space-x-2' type="button"
+                            onClick={signInWithGithub}>
+                        <Image src={"/github.svg"} alt='github' width={50} height={50} className='h-5 w-5' />
+                        <div className="text-center">
+                            Githubアカウントでログイン
                         </div>
                     </button>
                 </div>

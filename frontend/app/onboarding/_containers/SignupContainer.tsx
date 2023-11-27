@@ -4,13 +4,22 @@ import HStack from '@/app/_components/elements/ui/HStack';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import {API_URL} from "@/libs/environment";
 
 const SignupContainer = () => {
     const router = useRouter()
-    function handleSignup(type: "google" | "github") {
+    function handleSignupWithGoogle() {
         toast.loading("ログイン中...");
         try {
-            router.push(process.env.NEXT_PUBLIC_API_BASE_URL + `/oauth/login?type=${type}`)
+            router.push(API_URL + `/oauth/login?type=1`)
+        } catch (error) {
+            toast.error("エラーが発生")
+        }
+    }
+    function handleSignupWithGithub() {
+        toast.loading("ログイン中...");
+        try {
+            router.push(API_URL + `/oauth/login?type=2`)
         } catch (error) {
             toast.error("エラーが発生")
         }
@@ -27,14 +36,14 @@ const SignupContainer = () => {
                 <HStack className="w-full items-center space-y-5 custom-text p-10">
             <div className="">TechGuideにサインアップ</div>
             <button className='ring-1 ring-gray-200 w-[300px] rounded-md p-2 text-gray-700 flex flex-row items-center space-x-3 bg-white' type="button"
-                onClick={() => handleSignup("google")}>
+                onClick={() => handleSignupWithGoogle()}>
                 <Image src={"/google.png"} alt='google' width={50} height={50} className='h-5 w-5' />
                 <div className="text-center">
                     Googleアカウントで登録
                 </div>
             </button>
             <button className='ring-1 ring-gray-200 w-[300px] rounded-md p-2 text-gray-700 flex flex-row items-center space-x-3 bg-white' type="button"
-                onClick={() => handleSignup("google")}>
+                onClick={() => handleSignupWithGithub()}>
                 <Image src={"/github.svg"} alt='github' width={50} height={50} className='h-5 w-5' />
                 <div className="text-center">
                     Githubアカウントで登録
