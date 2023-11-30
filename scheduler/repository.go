@@ -4,6 +4,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"os"
 	"time"
 )
 
@@ -19,7 +20,7 @@ type repository struct {
 }
 
 func NewRepository() Repository {
-	DSN := "cohwngu5b2cuidkfc1vr:pscale_pw_RAARP1gJwWPKnRfQEjm5d15Y4mHVlV96l4onOmUGumi@tcp(aws.connect.psdb.cloud)/tech-guide?tls=true&parseTime=true"
+	DSN := os.Getenv("DSN")
 	db, err := gorm.Open(
 		mysql.Open(DSN),
 	)
