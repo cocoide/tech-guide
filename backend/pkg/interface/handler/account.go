@@ -1,16 +1,12 @@
 package handler
 
 import (
-	"context"
-	"fmt"
+	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
 	"github.com/cocoide/tech-guide/pkg/interface/handler/pathutils"
 	"github.com/cocoide/tech-guide/pkg/usecase"
-	"net/http"
-	"os"
-
-	"github.com/cocoide/tech-guide/pkg/domain/model"
-	"github.com/cocoide/tech-guide/pkg/interface/handler/ctxutils"
 	"github.com/labstack/echo"
+	"log"
+	"net/http"
 )
 
 type CompleteOnboardingRequest struct {
@@ -36,7 +32,7 @@ func (h *Handler) CompleteOnboarding(c echo.Context) error {
 	if err != nil {
 		return c.JSON(500, err)
 	}
-	return c.Redirect(http.StatusFound, pathutils.CompleteSignupSessionURL(tokens))
+	return c.Redirect(http.StatusFound, pathutils.CompleteSignupURL(tokens))
 }
 
 func (h *Handler) GetSignupSession(c echo.Context) error {
@@ -88,44 +84,32 @@ func (h *Handler) RegisterAccount(c echo.Context) error {
 }
 
 func (h *Handler) HandleOAuthLogin(c echo.Context) error {
-	redirectURL, err := h.account.GenerateOAuthRedirectURL(model.Google)
+	oauthType, err := ctxutils.GetOAuthType(c)
+	if err != nil {
+		return c.JSON(400, err)
+	}
+	redirectURL, err := h.account.GenerateOAuthRedirectURL(oauthType)
 	if err != nil {
 		return c.JSON(500, err)
 	}
+	log.Printf("Authorize URL: %s", redirectURL)
 	return c.Redirect(http.StatusFound, redirectURL)
 }
 
 func (h *Handler) HandleOAuthCallback(c echo.Context) error {
-	ctx := context.Background()
-	code := c.QueryParam("code")
-	authenticateResp, err := h.account.AuthenticateWithGoogle(ctx, code)
+	oauthType, err := ctxutils.GetOAuthType(c)
 	if err != nil {
-		return c.JSON(400, "Failed to authenticate")
+		return c.JSON(400, err.Error())
 	}
-	userEmail := authenticateResp.Email
-	account, err := h.repo.GetByEmail(userEmail)
+	authCode := c.QueryParam("code")
+	res, err := h.account.ProcessOAuthCallback(oauthType, authCode)
 	if err != nil {
-		return c.JSON(403, "Failed to authenticate")
+		return c.JSON(400, err.Error())
 	}
-	if account == nil {
-		temporarySignupReq := &usecase.CacheTemporarySignUpRequest{
-			DisplayName: authenticateResp.DisplayName,
-			AvatarURL:   authenticateResp.AvatarURL,
-			Email:       authenticateResp.Email,
-		}
-		sessionID, err := h.account.CacheTemporarySignUp(temporarySignupReq)
-		if err != nil {
-			return c.JSON(400, err)
-		}
-		return c.Redirect(http.StatusFound, pathutils.StartSignupSessionURL(sessionID))
+	if res.IsSignup {
+		return c.Redirect(http.StatusFound, pathutils.StartSignupURL(res.SessionID))
 	}
-	loginRes, err := h.account.Login(userEmail)
-	tokens := loginRes.Tokens
-	if err != nil {
-		return c.JSON(400, err)
-	}
-	redirectURL := fmt.Sprintf("%s/api/oauth?access=%s&refresh=%s", os.Getenv("FRONTEND_URL"), tokens.AccessToken, tokens.RefreshToken)
-	return c.Redirect(http.StatusFound, redirectURL)
+	return c.Redirect(http.StatusFound, pathutils.LoginURL(res.Tokens))
 }
 
 func (h *Handler) RefreshToken(c echo.Context) error {

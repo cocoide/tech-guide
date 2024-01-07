@@ -21,6 +21,7 @@ type Handler struct {
 	activity    *usecase.ActivityUsecase
 	scraping    *usecase.ScrapingUsecase
 	topic       *usecase.TopicUsecase
+	scheduler   *usecase.SchedulerUsecase
 }
 
 func NewHandler(
@@ -38,6 +39,7 @@ func NewHandler(
 	activity *usecase.ActivityUsecase,
 	scraping *usecase.ScrapingUsecase,
 	topic *usecase.TopicUsecase,
+	scheduler *usecase.SchedulerUsecase,
 ) *Handler {
 	return &Handler{
 		repo:        repo,
@@ -54,5 +56,6 @@ func NewHandler(
 		activity:    activity,
 		scraping:    scraping,
 		topic:       topic,
+		scheduler:   scheduler,
 	}
 }
