@@ -2,27 +2,17 @@ package usecase
 
 import (
 	"fmt"
-	"github.com/cocoide/tech-guide/conf"
+	"time"
+
 	"github.com/cocoide/tech-guide/pkg/domain/model/dto"
 	"github.com/cocoide/tech-guide/pkg/domain/service"
 	"github.com/cocoide/tech-guide/pkg/usecase/parser"
 	"github.com/cocoide/tech-guide/pkg/usecase/tknutils"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
-	"golang.org/x/net/context"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
-	"google.golang.org/api/option"
-	"google.golang.org/api/people/v1"
-	"log"
-	"time"
 
 	"github.com/cocoide/tech-guide/pkg/domain/model"
 	"github.com/cocoide/tech-guide/pkg/domain/repository"
-)
-
-var (
-	oauthGoogleScopes = []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"}
 )
 
 const (
@@ -35,15 +25,16 @@ var (
 )
 
 type AccountUsecase struct {
-	tx            repository.Transaction
-	repo          repository.AccountRepo
-	cache         repository.CacheRepo
-	signupSession service.SessionService[dto.SignupSession]
-	validate      *validator.Validate
+	tx       repository.Transaction
+	repo     repository.AccountRepo
+	cache    repository.CacheRepo
+	signup   service.SessionService[dto.SignupSession]
+	oauth    service.OAuthService
+	validate *validator.Validate
 }
 
-func NewAccountUsecase(repo repository.AccountRepo, cache repository.CacheRepo, signupSession service.SessionService[dto.SignupSession]) *AccountUsecase {
-	return &AccountUsecase{repo: repo, cache: cache, signupSession: signupSession, validate: validator.New()}
+func NewAccountUsecase(repo repository.AccountRepo, cache repository.CacheRepo, signup service.SessionService[dto.SignupSession], oauth service.OAuthService) *AccountUsecase {
+	return &AccountUsecase{repo: repo, cache: cache, signup: signup, oauth: oauth, validate: validator.New()}
 }
 
 type CompleteOnboardingRequest struct {
@@ -53,7 +44,7 @@ type CompleteOnboardingRequest struct {
 }
 
 func (u *AccountUsecase) CompleteOnboarding(req *CompleteOnboardingRequest) (*GenerateTokensResponse, error) {
-	session, err := u.signupSession.Get(req.SessionID)
+	session, err := u.signup.Get(req.SessionID)
 	if err != nil {
 		return nil, err
 	}
@@ -66,15 +57,18 @@ func (u *AccountUsecase) CompleteOnboarding(req *CompleteOnboardingRequest) (*Ge
 	if err := u.repo.CreateFollowSources(session.AccountID, req.FollowTopicIDs); err != nil {
 		return nil, err
 	}
-	if err := u.signupSession.Del(req.SessionID); err != nil {
+	if err := u.signup.Del(req.SessionID); err != nil {
 		return nil, err
 	}
 	return u.generateTokens(session.AccountID)
 }
 
 func (u *AccountUsecase) GetSignupSession(sessionID uuid.UUID) (*dto.SignupSession, error) {
-	res, err := u.signupSession.Get(sessionID)
-	return &res, err
+	res, err := u.signup.Get(sessionID)
+	if err != nil {
+		return nil, err
+	}
+	return &res, nil
 }
 
 type RegisterAccountRequest struct {
@@ -87,7 +81,7 @@ func (u *AccountUsecase) RegisterAccount(req *RegisterAccountRequest) error {
 	if err := u.validate.Struct(req); err != nil {
 		return err
 	}
-	session, err := u.signupSession.Get(req.SessionID)
+	session, err := u.signup.Get(req.SessionID)
 	if err != nil {
 		return err
 	}
@@ -103,7 +97,7 @@ func (u *AccountUsecase) RegisterAccount(req *RegisterAccountRequest) error {
 	// Signup Sessionの更新
 	session.AccountID = account.ID
 	session.OnboardingIndex = dto.FollowTopics
-	if err := u.signupSession.Set(req.SessionID, session, signupSessionDuration); err != nil {
+	if err := u.signup.Set(req.SessionID, session, SignupDuration); err != nil {
 		return err
 	}
 	return nil
@@ -157,64 +151,62 @@ func (u *AccountUsecase) Login(email string) (*LoginResponse, error) {
 }
 
 const (
-	signupSessionDuration = time.Hour * 24
+	SignupDuration = time.Hour * 24
 )
 
-type CacheTemporarySignUpRequest struct {
-	DisplayName string `validate:"required"`
-	AvatarURL   string `validate:"url"`
-	Email       string `validate:"required,email"`
-}
-
-func (u *AccountUsecase) CacheTemporarySignUp(req *CacheTemporarySignUpRequest) (*uuid.UUID, error) {
-	if err := u.validate.Struct(req); err != nil {
-		return nil, err
-	}
-	session := dto.SignupSession{
-		DisplayName:     req.DisplayName,
-		AvatarURL:       req.AvatarURL,
-		OnboardingIndex: dto.RegisterProfile,
-		Email:           req.Email,
-	}
-	signupResp, err := u.signupSession.New(session, signupSessionDuration)
-	if err != nil {
-		return nil, err
-	}
-	return &signupResp, nil
-}
-
 func (u *AccountUsecase) GenerateOAuthRedirectURL(oauth model.OAuthType) (string, error) {
+	return u.oauth.GenerateOAuthURL(oauth)
+}
+
+type ProcessOAuthCallbackResponse struct {
+	SessionID uuid.UUID
+	IsSignup  bool
+	Tokens    *GenerateTokensResponse
+}
+
+func (u *AccountUsecase) ProcessOAuthCallback(oauth model.OAuthType, authCode string) (*ProcessOAuthCallbackResponse, error) {
+	var profile *service.OAuthProfileResponse
+	var err error
 	switch oauth {
 	case model.Google:
-		oauth2Conf := newGoogleOAuth2Conf()
-		url := oauth2Conf.AuthCodeURL(tknutils.GenerateStrUUID(), oauth2.AccessTypeOffline)
-		return url, nil
+		profile, err = u.oauth.GetGoogleOAuthProfile(authCode)
+	case model.Github:
+		profile, err = u.oauth.GetGithubOAuthProfile(authCode)
 	default:
-		return "", fmt.Errorf("Error selecting oauth method")
+		return nil, fmt.Errorf("oauth type error")
 	}
-}
-
-type OAuthAuthenticateResponse struct {
-	DisplayName string
-	AvatarURL   string
-	Email       string
-}
-
-func (u *AccountUsecase) AuthenticateWithGoogle(ctx context.Context, authCode string) (*OAuthAuthenticateResponse, error) {
-	oauthConf := newGoogleOAuth2Conf()
-	tok, err := oauthConf.Exchange(ctx, authCode)
-	peopleService, err := people.NewService(context.Background(), option.WithTokenSource(oauthConf.TokenSource(ctx, tok)))
 	if err != nil {
 		return nil, err
 	}
-	person, err := peopleService.People.Get("people/me").PersonFields("names,emailAddresses,photos").Do()
+	if err := u.validate.Struct(profile); err != nil {
+		return nil, err
+	}
+	account, err := u.repo.GetByEmail(profile.Email)
 	if err != nil {
 		return nil, err
 	}
-	return &OAuthAuthenticateResponse{
-		DisplayName: person.Names[0].DisplayName,
-		AvatarURL:   person.Photos[0].Url,
-		Email:       person.EmailAddresses[0].Value,
+	if account.NotFound() {
+		session := dto.SignupSession{
+			DisplayName:     profile.DisplayName,
+			AvatarURL:       profile.AvatarURL,
+			OnboardingIndex: dto.RegisterProfile,
+			Email:           profile.Email,
+		}
+		sessionID, err := u.signup.New(session, SignupDuration)
+		if err != nil {
+			return nil, err
+		}
+		return &ProcessOAuthCallbackResponse{
+			SessionID: sessionID,
+			IsSignup:  true,
+		}, nil
+	}
+	tokens, err := u.generateTokens(account.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &ProcessOAuthCallbackResponse{
+		Tokens: tokens,
 	}, nil
 }
 
@@ -256,16 +248,4 @@ func (u *AccountUsecase) generateTokens(accountID int) (*GenerateTokensResponse,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
-}
-
-func newGoogleOAuth2Conf() *oauth2.Config {
-	b, err := conf.TokenData.ReadFile("credentials.json")
-	if err != nil {
-		log.Fatalf("Failed to read oauth credentials")
-	}
-	oauthConf, err := google.ConfigFromJSON(b, oauthGoogleScopes...)
-	if err != nil {
-		log.Fatalf("Failed to read oauth credentials")
-	}
-	return oauthConf
 }
